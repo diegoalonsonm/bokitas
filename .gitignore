@@ -1,0 +1,167 @@
+# ==========================================
+# Backend (Node.js / Express)
+# ==========================================
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# ==========================================
+# Mobile (React Native / Expo)
+# ==========================================
+
+# Expo
+.expo/
+.expo-shared/
+.expo-shared/
+
+# Metro bundler
+.metro-health-check*
+
+# Web build
+web-build/
+
+# Xcode
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+ios/Pods/
+ios/Podfile.lock
+ios/build/
+ios/*.xcodeproj/xcuserdata
+
+# Android
+android/app/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+android/*.iml
+android/captures/
+android/.externalNativeBuild
+android/.cxx
+keystores/
+*.jks
+*.keystore
+*.p12
+*.key
+*.pem
+
+# Bundler
+.packager-info.json
+
+# Watchman
+.watchman*
+
+# CocoaPods
+ios/Pods/
+
+# ==========================================
+# OS and IDE
+# ==========================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ==========================================
+# Testing
+# ==========================================
+
+coverage/
+.nyc_output/
+*.lcov
+
+# ==========================================
+# Misc
+# ==========================================
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# ==========================================
+# Supabase (if using local development)
+# ==========================================
+
+.supabase/
