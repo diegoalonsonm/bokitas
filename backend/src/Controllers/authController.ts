@@ -1,25 +1,32 @@
+import type { Response } from 'express'
+import { type Request } from 'express'
 import { supabase } from '../Models/supabase/client.js'
 import { validateRegister, validateLogin, validateForgotPassword, validateResetPassword } from '../Models/validations/authValidation.js'
-import { ESTADO, ERROR_MESSAGES } from '../Utils/constants.js'
+import { ERROR_MESSAGES } from '../Utils/constants.js'
 
 export class AuthController {
-  static async register(req, res) {
+  /**
+   * POST /auth/register
+   * Register a new user
+   */
+  static async register(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
       const { email, password, nombre, apellido } = req.body
 
       const validation = validateRegister({ email, password, nombre, apellido })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -33,18 +40,19 @@ export class AuthController {
       if (signUpError) {
         console.error('Supabase sign up error:', signUpError)
         if (signUpError.message.includes('already registered')) {
-          return res.status(409).json({
+          res.status(409).json({
             success: false,
             error: {
               code: 'CONFLICT',
               message: ERROR_MESSAGES.EMAIL_ALREADY_EXISTS
             }
           })
+          return
         }
         throw signUpError
       }
 
-      const { data: { user }, error: userError } = await supabase
+      const { data: user, error: userError } = await supabase
         .from('usuario')
         .select('*')
         .eq('email', email)
@@ -64,26 +72,31 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async login(req, res) {
+  /**
+   * POST /auth/login
+   * Login user
+   */
+  static async login(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
       const { email, password } = req.body
 
       const validation = validateLogin({ email, password })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -93,13 +106,14 @@ export class AuthController {
 
       if (signInError) {
         console.error('Supabase sign in error:', signInError)
-        return res.status(401).json({
+        res.status(401).json({
           success: false,
           error: {
             code: 'UNAUTHORIZED',
             message: ERROR_MESSAGES.INVALID_CREDENTIALS
           }
         })
+        return
       }
 
       const { data: { session } } = await supabase.auth.getSession()
@@ -109,9 +123,9 @@ export class AuthController {
         data: {
           user: data.user,
           session: {
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-            expires_at: session.expires_at
+            access_token: session?.access_token || '',
+            refresh_token: session?.refresh_token || '',
+            expires_at: session?.expires_at || 0
           }
         }
       })
@@ -121,29 +135,32 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async logout(req, res) {
+  /**
+   * POST /auth/logout
+   * Logout user
+   */
+  static async logout(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
       const authHeader = req.headers.authorization
 
       if (!authHeader) {
-        return res.status(401).json({
+        res.status(401).json({
           success: false,
           error: {
             code: 'UNAUTHORIZED',
             message: 'Missing authorization header'
           }
         })
+        return
       }
 
-      const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader
-
-      const { error } = await supabase.auth.signOut(token)
+      const { error } = await supabase.auth.signOut()
 
       if (error) {
         console.error('Supabase sign out error:', error)
@@ -160,29 +177,34 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async forgotPassword(req, res) {
+  /**
+   * POST /auth/forgot-password
+   * Request password reset email
+   */
+  static async forgotPassword(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
       const { email } = req.body
 
       const validation = validateForgotPassword({ email })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${process.env.CORS_ORIGIN}/auth/reset-password`
       })
 
@@ -201,29 +223,34 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async resetPassword(req, res) {
+  /**
+   * POST /auth/reset-password
+   * Reset password with token
+   */
+  static async resetPassword(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
       const { email, token, password } = req.body
 
       const validation = validateResetPassword({ email, token, password })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password
       })
 
@@ -242,15 +269,30 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async me(req, res) {
+  /**
+   * GET /auth/me
+   * Get current authenticated user info
+   */
+  static async me(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
-      const userId = req.user.id
+      const userId = req.user?.id
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'User not authenticated'
+          }
+        })
+        return
+      }
 
       const { data: user, error } = await supabase
         .from('usuario')
@@ -273,7 +315,7 @@ export class AuthController {
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: err.message
+          message: (err as Error).message
         }
       })
     }

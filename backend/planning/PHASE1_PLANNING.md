@@ -14,6 +14,8 @@
 
 This document outlines the implementation plan for Phase 1 of the Bokitas backend. The goal is to deliver a functional MVP with core features: authentication, user profiles, restaurant discovery, reviews, and eatlist management.
 
+**Updated 2026-01-23**: Migrated to TypeScript following AGENTS.md standards.
+
 ---
 
 ## Key Decisions
@@ -26,6 +28,7 @@ This document outlines the implementation plan for Phase 1 of the Bokitas backen
 | Map Display | Frontend only (Mapbox/Leaflet) | Not a backend concern - frontend plots coordinates on map. |
 | Restaurant Photos | User-generated only | Community-driven content like Letterboxd. Zero API cost. First review photo becomes restaurant cover. |
 | Default Region | Costa Rica | Primary market focus. Searches default to CR when no coordinates provided. |
+| Language | TypeScript | Type safety, better developer experience, following AGENTS.md standards. |
 
 ---
 
@@ -33,7 +36,7 @@ This document outlines the implementation plan for Phase 1 of the Bokitas backen
 
 - **Database**: Fully configured in Supabase with RLS enabled
 - **Tables Ready**: `estado` (5), `usuario`, `restaurante`, `tipocomida` (20), `restaurantetipocomida`, `review`, `eatlist`
-- **Backend Code**: Empty - needs full implementation
+- **Backend Code**: TypeScript implementation in progress
 
 ### Existing Status IDs (from `estado` table)
 
@@ -62,47 +65,57 @@ ADD COLUMN foursquareid VARCHAR(255) UNIQUE;
 
 ```
 backend/
-├── Controllers/
-│   ├── authController.js
-│   ├── userController.js
-│   ├── restaurantController.js
-│   ├── reviewController.js
-│   ├── eatlistController.js
-│   └── foodTypeController.js
-│
-├── Models/
-│   ├── supabase/
-│   │   └── client.js              # Supabase client initialization
-│   ├── validations/
-│   │   ├── authValidation.js
-│   │   ├── userValidation.js
-│   │   ├── restaurantValidation.js
-│   │   ├── reviewValidation.js
-│   │   └── eatlistValidation.js
-│   ├── userModel.js
-│   ├── restaurantModel.js
-│   ├── reviewModel.js
-│   ├── eatlistModel.js
-│   └── foodTypeModel.js
-│
-├── Routes/
-│   ├── authRouter.js
-│   ├── userRouter.js
-│   ├── restaurantRouter.js
-│   ├── reviewRouter.js
-│   ├── eatlistRouter.js
-│   └── foodTypeRouter.js
-│
-├── Middleware/
-│   ├── authMiddleware.js          # Verify Supabase JWT
-│   └── errorMiddleware.js         # Global error handler
-│
-├── Services/
-│   ├── foursquareService.js       # Foursquare API integration
-│   └── storageService.js          # Supabase Storage helpers
-│
-├── Utils/
-│   └── constants.js               # Status IDs, error messages
+├── src/
+│   ├── Controllers/
+│   │   ├── authController.ts
+│   │   ├── userController.ts
+│   │   ├── restaurantController.ts
+│   │   ├── reviewController.ts
+│   │   ├── eatlistController.ts
+│   │   └── foodTypeController.ts
+│   │
+│   ├── Models/
+│   │   ├── supabase/
+│   │   │   └── client.ts              # Supabase client initialization
+│   │   ├── validations/
+│   │   │   ├── authValidation.ts
+│   │   │   ├── userValidation.ts
+│   │   │   ├── restaurantValidation.ts
+│   │   │   ├── reviewValidation.ts
+│   │   │   └── eatlistValidation.ts
+│   │   ├── userModel.ts
+│   │   ├── restaurantModel.ts
+│   │   ├── reviewModel.ts
+│   │   ├── eatlistModel.ts
+│   │   └── foodTypeModel.ts
+│   │
+│   ├── Routes/
+│   │   ├── authRouter.ts
+│   │   ├── userRouter.ts
+│   │   ├── restaurantRouter.ts
+│   │   ├── reviewRouter.ts
+│   │   ├── eatlistRouter.ts
+│   │   └── foodTypeRouter.ts
+│   │
+│   ├── Middleware/
+│   │   ├── authMiddleware.ts          # Verify Supabase JWT
+│   │   └── errorMiddleware.ts         # Global error handler
+│   │
+│   ├── Services/
+│   │   ├── foursquareService.ts       # Foursquare API integration
+│   │   └── storageService.ts          # Supabase Storage helpers
+│   │
+│   ├── Utils/
+│   │   └── constants.ts               # Status IDs, error messages
+│   │
+│   └── types/
+│       ├── entities/
+│       │   ├── auth.types.ts
+│       │   └── user.types.ts
+│       ├── api/
+│       │   ├── auth.api.types.ts
+│       │   └── user.api.types.ts
+│       └── index.ts
 │
 ├── docs/
 │   ├── entities/
@@ -112,8 +125,9 @@ backend/
 ├── planning/
 │   └── PHASE1_PLANNING.md
 │
-├── index.js
+├── index.ts
 ├── package.json
+├── tsconfig.json
 ├── .env
 ├── .env.example
 ├── AGENTS.md
@@ -126,21 +140,31 @@ backend/
 
 ```json
 {
+  "name": "bokitas-backend",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.x",
+    "@supabase/supabase-js": "^2.45.4",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
-    "zod": "^3.22.4"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^20.11.0",
+    "nodemon": "^3.1.7",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }
 ```
@@ -562,17 +586,38 @@ Phase 1 is complete when:
 **Note:** Template `.env` file has been created for you to fill in with credentials.
 
 **Progress:**
+
+### TypeScript Migration (2026-01-23)
+- [x] Migrate to TypeScript following AGENTS.md standards
+- [x] Create src/ directory structure
+- [x] Create TypeScript types (entities, api)
+- [x] Migrate all existing files to TypeScript
+- [x] Configure tsconfig.json
+- [x] Update package.json with TypeScript scripts
+- [x] Add auth routes to entry point
+- [x] Auth middleware (TypeScript)
+- [x] Auth controller and router (TypeScript)
+- [x] User model, validation, controller, router (TypeScript)
+- [x] Type checking passes successfully
+
+### Original Phase 1 Progress
 - [x] Task 0.1 - Initialize npm project - Done
 - [x] Task 0.2 - Install dependencies - Done
-- [x] Task 0.3 - Create folder structure - Done
+- [x] Task 0.3 - Create folder structure - Done (migrated to src/)
 - [x] Task 0.4 - Configure environment - Done
-- [x] Task 0.5 - Setup Supabase client - Done
-- [x] Task 0.6 - Create entry point - Done
-- [x] Task 0.7 - Create utility constants - Done
-- [ ] Task 0.8 - Add auth routes to entry point
-- [ ] Task 1.1 - Auth middleware
-- [ ] Task 1.2-1.9 - Auth controllers and routers
-- [ ] Sprint 1-4 remaining tasks
+- [x] Task 0.5 - Setup Supabase client - Done (TypeScript)
+- [x] Task 0.6 - Create entry point - Done (TypeScript)
+- [x] Task 0.7 - Create utility constants - Done (TypeScript)
+- [x] Task 1.1 - Auth middleware - Done (TypeScript)
+- [x] Task 1.2-1.9 - Auth controllers and routers - Done (TypeScript)
+- [ ] Task 2.1-2.10 - User module - Partially done (missing storage service)
+- [ ] Task 3.1-3.11 - Restaurant module - Not started
+- [ ] Task 4.1-4.10 - Review module - Not started
+- [ ] Task 5.1-5.7 - Eatlist module - Not started
+- [ ] Task 6.1-6.3 - Food Types module - Not started
+- [ ] Task 7.1-7.3 - Supabase Storage setup - Not started
+- [ ] Task 8.1-8.3 - Error handling - Not started
+- [ ] Task 9.1-9.3 - Testing & Documentation - Not started
 
 ---
-*Document approved on 2026-01-22. Implementation may begin.*
+*Document approved on 2026-01-22. Migrated to TypeScript on 2026-01-23.*

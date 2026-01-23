@@ -1,4 +1,4 @@
-# AGENTS.md — Backend Development Standards (Node.js / Express)
+# AGENTS.md — Backend Development Standards (Node.js / Express / TypeScript)
 
 > **Purpose**: Standardize AI-assisted backend development using Claude Code, Open Code, and Cursor.
 > 
@@ -8,9 +8,9 @@
 
 ## Tech Stack
 
-- **Runtime**: Node.js 18+
+- **Runtime**: Node.js latest LTS
 - **Framework**: Express.js
-- **Language**: JavaScript (ES Modules)
+- **Language**: TypeScript (ES Modules, strict mode)
 - **ORM**: Sequelize (raw queries with parameterized replacements)
 - **Database**: SQL-based (MySQL, PostgreSQL, etc.)
 - **Authentication**: JWT (jsonwebtoken) + bcrypt
@@ -26,12 +26,10 @@ project-root/
 ├── frontend/              # Separate standards (Next.js)
 │   └── ...
 ├── backend/               # This document applies here
-│   ├── Controllers/
-│   ├── Models/
-│   ├── Routes/
+│   ├── src/
 │   ├── docs/
-│   ├── index.js
 │   ├── package.json
+│   ├── tsconfig.json
 │   └── AGENTS.md
 └── README.md
 ```
@@ -42,30 +40,40 @@ project-root/
 
 ```
 backend/
-├── Controllers/                   # Request handlers
-│   └── [entity]Controller.js
-│
-├── Models/                        # Data access & business logic
-│   ├── database/
-│   │   └── db.js                  # Sequelize connection
-│   ├── validations/
-│   │   └── [entity]Validation.js  # Zod schemas
-│   ├── nodemailer/
-│   │   └── index.js               # Email configuration
-│   └── [entity]Model.js           # Entity data access
-│
-├── Routes/                        # Express route definitions
-│   └── [entity]Router.js
+├── src/
+│   ├── Controllers/                   # Request handlers
+│   │   └── [entity]Controller.ts
+│   │
+│   ├── Models/                        # Data access & business logic
+│   │   ├── database/
+│   │   │   └── db.ts                  # Sequelize connection
+│   │   ├── validations/
+│   │   │   └── [entity]Validation.ts  # Zod schemas
+│   │   ├── nodemailer/
+│   │   │   └── index.ts               # Email configuration
+│   │   └── [entity]Model.ts           # Entity data access
+│   │
+│   ├── Routes/                        # Express route definitions
+│   │   └── [entity]Router.ts
+│   │
+│   ├── types/                         # TypeScript type definitions
+│   │   ├── index.ts                   # Shared types
+│   │   ├── entities/                  # Entity-specific types
+│   │   │   └── [entity].types.ts
+│   │   └── api/                       # API request/response types
+│   │       └── [entity].api.types.ts
+│   │
+│   └── index.ts                       # App entry point & middleware
 │
 ├── docs/
-│   ├── entities/                  # Entity documentation
-│   ├── endpoints/                 # API endpoint documentation
-│   └── postmortem/                # Issue tracking
+│   ├── entities/                      # Entity documentation
+│   ├── endpoints/                     # API endpoint documentation
+│   └── postmortem/                    # Issue tracking
 │
-├── index.js                       # App entry point & middleware
 ├── package.json
-├── .env                           # Environment variables (git ignored)
-├── .env.example                   # Environment template (committed)
+├── tsconfig.json
+├── .env                               # Environment variables (git ignored)
+├── .env.example                       # Environment template (committed)
 └── AGENTS.md
 ```
 
@@ -105,23 +113,23 @@ backend/
 
 **NEVER perform physical deletes.** All deletions must be logical (soft deletes) using the `active` flag.
 
-```javascript
+```typescript
 // ❌ WRONG - Physical delete
-static async deleteExpense({ id, userId }) {
+static async deleteExpense({ id, userId }: DeleteExpenseParams): Promise<void> {
     await db.sequelize.query(
         'DELETE FROM expense WHERE id = :id AND userId = :userId',
-        { replacements: { id, userId }, type: db.sequelize.QueryTypes.DELETE }
+        { replacements: { id, userId }, type: QueryTypes.DELETE }
     )
 }
 
 // ✅ CORRECT - Logical delete
-static async softDeleteExpense({ id, userId }) {
-    const result = await db.sequelize.query(
+static async softDeleteExpense({ id, userId }: DeleteExpenseParams): Promise<OperationResult> {
+    const [affectedRows] = await db.sequelize.query<ResultSetHeader>(
         'UPDATE expense SET active = false WHERE id = :id AND userId = :userId AND active = true',
-        { replacements: { id, userId }, type: db.sequelize.QueryTypes.UPDATE }
+        { replacements: { id, userId }, type: QueryTypes.UPDATE }
     )
 
-    if (result[0] === 0) {
+    if (affectedRows === 0) {
         return { success: false, message: 'Expense not found or already deleted' }
     }
 
@@ -131,12 +139,12 @@ static async softDeleteExpense({ id, userId }) {
 
 **All GET queries must filter by `active = true`:**
 
-```javascript
+```typescript
 // ✅ CORRECT - Only return active records
-static async getAllFromUser({ userId }) {
-    const expenses = await db.sequelize.query(
+static async getAllFromUser({ userId }: GetAllParams): Promise<Expense[]> {
+    const expenses = await db.sequelize.query<Expense>(
         'SELECT * FROM expense WHERE userId = :userId AND active = true ORDER BY date DESC',
-        { replacements: { userId }, type: db.sequelize.QueryTypes.SELECT }
+        { replacements: { userId }, type: QueryTypes.SELECT }
     )
     return expenses
 }
@@ -150,33 +158,163 @@ static async getAllFromUser({ userId }) {
 
 | Element | Convention | Example |
 |---------|------------|---------|
-| Controllers | camelCase + Controller | `expenseController.js` |
-| Models | camelCase + Model | `expenseModel.js` |
-| Routes | camelCase + Router | `expenseRouter.js` |
-| Validations | camelCase + Validation | `userValidation.js` |
+| Controllers | camelCase + Controller | `expenseController.ts` |
+| Models | camelCase + Model | `expenseModel.ts` |
+| Routes | camelCase + Router | `expenseRouter.ts` |
+| Validations | camelCase + Validation | `userValidation.ts` |
+| Types | camelCase + .types | `expense.types.ts` |
 
-### Models (Models/[entity]Model.js)
+### Types (src/types/)
+
+Define all types in the `types/` directory:
+
+```typescript
+// src/types/index.ts
+export interface OperationResult {
+    success: boolean
+    message: string
+}
+
+export interface PaginationParams {
+    page?: number
+    limit?: number
+}
+```
+
+```typescript
+// src/types/entities/expense.types.ts
+export interface Expense {
+    id: string
+    userId: string
+    categoryId: number
+    description: string
+    amount: number
+    date: string
+    active: boolean
+    createdAt?: Date
+    updatedAt?: Date
+}
+
+export interface CreateExpenseParams {
+    userId: string
+    amount: number
+    description: string
+    date: string
+    category: number
+}
+
+export interface UpdateExpenseParams {
+    id: string
+    userId: string
+    amount?: number
+    description?: string
+    category?: number
+    date?: string
+}
+
+export interface DeleteExpenseParams {
+    id: string
+    userId: string
+}
+
+export interface GetExpenseParams {
+    id: string
+    userId: string
+}
+
+export interface GetAllExpensesParams {
+    userId: string
+}
+```
+
+```typescript
+// src/types/entities/user.types.ts
+export interface User {
+    id: string
+    name: string
+    lastName: string
+    email: string
+    password: string
+    availableBudget: number
+    createdAt?: Date
+    updatedAt?: Date
+}
+
+export interface CreateUserParams {
+    name: string
+    lastName: string
+    email: string
+    password: string
+}
+
+export interface GetUserByEmailParams {
+    email: string
+}
+```
+
+```typescript
+// src/types/api/expense.api.types.ts
+import type { Request } from 'express'
+
+export interface CreateExpenseBody {
+    email: string
+    amount: number
+    description: string
+    category: number
+}
+
+export interface UpdateExpenseBody {
+    email: string
+    amount?: number
+    description?: string
+    category?: number
+    date?: string
+}
+
+export interface GetExpenseQuery {
+    email: string
+}
+
+export interface ExpenseParams {
+    id: string
+    email?: string
+}
+
+export type CreateExpenseRequest = Request<{}, {}, CreateExpenseBody>
+export type UpdateExpenseRequest = Request<ExpenseParams, {}, UpdateExpenseBody>
+export type GetExpenseRequest = Request<ExpenseParams, {}, {}, GetExpenseQuery>
+export type DeleteExpenseRequest = Request<ExpenseParams, {}, { email?: string }, { email?: string }>
+```
+
+### Models (src/Models/[entity]Model.ts)
 
 Each model is a class with static async methods:
 
-```javascript
-// Models/expenseModel.js
+```typescript
+// src/Models/expenseModel.ts
 import { db } from './database/db.js'
+import { QueryTypes } from 'sequelize'
 import { randomUUID } from 'crypto'
+import type { 
+    Expense, 
+    CreateExpenseParams, 
+    UpdateExpenseParams, 
+    DeleteExpenseParams,
+    GetExpenseParams,
+    GetAllExpensesParams 
+} from '../types/entities/expense.types.js'
+import type { OperationResult } from '../types/index.js'
 
 export class ExpenseModel {
     /**
      * Get all expenses for a user
-     * @param {Object} params
-     * @param {string} params.userId - User UUID
-     * @returns {Array} Array of expenses
      */
-    static async getAllFromUser({ userId }) {
-        const expenses = await db.sequelize.query(
+    static async getAllFromUser({ userId }: GetAllExpensesParams): Promise<Expense[]> {
+        const expenses = await db.sequelize.query<Expense>(
             'SELECT * FROM expense WHERE userId = :userId AND active = true ORDER BY date DESC',
             {
                 replacements: { userId },
-                type: db.sequelize.QueryTypes.SELECT
+                type: QueryTypes.SELECT
             }
         )
         return expenses
@@ -184,21 +322,17 @@ export class ExpenseModel {
 
     /**
      * Get a single expense by ID
-     * @param {Object} params
-     * @param {string} params.id - Expense UUID
-     * @param {string} params.userId - User UUID (for security)
-     * @returns {Object|null} Expense or null if not found
      */
-    static async getExpenseById({ id, userId }) {
+    static async getExpenseById({ id, userId }: GetExpenseParams): Promise<Expense | null> {
         try {
-            const expense = await db.sequelize.query(
+            const expenses = await db.sequelize.query<Expense>(
                 'SELECT * FROM expense WHERE id = :id AND userId = :userId AND active = true',
                 {
                     replacements: { id, userId },
-                    type: db.sequelize.QueryTypes.SELECT
+                    type: QueryTypes.SELECT
                 }
             )
-            return expense.length > 0 ? expense[0] : null
+            return expenses.length > 0 ? expenses[0] : null
         } catch (err) {
             console.error('Error getting expense by ID:', err)
             throw err
@@ -207,15 +341,8 @@ export class ExpenseModel {
 
     /**
      * Create a new expense
-     * @param {Object} params
-     * @param {string} params.userId - User UUID
-     * @param {number} params.amount - Expense amount
-     * @param {string} params.description - Expense description
-     * @param {string} params.date - Date (YYYY-MM-DD)
-     * @param {number} params.category - Category ID
-     * @returns {Object} Created expense
      */
-    static async addExpense({ userId, amount, description, date, category }) {
+    static async addExpense({ userId, amount, description, date, category }: CreateExpenseParams): Promise<Expense> {
         try {
             const id = randomUUID()
 
@@ -224,12 +351,21 @@ export class ExpenseModel {
                  VALUES (:id, :description, :category, :amount, :date, :userId, true)`,
                 {
                     replacements: { id, description, category, amount, date, userId },
-                    type: db.sequelize.QueryTypes.INSERT
+                    type: QueryTypes.INSERT
                 }
             )
 
             console.log('Expense created successfully with ID:', id)
-            return { id, description, amount, date, categoryId: category, userId, active: true }
+            
+            return { 
+                id, 
+                description, 
+                amount, 
+                date, 
+                categoryId: category, 
+                userId, 
+                active: true 
+            }
         } catch (err) {
             console.error('Error creating expense:', err)
             throw err
@@ -238,19 +374,11 @@ export class ExpenseModel {
 
     /**
      * Update an existing expense
-     * @param {Object} params
-     * @param {string} params.id - Expense UUID
-     * @param {string} params.userId - User UUID (for security)
-     * @param {number} [params.amount] - New amount
-     * @param {string} [params.description] - New description
-     * @param {number} [params.category] - New category ID
-     * @param {string} [params.date] - New date
-     * @returns {Object} Update result
      */
-    static async updateExpense({ id, userId, amount, description, category, date }) {
+    static async updateExpense({ id, userId, amount, description, category, date }: UpdateExpenseParams): Promise<OperationResult> {
         try {
-            const updates = []
-            const replacements = { id, userId }
+            const updates: string[] = []
+            const replacements: Record<string, unknown> = { id, userId }
 
             if (amount !== undefined && amount !== null) {
                 updates.push('amount = :amount')
@@ -277,12 +405,12 @@ export class ExpenseModel {
             }
 
             const query = `UPDATE expense SET ${updates.join(', ')} WHERE id = :id AND userId = :userId AND active = true`
-            const result = await db.sequelize.query(query, {
+            const [, affectedRows] = await db.sequelize.query(query, {
                 replacements,
-                type: db.sequelize.QueryTypes.UPDATE
+                type: QueryTypes.UPDATE
             })
 
-            if (result[0] === 0) {
+            if (affectedRows === 0) {
                 return { success: false, message: 'Expense not found or already deleted' }
             }
 
@@ -296,22 +424,18 @@ export class ExpenseModel {
 
     /**
      * Soft delete an expense (set active = false)
-     * @param {Object} params
-     * @param {string} params.id - Expense UUID
-     * @param {string} params.userId - User UUID (for security)
-     * @returns {Object} Delete result
      */
-    static async softDeleteExpense({ id, userId }) {
+    static async softDeleteExpense({ id, userId }: DeleteExpenseParams): Promise<OperationResult> {
         try {
-            const result = await db.sequelize.query(
+            const [, affectedRows] = await db.sequelize.query(
                 'UPDATE expense SET active = false WHERE id = :id AND userId = :userId AND active = true',
                 {
                     replacements: { id, userId },
-                    type: db.sequelize.QueryTypes.UPDATE
+                    type: QueryTypes.UPDATE
                 }
             )
 
-            if (result[0] === 0) {
+            if (affectedRows === 0) {
                 return { success: false, message: 'Expense not found or already deleted' }
             }
 
@@ -326,42 +450,51 @@ export class ExpenseModel {
 ```
 
 **Model conventions:**
-- Use static async methods
+- Use static async methods with proper return types
 - Use parameterized queries with `:replacements` (never concatenate)
 - Generate UUIDs with `randomUUID()` from `crypto`
 - Always include `userId` parameter for security
 - All SELECT queries filter by `active = true`
 - Delete methods perform LOGICAL delete only
-- Include JSDoc comments for all methods
+- Import types from `types/` directory
 - Log operations with `console.log` / `console.error`
 
-### Controllers (Controllers/[entity]Controller.js)
+### Controllers (src/Controllers/[entity]Controller.ts)
 
 Controllers handle HTTP requests and responses:
 
-```javascript
-// Controllers/expenseController.js
+```typescript
+// src/Controllers/expenseController.ts
+import type { Request, Response } from 'express'
 import { ExpenseModel } from '../Models/expenseModel.js'
 import { UserModel } from '../Models/userModel.js'
+import type { 
+    CreateExpenseRequest, 
+    UpdateExpenseRequest, 
+    GetExpenseRequest,
+    DeleteExpenseRequest 
+} from '../types/api/expense.api.types.js'
 
 export class ExpenseController {
     /**
      * GET /expenses/:email
      * Get all expenses for a user
      */
-    static async getAllFromUser(req, res) {
+    static async getAllFromUser(req: Request<{ email: string }>, res: Response): Promise<void> {
         try {
-            const email = req.params.email
+            const { email } = req.params
             const userId = await UserModel.getUserIdByEmail({ email })
 
             if (!userId) {
-                return res.status(404).send('User not found')
+                res.status(404).send('User not found')
+                return
             }
 
             const expenses = await ExpenseModel.getAllFromUser({ userId })
             res.json(expenses)
         } catch (err) {
-            res.status(500).send('error: ' + err.message)
+            const error = err as Error
+            res.status(500).send('error: ' + error.message)
         }
     }
 
@@ -369,30 +502,34 @@ export class ExpenseController {
      * GET /expenses/single/:id?email=user@example.com
      * Get a single expense by ID
      */
-    static async getExpenseById(req, res) {
+    static async getExpenseById(req: GetExpenseRequest, res: Response): Promise<void> {
         try {
             const { id } = req.params
-            const email = req.query.email
+            const { email } = req.query
 
             if (!email) {
-                return res.status(400).send('Email is required')
+                res.status(400).send('Email is required')
+                return
             }
 
             const userId = await UserModel.getUserIdByEmail({ email })
 
             if (!userId) {
-                return res.status(404).send('User not found')
+                res.status(404).send('User not found')
+                return
             }
 
             const expense = await ExpenseModel.getExpenseById({ id, userId })
 
             if (!expense) {
-                return res.status(404).send('Expense not found')
+                res.status(404).send('Expense not found')
+                return
             }
 
             res.json(expense)
         } catch (err) {
-            res.status(500).send('error: ' + err.message)
+            const error = err as Error
+            res.status(500).send('error: ' + error.message)
         }
     }
 
@@ -400,20 +537,22 @@ export class ExpenseController {
      * POST /expenses
      * Create a new expense
      */
-    static async addExpense(req, res) {
+    static async addExpense(req: CreateExpenseRequest, res: Response): Promise<void> {
         try {
             const { email, amount, description, category } = req.body
             const userId = await UserModel.getUserIdByEmail({ email })
 
             if (!userId) {
-                return res.status(404).send('User not found')
+                res.status(404).send('User not found')
+                return
             }
 
             const date = new Date().toISOString().split('T')[0]
             const expense = await ExpenseModel.addExpense({ userId, amount, description, date, category })
             res.json(expense)
         } catch (err) {
-            res.status(500).send('error: ' + err.message)
+            const error = err as Error
+            res.status(500).send('error: ' + error.message)
         }
     }
 
@@ -421,34 +560,39 @@ export class ExpenseController {
      * PUT /expenses/:id
      * Update an existing expense
      */
-    static async updateExpense(req, res) {
+    static async updateExpense(req: UpdateExpenseRequest, res: Response): Promise<void> {
         try {
             const { id } = req.params
             const { email, amount, description, category, date } = req.body
 
             if (!email) {
-                return res.status(400).send('Email is required')
+                res.status(400).send('Email is required')
+                return
             }
 
             const userId = await UserModel.getUserIdByEmail({ email })
 
             if (!userId) {
-                return res.status(404).send('User not found')
+                res.status(404).send('User not found')
+                return
             }
 
             // Validate amount if provided
             if (amount !== undefined && (isNaN(amount) || amount < 1)) {
-                return res.status(400).send('Amount must be at least 1')
+                res.status(400).send('Amount must be at least 1')
+                return
             }
 
             // Validate description if provided
             if (description !== undefined && (!description || description.trim().length < 3)) {
-                return res.status(400).send('Description must be at least 3 characters')
+                res.status(400).send('Description must be at least 3 characters')
+                return
             }
 
             // Validate category if provided
             if (category !== undefined && (!Number.isInteger(category) || category < 1)) {
-                return res.status(400).send('Invalid category ID')
+                res.status(400).send('Invalid category ID')
+                return
             }
 
             // Validate date if provided (should not be future date)
@@ -458,7 +602,8 @@ export class ExpenseController {
                 today.setHours(0, 0, 0, 0)
 
                 if (dateObj > today) {
-                    return res.status(400).send('Date cannot be in the future')
+                    res.status(400).send('Date cannot be in the future')
+                    return
                 }
             }
 
@@ -472,12 +617,14 @@ export class ExpenseController {
             })
 
             if (!result.success) {
-                return res.status(404).send(result.message)
+                res.status(404).send(result.message)
+                return
             }
 
             res.json({ success: true, message: result.message })
         } catch (err) {
-            res.status(500).send('error: ' + err.message)
+            const error = err as Error
+            res.status(500).send('error: ' + error.message)
         }
     }
 
@@ -485,39 +632,47 @@ export class ExpenseController {
      * DELETE /expenses/:id
      * Soft delete an expense
      */
-    static async deleteExpense(req, res) {
+    static async deleteExpense(req: DeleteExpenseRequest, res: Response): Promise<void> {
         try {
             const { id } = req.params
             const email = req.body.email || req.query.email
 
             if (!email) {
-                return res.status(400).send('Email is required')
+                res.status(400).send('Email is required')
+                return
             }
 
             const userId = await UserModel.getUserIdByEmail({ email })
 
             if (!userId) {
-                return res.status(404).send('User not found')
+                res.status(404).send('User not found')
+                return
             }
 
             const result = await ExpenseModel.softDeleteExpense({ id, userId })
 
             if (!result.success) {
-                return res.status(404).send(result.message)
+                res.status(404).send(result.message)
+                return
             }
 
             res.json({ success: true, message: result.message })
         } catch (err) {
-            res.status(500).send('error: ' + err.message)
+            const error = err as Error
+            res.status(500).send('error: ' + error.message)
         }
     }
 }
 ```
 
 **Controller conventions:**
-- Use static async methods
+- Use static async methods with typed parameters
+- Type `req` and `res` using Express types or custom request types
+- Use `Promise<void>` return type (response sent via `res`)
+- Use `return` after sending response to prevent further execution
 - Always resolve `userId` from `email` for security
 - Validate inputs before calling Model
+- Cast errors with `as Error` for type safety
 - Return appropriate HTTP status codes:
   - `200` - Success (GET, PUT)
   - `201` - Created (POST) - optional, can use `200`
@@ -525,15 +680,13 @@ export class ExpenseController {
   - `404` - Not found
   - `409` - Conflict (duplicate resource)
   - `500` - Server error
-- Include JSDoc comments with route info
-- Accept `email` from `req.body`, `req.query`, or `req.params` as appropriate
 
-### Routes (Routes/[entity]Router.js)
+### Routes (src/Routes/[entity]Router.ts)
 
 Routes define API endpoints:
 
-```javascript
-// Routes/expenseRouter.js
+```typescript
+// src/Routes/expenseRouter.ts
 import { Router } from 'express'
 import { ExpenseController } from '../Controllers/expenseController.js'
 
@@ -568,19 +721,19 @@ export default expenseRouter
   - `PUT /:id` - Update existing
   - `DELETE /:id` - Soft delete
 
-### Database Connection (Models/database/db.js)
+### Database Connection (src/Models/database/db.ts)
 
-```javascript
-// Models/database/db.js
+```typescript
+// src/Models/database/db.ts
 import { Sequelize } from 'sequelize'
 import { config } from 'dotenv'
 
 config()
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    process.env.DB_NAME!,
+    process.env.DB_USER!,
+    process.env.DB_PASSWORD!,
     {
         host: process.env.DB_HOST,
         dialect: 'mysql', // or 'postgres', 'sqlite', etc.
@@ -593,17 +746,22 @@ const sequelize = new Sequelize(
     }
 )
 
-export const db = {}
-db.sequelize = sequelize
+interface Database {
+    sequelize: Sequelize
+}
+
+export const db: Database = {
+    sequelize
+}
 ```
 
-### Validations (Models/validations/[entity]Validation.js)
+### Validations (src/Models/validations/[entity]Validation.ts)
 
 Use Zod for schema validation:
 
-```javascript
-// Models/validations/userValidation.js
-import z from 'zod'
+```typescript
+// src/Models/validations/userValidation.ts
+import { z } from 'zod'
 
 const userSchema = z.object({
     name: z.string({
@@ -622,20 +780,22 @@ const userSchema = z.object({
     }).min(6, 'Password must be at least 6 characters')
 })
 
-export function validateUser({ object }) {
+export type UserInput = z.infer<typeof userSchema>
+
+export function validateUser(object: unknown): z.SafeParseReturnType<unknown, UserInput> {
     return userSchema.safeParse(object)
 }
 
-export function validatePartialUser({ object }) {
+export function validatePartialUser(object: unknown): z.SafeParseReturnType<unknown, Partial<UserInput>> {
     return userSchema.partial().safeParse(object)
 }
 ```
 
-### Entry Point (index.js)
+### Entry Point (src/index.ts)
 
-```javascript
-// index.js
-import express from 'express'
+```typescript
+// src/index.ts
+import express, { type Express, type Request, type Response } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { config } from 'dotenv'
@@ -647,8 +807,8 @@ import incomeRouter from './Routes/incomeRouter.js'
 
 config()
 
-const PORT = process.env.PORT || 3000
-const app = express()
+const PORT: number = parseInt(process.env.PORT || '3000', 10)
+const app: Express = express()
 
 // Middleware
 app.use(express.json())
@@ -665,7 +825,7 @@ app.use('/expenses', expenseRouter)
 app.use('/incomes', incomeRouter)
 
 // Health check
-app.get('/', (req, res) => {
+app.get('/', (_req: Request, res: Response) => {
     res.status(200).send('API is running')
 })
 
@@ -675,6 +835,54 @@ app.listen(PORT, () => {
 })
 
 export default app
+```
+
+---
+
+## TypeScript Configuration
+
+### tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+### Package.json Scripts
+
+```json
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  }
+}
 ```
 
 ---
@@ -723,8 +931,10 @@ UPDATE expense SET active = false WHERE id = :id AND userId = :userId AND active
 
 | Element | Convention | Example |
 |---------|------------|---------|
-| Files | camelCase | `expenseController.js` |
+| Files | camelCase | `expenseController.ts` |
 | Classes | PascalCase | `ExpenseController`, `ExpenseModel` |
+| Interfaces | PascalCase | `Expense`, `CreateExpenseParams` |
+| Type aliases | PascalCase | `CreateExpenseRequest` |
 | Methods | camelCase | `getAllFromUser`, `softDeleteExpense` |
 | Variables | camelCase | `userId`, `totalAmount` |
 | Constants | UPPER_SNAKE_CASE | `PORT`, `JWT_SECRET` |
@@ -747,10 +957,24 @@ Brief description of the entity and its purpose.
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| id | UUID | Yes | Primary key |
-| userId | UUID | Yes | Foreign key to users |
+| id | string (UUID) | Yes | Primary key |
+| userId | string (UUID) | Yes | Foreign key to users |
 | amount | number | Yes | Transaction amount |
 | active | boolean | Yes | Soft delete flag (false = deleted) |
+
+## TypeScript Interface
+
+\`\`\`typescript
+interface Expense {
+    id: string
+    userId: string
+    categoryId: number
+    description: string
+    amount: number
+    date: string
+    active: boolean
+}
+\`\`\`
 
 ## Relationships
 
@@ -840,8 +1064,9 @@ What was done to fix it.
 How to avoid this in the future.
 
 ## Related Files
-- `Models/expenseModel.js`
-- `Controllers/expenseController.js`
+- `src/Models/expenseModel.ts`
+- `src/Controllers/expenseController.ts`
+- `src/types/entities/expense.types.ts`
 ```
 
 ---
@@ -886,27 +1111,38 @@ EMAIL_PASS=your-app-password
 ### On Every Session Start
 1. Read this file (`AGENTS.md`)
 2. Check `docs/postmortem/` for recent issues
-3. Review existing Models before creating new ones
-4. Remember: **ALL DELETES ARE LOGICAL** (active = false)
+3. Review existing types in `src/types/` before creating new ones
+4. Review existing Models before creating new ones
+5. Remember: **ALL DELETES ARE LOGICAL** (active = false)
 
 ### When Creating a New Entity
-1. Create Model in `Models/[entity]Model.js`
+1. Create types in `src/types/entities/[entity].types.ts`
+   - Entity interface
+   - CRUD parameter interfaces
+2. Create API types in `src/types/api/[entity].api.types.ts`
+   - Request body interfaces
+   - Typed request types
+3. Create Model in `src/Models/[entity]Model.ts`
+   - Import types from `types/`
    - Include `active` field handling
    - All SELECT queries filter by `active = true`
    - Delete method uses UPDATE, not DELETE
-2. Create Controller in `Controllers/[entity]Controller.js`
+4. Create Controller in `src/Controllers/[entity]Controller.ts`
+   - Import types from `types/`
+   - Type all request handlers
    - Resolve userId from email
    - Validate inputs
    - Handle errors with appropriate status codes
-3. Create Router in `Routes/[entity]Router.js`
+5. Create Router in `src/Routes/[entity]Router.ts`
    - Define RESTful endpoints
    - Specific routes before generic routes
-4. Register router in `index.js`
-5. Create documentation in `docs/`
+6. Register router in `src/index.ts`
+7. Create documentation in `docs/`
 
 ### When Fixing Bugs
 1. Check postmortem folder for similar past issues
-2. After fixing, create postmortem if:
+2. Run `npm run typecheck` to verify type safety
+3. After fixing, create postmortem if:
    - Fix required multiple attempts
    - Issue was unexpected or confusing
    - Pattern could repeat elsewhere
@@ -934,19 +1170,14 @@ EMAIL_PASS=your-app-password
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
-  }
-}
-```
-
-### Package.json Configuration
-
-```json
-{
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }
 ```
@@ -955,18 +1186,27 @@ EMAIL_PASS=your-app-password
 
 ## Project State
 
-<!-- AI: Update this section as the project evolves -->
+<!-- AI: Update this section as project evolves -->
 
 ### Current Status
-- [ ] Project initialized
-- [ ] Base structure created
+- [x] Project initialized
+- [x] TypeScript configured
+- [x] Base structure created
 - [ ] Core entities implemented
 - [ ] Documentation complete
 
 ### Implemented Entities
-_List entities here as they are created_
+- User (TypeScript) - CRUD operations, reviews, eatlist, top4
+- Auth (TypeScript) - Register, login, logout, forgot password, reset password, me
+- Authentication Middleware (TypeScript) - JWT verification with Supabase
 
 ### Recent Changes
+- 2026-01-23: Migrated from JavaScript to TypeScript following AGENTS.md standards
+- 2026-01-23: Created src/ directory structure with proper TypeScript types
+- 2026-01-23: Implemented auth and user modules with full type safety
+- 2026-01-23: Type checking passes successfully
+
+### Known Issues
 _None yet_
 
 ### Known Issues

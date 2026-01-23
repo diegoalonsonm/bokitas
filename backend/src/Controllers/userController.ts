@@ -1,35 +1,43 @@
+import type { Response } from 'express'
+import { type Request } from 'express'
 import { UserModel } from '../Models/userModel.js'
-import { supabase } from '../Models/supabase/client.js'
 import { validateProfileUpdate, validateId } from '../Models/validations/userValidation.js'
-import { ESTADO, ERROR_CODES, ERROR_MESSAGES } from '../Utils/constants.js'
+import { ERROR_CODES, ERROR_MESSAGES } from '../Utils/constants.js'
+import type { UpdateProfileBody, UserQuery } from '../types/api/user.api.types.js'
 
 export class UserController {
-  static async getProfile(req, res) {
+  /**
+   * GET /users/:id
+   * Get user profile (public info)
+   */
+  static async getProfile(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
       const { id } = req.params
 
       const validation = validateId({ id })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      const user = await UserModel.getById(id)
+      const user = await UserModel.getById({ id })
 
       if (!user) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: {
             code: ERROR_CODES.NOT_FOUND,
             message: ERROR_MESSAGES.USER_NOT_FOUND
           }
         })
+        return
       }
 
       res.status(200).json({
@@ -39,8 +47,8 @@ export class UserController {
           email: user.email,
           nombre: user.nombre,
           apellido: user.apellido,
-          urlfotoperfil: user.urlfotoperfil
-          createdat: user.createdat
+          urlfotoperfil: user.urlfotoperfil,
+          createdat: user.createdat,
           idestado: user.idestado
         }
       })
@@ -50,40 +58,46 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async updateProfile(req, res) {
+  /**
+   * PUT /users/:id
+   * Update own profile
+   */
+  static async updateProfile(req: Request<Record<string, string>, unknown, UpdateProfileBody>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
+      const id = req.params.id
       const updates = req.body
 
       const validation = validateProfileUpdate(updates)
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      if (req.user.id !== id) {
-        return res.status(403).json({
+      if (req.user?.id !== id) {
+        res.status(403).json({
           success: false,
           error: {
             code: ERROR_CODES.FORBIDDEN,
             message: ERROR_MESSAGES.NOT_OWNER
           }
         })
+        return
       }
 
-      const result = await UserModel.updateProfile(id, updates)
+      const result = await UserModel.updateProfile({ id, ...updates })
 
       res.status(200).json(result)
     } catch (err) {
@@ -92,39 +106,45 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async deleteAccount(req, res) {
+  /**
+   * DELETE /users/:id
+   * Deactivate account (soft delete)
+   */
+  static async deleteAccount(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
+      const id = req.params.id
 
       const validation = validateId({ id })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      if (req.user.id !== id) {
-        return res.status(403).json({
+      if (req.user?.id !== id) {
+        res.status(403).json({
           success: false,
           error: {
             code: ERROR_CODES.FORBIDDEN,
             message: ERROR_MESSAGES.NOT_OWNER
           }
         })
+        return
       }
 
-      const result = await UserModel.softDelete(id)
+      const result = await UserModel.softDelete({ id })
 
       res.status(200).json(result)
     } catch (err) {
@@ -133,17 +153,21 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async getReviews(req, res) {
+  /**
+   * GET /users/:id/reviews
+   * Get user's reviews
+   */
+  static async getReviews(req: Request<Record<string, string>, unknown, unknown, UserQuery>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
-      const page = parseInt(req.query.page) || 1
-      const limit = parseInt(req.query.limit) || 20
+      const id = req.params.id
+      const page = parseInt(req.query.page || '1')
+      const limit = parseInt(req.query.limit || '20')
 
       const reviews = await UserModel.getReviews(id, page, limit)
 
@@ -161,26 +185,31 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async getEatlist(req, res) {
+  /**
+   * GET /users/:id/eatlist
+   * Get user's eatlist
+   */
+  static async getEatlist(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
+      const id = req.params.id
 
       const validation = validateId({ id })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
       const eatlist = await UserModel.getEatlist(id)
@@ -195,26 +224,31 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async getTop4(req, res) {
+  /**
+   * GET /users/:id/top4
+   * Get user's top 4 rated restaurants
+   */
+  static async getTop4(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
+      const id = req.params.id
 
       const validation = validateId({ id })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
       const restaurants = await UserModel.getTop4(id)
@@ -229,47 +263,53 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }
   }
 
-  static async uploadProfilePhoto(req, res) {
+  /**
+   * POST /users/:id/photo
+   * Upload profile photo
+   */
+  static async uploadProfilePhoto(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
-      const userId = req.user.id
+      const id = req.params.id
 
       const validation = validateId({ id })
 
       if (!validation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: validation.error.errors[0].message
           }
         })
+        return
       }
 
-      if (req.user.id !== id) {
-        return res.status(403).json({
+      if (req.user?.id !== id) {
+        res.status(403).json({
           success: false,
           error: {
             code: ERROR_CODES.FORBIDDEN,
             message: ERROR_MESSAGES.NOT_OWNER
           }
         })
+        return
       }
 
-      if (!req.file) {
-        return res.status(400).json({
+      if (!(req as any).file) {
+        res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Profile photo is required'
           }
         })
+        return
       }
 
       res.status(200).json({
@@ -282,7 +322,7 @@ export class UserController {
         success: false,
         error: {
           code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: err.message
+          message: (err as Error).message
         }
       })
     }

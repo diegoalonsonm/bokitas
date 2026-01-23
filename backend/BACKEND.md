@@ -4,7 +4,15 @@ This document outlines the backend architecture, API endpoints, and development 
 
 ## Tech Stack
 
-*TBD*
+* **Language**: TypeScript (ES Modules, strict mode)
+* **Framework**: Express.js
+* **Runtime**: Node.js latest LTS
+* **Database**: PostgreSQL (via Supabase)
+* **Authentication**: Supabase Auth
+* **Validation**: Zod
+* **API Client**: Supabase JS Client
+
+*Note: Backend migrated to TypeScript on 2026-01-23 following AGENTS.md standards.*
 
 ---
 
@@ -320,20 +328,20 @@ This document outlines the backend architecture, API endpoints, and development 
 - [ ] Set up Supabase Storage buckets for images
 
 #### Authentication Module
-- [ ] Set up authentication middleware
-- [ ] Implement user registration endpoint
-- [ ] Implement login endpoint
-- [ ] Implement logout endpoint
-- [ ] Implement password reset flow
+- [x] Set up authentication middleware (TypeScript)
+- [x] Implement user registration endpoint
+- [x] Implement login endpoint
+- [x] Implement logout endpoint
+- [x] Implement password reset flow
 - [ ] Implement JWT token management
 
 #### User Module
-- [ ] Implement get user profile endpoint
-- [ ] Implement update user profile endpoint
+- [x] Implement get user profile endpoint (TypeScript)
+- [x] Implement update user profile endpoint (TypeScript)
 - [ ] Implement profile photo upload (Supabase Storage)
-- [ ] Implement get user's reviews endpoint
-- [ ] Implement get user's eatlist endpoint
-- [ ] Implement top 4 restaurants feature
+- [x] Implement get user's reviews endpoint (TypeScript)
+- [x] Implement get user's eatlist endpoint (TypeScript)
+- [x] Implement top 4 restaurants feature (TypeScript)
 
 #### Restaurant Module
 - [ ] Integrate Google Places API

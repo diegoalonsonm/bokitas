@@ -1,17 +1,23 @@
-import { supabase } from '../supabase/client.js'
-import { ESTADO, ERROR_MESSAGES } from '../Utils/constants.js'
+import { supabase } from './supabase/client.js'
+import { ESTADO } from '../Utils/constants.js'
+import type { User, GetUserParams, UpdateUserParams, DeleteUserParams, GetUserByEmailParams } from '../types/entities/user.types.js'
+import type { OperationResult } from '../types/index.js'
+import { randomUUID } from 'crypto'
 
 export class UserModel {
-  static async create({ email, nombre, apellido, idauth }) {
+  /**
+   * Create a new user
+   */
+  static async create({ email, nombre, apellido, authId }: { email: string; nombre: string; apellido: string; authId: string }): Promise<User> {
     try {
       const { data, error } = await supabase
         .from('usuario')
         .insert({
-          id: crypto.randomUUID(),
+          id: randomUUID(),
           email,
           nombre,
           apellido,
-          idauth,
+          idauth: authId,
           idestado: ESTADO.PENDIENTE,
           active: true,
           createdat: new Date().toISOString()
@@ -23,14 +29,17 @@ export class UserModel {
         throw error
       }
 
-      return data
+      return data as User
     } catch (err) {
       console.error('Error creating user:', err)
       throw err
     }
   }
 
-  static async getById(id) {
+  /**
+   * Get user by ID
+   */
+  static async getById({ id }: GetUserParams): Promise<User | null> {
     try {
       const { data, error } = await supabase
         .from('usuario')
@@ -43,14 +52,17 @@ export class UserModel {
         return null
       }
 
-      return data
+      return data as User
     } catch (err) {
       console.error('Error getting user by ID:', err)
       throw err
     }
   }
 
-  static async getByEmail(email) {
+  /**
+   * Get user ID by email
+   */
+  static async getUserIdByEmail({ email }: GetUserByEmailParams): Promise<string | null> {
     try {
       const { data, error } = await supabase
         .from('usuario')
@@ -63,35 +75,38 @@ export class UserModel {
         return null
       }
 
-      return data ? data.id : null
+      return data.id
     } catch (err) {
       console.error('Error getting user by email:', err)
       throw err
     }
   }
 
-  static async updateProfile(id, updates) {
+  /**
+   * Update user profile
+   */
+  static async updateProfile({ id, nombre, apellido, urlfotoperfil, idestado }: UpdateUserParams): Promise<OperationResult> {
     try {
-      const updateData = {}
+      const updateData: Record<string, unknown> = {}
       
-      if (updates.nombre !== undefined) {
-        updateData.nombre = updates.nombre
+      if (nombre !== undefined) {
+        updateData.nombre = nombre
       }
-      if (updates.apellido !== undefined) {
-        updateData.apellido = updates.apellido
+      if (apellido !== undefined) {
+        updateData.apellido = apellido
       }
-      if (updates.urlfotoperfil !== undefined) {
-        updateData.urlfotoperfil = updates.urlfotoperfil
+      if (urlfotoperfil !== undefined) {
+        updateData.urlfotoperfil = urlfotoperfil
       }
-      if (updates.idestado !== undefined) {
-        updateData.idestado = updates.idestado
+      if (idestado !== undefined) {
+        updateData.idestado = idestado
       }
 
       if (Object.keys(updateData).length === 0) {
         return { success: false, message: 'No fields to update' }
       }
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('usuario')
         .update(updateData)
         .eq('id', id)
@@ -110,7 +125,10 @@ export class UserModel {
     }
   }
 
-  static async softDelete(id) {
+  /**
+   * Soft delete user (set active = false)
+   */
+  static async softDelete({ id }: DeleteUserParams): Promise<OperationResult> {
     try {
       const { error } = await supabase
         .from('usuario')
@@ -129,7 +147,10 @@ export class UserModel {
     }
   }
 
-  static async getReviews(userId, page = 1, limit = 20) {
+  /**
+   * Get user reviews
+   */
+  static async getReviews(userId: string, page: number = 1, limit: number = 20): Promise<unknown[]> {
     try {
       const offset = (page - 1) * limit
 
@@ -139,7 +160,7 @@ export class UserModel {
         .eq('idusuario', userId)
         .eq('active', true)
         .order('createdat', { ascending: false })
-        .range(offset, limit)
+        .range(offset, offset + limit - 1)
 
       if (error) {
         throw error
@@ -152,7 +173,10 @@ export class UserModel {
     }
   }
 
-  static async getEatlist(userId) {
+  /**
+   * Get user eatlist
+   */
+  static async getEatlist(userId: string): Promise<unknown[]> {
     try {
       const { data, error } = await supabase
         .from('eatlist')
@@ -170,24 +194,27 @@ export class UserModel {
     }
   }
 
-  static async getTop4(userId) {
+  /**
+   * Get user's top 4 rated restaurants
+   */
+  static async getTop4(userId: string): Promise<unknown[]> {
     try {
-      const { data, error } = await supabase
+      const { data: eatlistData, error: eatlistError } = await supabase
         .from('eatlist')
         .select('idrestaurante')
         .eq('idusuario', userId)
 
-      if (error) {
-        throw error
+      if (eatlistError) {
+        throw eatlistError
       }
 
-      if (!data || data.length === 0) {
+      if (!eatlistData || eatlistData.length === 0) {
         return []
       }
 
-      const restaurantIds = data.map(e => e.idrestaurante)
+      const restaurantIds = eatlistData.map((e: { idrestaurante: string }) => e.idrestaurante)
 
-      const { data: restaurants, error } = await supabase
+      const { data: restaurants, error: restaurantsError } = await supabase
         .from('restaurante')
         .select('id, nombre, urlfotoperfil, puntuacion')
         .in('id', restaurantIds)
@@ -195,8 +222,8 @@ export class UserModel {
         .order('puntuacion', { ascending: false })
         .limit(4)
 
-      if (error) {
-        throw error
+      if (restaurantsError) {
+        throw restaurantsError
       }
 
       return restaurants || []

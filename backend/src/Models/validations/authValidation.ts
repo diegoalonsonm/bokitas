@@ -52,18 +52,23 @@ const resetPasswordSchema = z.object({
   }).min(6, 'Password must be at least 6 characters')
 })
 
-export function validateRegister(data) {
+export type RegisterInput = z.infer<typeof registerSchema>
+export type LoginInput = z.infer<typeof loginSchema>
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
+
+export function validateRegister(data: unknown) {
   return registerSchema.safeParse(data)
 }
 
-export function validateLogin(data) {
+export function validateLogin(data: unknown) {
   return loginSchema.safeParse(data)
 }
 
-export function validateForgotPassword(data) {
+export function validateForgotPassword(data: unknown) {
   return forgotPasswordSchema.safeParse(data)
 }
 
-export function validateResetPassword(data) {
+export function validateResetPassword(data: unknown) {
   return resetPasswordSchema.safeParse(data)
 }
