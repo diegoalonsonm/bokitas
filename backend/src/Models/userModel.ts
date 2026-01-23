@@ -43,7 +43,7 @@ export class UserModel {
     try {
       const { data, error } = await supabase
         .from('usuario')
-        .select('id, email, nombre, apellido, urlFotoPerfil, createdat, idestado, active')
+        .select('id, correo, nombre, primerapellido, urlfotoperfil, createdat, idestado, active')
         .eq('id', id)
         .eq('active', true)
         .single()
@@ -52,7 +52,18 @@ export class UserModel {
         return null
       }
 
-      return data as User
+      const transformedData = {
+        id: data.id,
+        email: data.correo,
+        nombre: data.nombre,
+        apellido: data.primerapellido,
+        urlFotoPerfil: data.urlfotoperfil,
+        createdat: data.createdat,
+        idestado: data.idestado,
+        active: data.active
+      }
+
+      return transformedData as User
     } catch (err) {
       console.error('Error getting user by ID:', err)
       throw err
