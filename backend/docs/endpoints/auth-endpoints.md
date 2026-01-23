@@ -29,7 +29,7 @@ Register a new user account with email and password.
   "email": "user@example.com",
   "password": "SecurePass123!",
   "nombre": "John",
-  "apellido": "Doe"
+  "primer": "Doe"
 }
 ```
 

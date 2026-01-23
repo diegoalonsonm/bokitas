@@ -11,9 +11,9 @@ export class AuthController {
    */
   static async register(req: Request, res: Response, _next: unknown): Promise<void> {
     try {
-      const { email, password, nombre, apellido } = req.body
+      const { email, password, nombre, primerapellido } = req.body
 
-      const validation = validateRegister({ email, password, nombre, apellido })
+      const validation = validateRegister({ email, password, nombre, primerapellido })
 
       if (!validation.success) {
         res.status(400).json({
@@ -26,13 +26,13 @@ export class AuthController {
         return
       }
 
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             nombre,
-            apellido
+            primerapellido
           }
         }
       })
@@ -52,19 +52,20 @@ export class AuthController {
         throw signUpError
       }
 
-      const { data: user, error: userError } = await supabase
-        .from('usuario')
-        .select('*')
-        .eq('email', email)
-        .single()
-
-      if (userError || !user) {
-        throw new Error('Failed to create user record')
+      if (!signUpData.user) {
+        throw new Error('Failed to create user')
       }
 
+      // Return the user data from Supabase Auth response
+      // The usuario table record is created by a database trigger
       res.status(200).json({
         success: true,
-        data: { id: user.id, email: user.email, nombre: user.nombre, apellido: user.apellido }
+        data: {
+          id: signUpData.user.id,
+          email: signUpData.user.email,
+          nombre,
+          primerapellido
+        }
       })
     } catch (err) {
       console.error('Register error:', err)

@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import { config } from 'dotenv'
+import authRouter from './Routes/authRouter.js'
+import userRouter from './Routes/userRouter.js'
 
 config()
 
@@ -14,9 +16,6 @@ app.use(cors({
 }))
 
 app.use(express.json())
-
-import authRouter from './Routes/authRouter.js'
-import userRouter from './Routes/userRouter.js'
 
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
