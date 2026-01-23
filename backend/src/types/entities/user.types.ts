@@ -5,7 +5,7 @@ export interface User {
   email: string
   nombre: string
   apellido: string
-  urlfotoperfil?: string | null
+  urlFotoPerfil?: string | null
   createdat?: Date
   idestado: string
   active: boolean
@@ -22,7 +22,7 @@ export interface UpdateUserParams {
   id: string
   nombre?: string
   apellido?: string
-  urlfotoperfil?: string
+  urlFotoPerfil?: string
   idestado?: string
 }
 

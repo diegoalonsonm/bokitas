@@ -43,7 +43,7 @@ export class UserModel {
     try {
       const { data, error } = await supabase
         .from('usuario')
-        .select('id, email, nombre, apellido, urlfotoperfil, createdat, idestado, active')
+        .select('id, email, nombre, apellido, urlFotoPerfil, createdat, idestado, active')
         .eq('id', id)
         .eq('active', true)
         .single()
@@ -85,7 +85,7 @@ export class UserModel {
   /**
    * Update user profile
    */
-  static async updateProfile({ id, nombre, apellido, urlfotoperfil, idestado }: UpdateUserParams): Promise<OperationResult> {
+  static async updateProfile({ id, nombre, apellido, urlFotoPerfil, idestado }: UpdateUserParams): Promise<OperationResult> {
     try {
       const updateData: Record<string, unknown> = {}
       
@@ -95,8 +95,8 @@ export class UserModel {
       if (apellido !== undefined) {
         updateData.apellido = apellido
       }
-      if (urlfotoperfil !== undefined) {
-        updateData.urlfotoperfil = urlfotoperfil
+      if (urlFotoPerfil !== undefined) {
+        updateData.urlFotoPerfil = urlFotoPerfil
       }
       if (idestado !== undefined) {
         updateData.idestado = idestado

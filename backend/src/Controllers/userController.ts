@@ -3,6 +3,7 @@ import { type Request } from 'express'
 import { UserModel } from '../Models/userModel.js'
 import { validateProfileUpdate, validateId } from '../Models/validations/userValidation.js'
 import { ERROR_CODES, ERROR_MESSAGES } from '../Utils/constants.js'
+import { StorageService } from '../Services/storageService.js'
 import type { UpdateProfileBody, UserQuery } from '../types/api/user.api.types.js'
 
 export class UserController {
@@ -12,7 +13,7 @@ export class UserController {
    */
   static async getProfile(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
     try {
-      const { id } = req.params
+      const id = req.params.id
 
       const validation = validateId({ id })
 
@@ -47,7 +48,7 @@ export class UserController {
           email: user.email,
           nombre: user.nombre,
           apellido: user.apellido,
-          urlfotoperfil: user.urlfotoperfil,
+          urlFotoPerfil: user.urlFotoPerfil,
           createdat: user.createdat,
           idestado: user.idestado
         }
@@ -273,7 +274,7 @@ export class UserController {
    * POST /users/:id/photo
    * Upload profile photo
    */
-  static async uploadProfilePhoto(req: Request<Record<string, string>>, res: Response, _next: unknown): Promise<void> {
+  static async uploadProfilePhoto(req: Request<Record<string, string>> & { file?: unknown }, res: Response, _next: unknown): Promise<void> {
     try {
       const id = req.params.id
 
@@ -301,7 +302,9 @@ export class UserController {
         return
       }
 
-      if (!(req as any).file) {
+      const fileData = req.file as { buffer: Buffer; originalname?: string; mimetype?: string }
+
+      if (!fileData || !fileData.buffer) {
         res.status(400).json({
           success: false,
           error: {
@@ -312,9 +315,29 @@ export class UserController {
         return
       }
 
+      const fileObj: any = new File([new Uint8Array(fileData.buffer)], fileData.originalname || 'photo.jpg', { type: fileData.mimetype || 'image/jpeg' })
+
+      const result = await StorageService.uploadProfilePhoto(id, fileObj)
+
+      if (!result.success) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: result.message
+          }
+        })
+        return
+      }
+
+      await UserModel.updateProfile({ id, urlFotoPerfil: result.url })
+
       res.status(200).json({
         success: true,
-        message: 'Photo upload endpoint ready - storage integration coming in Sprint 2'
+        data: {
+          urlFotoPerfil: result.url
+        },
+        message: 'Profile photo uploaded successfully'
       })
     } catch (err) {
       console.error('Upload profile photo error:', err)
