@@ -1148,9 +1148,11 @@ EMAIL_PASS=your-app-password
    - Pattern could repeat elsewhere
 
 ### Documentation Updates
+When creating new documentation, the folders are already created. Check them out before creating the files and fill that path out. 
+
 - **Entity created/updated/deleted** → Update `docs/entities/`
 - **Endpoint created/updated/deleted** → Update `docs/endpoints/`
-- **Bug fixed after struggle** → Create postmortem
+- **Bug fixed after struggle** → Create postmortem. Use the path `docs/postmortem/`
 
 ---
 
