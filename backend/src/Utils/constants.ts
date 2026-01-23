@@ -35,8 +35,8 @@ export const DEFAULT_PAGINATION_PAGE = 1
 export const DEFAULT_PAGINATION_LIMIT = 20
 
 export const STORAGE_BUCKETS = {
-  PROFILE_PHOTOS: 'profile-photos',
-  REVIEW_PHOTOS: 'review-photos'
+  PROFILE_PHOTOS: process.env.SUPABASE_PROFILE_PICTURES_BUCKET || 'profile-pictures',
+  REVIEW_PHOTOS: process.env.SUPABASE_RESTAURANT_REVIEWS_BUCKET || 'restaurant-reviews'
 } as const
 
 export const STORAGE_MAX_SIZE = {
