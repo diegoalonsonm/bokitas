@@ -297,13 +297,19 @@ export class AuthController {
 
       const { data: user, error } = await supabase
         .from('usuario')
-        .select('id, email, nombre, primerapellido, createdat, urlfotoperfil, idestado, active')
-        .eq('id', userId)
+        .select('id, correo, nombre, primerapellido, createdat, urlfotoperfil, idestado, active')
+        .eq('authid', userId)
         .eq('active', true)
         .single()
 
-      if (error || !user) {
-        throw new Error('Failed to fetch user')
+      if (error) {
+        console.error('Supabase query error:', error)
+        throw new Error(`Failed to fetch user: ${error.message}`)
+      }
+
+      if (!user) {
+        console.error('User not found with authid:', userId)
+        throw new Error('User not found')
       }
 
       res.status(200).json({
