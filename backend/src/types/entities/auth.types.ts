@@ -4,7 +4,7 @@ export interface RegisterParams {
   email: string
   password: string
   nombre: string
-  apellido: string
+  primerapellido: string
 }
 
 export interface LoginParams {
@@ -33,6 +33,6 @@ export interface AuthUser {
   email?: string
   user_metadata?: {
     nombre?: string
-    apellido?: string
+    primerapellido?: string
   }
 }

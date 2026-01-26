@@ -37,7 +37,8 @@ Get a user's public profile information.
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "email": "user@example.com",
     "nombre": "John",
-    "apellido": "Doe",
+    "primerapellido": "Doe",
+    "segundoapellido": null,
     "urlFotoPerfil": "https://supabase-url.com/profile-photos/...",
     "createdat": "2026-01-22T10:30:00.000Z",
     "idestado": "9aca8808-a7a2-4d43-8be8-d341655caa3e"
@@ -72,8 +73,8 @@ Update the authenticated user's own profile.
 ```json
 {
   "nombre": "John",
-  "apellido": "Smith",
   "primerapellido": "Smith",
+  "segundoapellido": "Johnson",
   "urlfotoperfil": "https://example.com/photo.jpg"
 }
 ```
@@ -81,8 +82,8 @@ Update the authenticated user's own profile.
 | Field | Type | Required | Constraints |
 |-------|------|----------|--------------|
 | nombre | string | No | Min 2 characters |
-| apellido | string | No | Min 2 characters |
-| primerapellido | string | No | Min 2 characters (alias of apellido) |
+| primerapellido | string | No | Min 2 characters |
+| segundoapellido | string | No | Min 2 characters |
 | urlfotoperfil | string | No | Valid URL |
 
 **Response (200 OK):**
@@ -338,7 +339,7 @@ curl http://localhost:3000/users/550e8400-e29b-41d4-a716-446655440000
 curl -X PUT http://localhost:3000/users/550e8400-e29b-41d4-a716-446655440000 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"nombre": "Jane", "apellido": "Smith"}'
+  -d '{"nombre": "Jane", "primerapellido": "Smith"}'
 ```
 
 **Upload Profile Photo:**

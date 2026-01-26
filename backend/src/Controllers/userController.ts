@@ -41,18 +41,19 @@ export class UserController {
         return
       }
 
-      res.status(200).json({
-        success: true,
-        data: {
-          id: user.id,
-          email: user.email,
-          nombre: user.nombre,
-          apellido: user.apellido,
-          urlFotoPerfil: user.urlFotoPerfil,
-          createdat: user.createdat,
-          idestado: user.idestado
-        }
-      })
+        res.status(200).json({
+          success: true,
+          data: {
+            id: user.id,
+            email: user.email,
+            nombre: user.nombre,
+            primerapellido: user.primerapellido,
+            segundoapellido: user.segundoapellido,
+            urlFotoPerfil: user.urlFotoPerfil,
+            createdat: user.createdat,
+            idestado: user.idestado
+          }
+        })
     } catch (err) {
       console.error('Get profile error:', err)
       res.status(500).json({
@@ -73,21 +74,6 @@ export class UserController {
     try {
       const id = req.params.id
       const updates = req.body
-      if (updates.primerapellido && updates.apellido) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Use either apellido or primerapellido, not both'
-          }
-        })
-        return
-      }
-
-      if (updates.primerapellido && !updates.apellido) {
-        updates.apellido = updates.primerapellido
-        delete updates.primerapellido
-      }
 
       const validation = validateProfileUpdate(updates)
 

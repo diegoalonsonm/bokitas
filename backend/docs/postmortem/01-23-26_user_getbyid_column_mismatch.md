@@ -8,7 +8,7 @@ The `getById` method in `userModel.ts` was selecting database columns with incor
 
 ```typescript
 // ❌ WRONG - Column names don't match database schema
-.select('id, email, nombre, apellido, urlFotoPerfil, createdat, idestado, active')
+.select('id, email, nombre, primerapellido, urlFotoPerfil, createdat, idestado, active')
 ```
 
 The actual Supabase `usuario` table uses different column names:
@@ -27,7 +27,7 @@ Updated the `getById` method to:
 // ✅ CORRECT - Uses correct column names and transforms response
 const { data, error } = await supabase
   .from('usuario')
-  .select('id, correo, nombre, primerapellido, urlfotoperfil, createdat, idestado, active')
+  .select('id, correo, nombre, primerapellido, segundoapellido, urlfotoperfil, createdat, idestado, active')
   .eq('id', id)
   .eq('active', true)
   .single()
@@ -40,7 +40,8 @@ const transformedData = {
   id: data.id,
   email: data.correo,
   nombre: data.nombre,
-  apellido: data.primerapellido,
+  primerapellido: data.primerapellido,
+  segundoapellido: data.segundoapellido,
   urlFotoPerfil: data.urlfotoperfil,
   createdat: data.createdat,
   idestado: data.idestado,

@@ -4,12 +4,12 @@
 The register endpoint had inconsistent field names and was relying on Supabase Auth response user data instead of fetching from the database, which caused potential data synchronization issues.
 
 ## Root Cause
-1. Field naming inconsistency: Used `primerapellido` in some places but should use `apellido` for consistency
+1. Field naming inconsistency: Used `primerapellido` in some places but should use `primerapellido` consistently (database column)
 2. Direct dependency on Supabase Auth response: Was returning user data from `signUpData.user` without verifying it existed in the database
 3. Missing environment variable: Was using `SUPABASE_SERVICE_ROLE_KEY` which should be `SUPABASE_ANON_KEY` for client-side operations
 
 ## Solution
-1. **Standardized field naming**: Changed all instances of `primerapellido` to `apellido` throughout the register flow
+1. **Standardized field naming**: Changed all instances of `apellido` to `primerapellido` throughout the register flow
 2. **Database-first approach**: Instead of returning `signUpData.user`, now fetches user data directly from the `usuario` table using Supabase query
 3. **Updated environment variable**: Changed from `SUPABASE_SERVICE_ROLE_KEY` to `SUPABASE_ANON_KEY`
 4. **Removed auth options**: Removed `autoRefreshToken: false` and `persistSession: false` options from Supabase client initialization
@@ -17,7 +17,7 @@ The register endpoint had inconsistent field names and was relying on Supabase A
 ### Changes Made
 
 #### authController.ts
-- Changed field extraction from `primerapellido` to `apellido`
+- Changed field extraction from `apellido` to `primerapellido`
 - Updated validation call with new field name
 - Changed Supabase signUp call to not extract `signUpData.user` immediately
 - Added database query to fetch user record from `usuario` table
@@ -30,7 +30,7 @@ The register endpoint had inconsistent field names and was relying on Supabase A
 - Simplified client initialization to use default auth behavior
 
 #### authValidation.ts
-- Updated Zod schema field name from `primerapellido` to `apellido`
+- Updated Zod schema field name from `apellido` to `primerapellido`
 
 ## Failed Attempts
 - None

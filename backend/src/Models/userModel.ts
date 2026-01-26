@@ -8,16 +8,17 @@ export class UserModel {
   /**
    * Create a new user
    */
-  static async create({ email, nombre, apellido, authId }: { email: string; nombre: string; apellido: string; authId: string }): Promise<User> {
+  static async create({ email, nombre, primerapellido, segundoapellido, authId }: { email: string; nombre: string; primerapellido: string; segundoapellido?: string | null; authId: string }): Promise<User> {
     try {
       const { data, error } = await supabase
         .from('usuario')
         .insert({
           id: randomUUID(),
-          email,
+          correo: email,
           nombre,
-          apellido,
-          idauth: authId,
+          primerapellido,
+          segundoapellido,
+          authid: authId,
           idestado: ESTADO.PENDIENTE,
           active: true,
           createdat: new Date().toISOString()
@@ -43,7 +44,7 @@ export class UserModel {
     try {
       const { data, error } = await supabase
         .from('usuario')
-        .select('id, correo, nombre, primerapellido, urlfotoperfil, createdat, idestado, active')
+        .select('id, correo, nombre, primerapellido, segundoapellido, urlfotoperfil, createdat, idestado, active')
         .eq('id', id)
         .eq('active', true)
         .single()
@@ -56,7 +57,8 @@ export class UserModel {
         id: data.id,
         email: data.correo,
         nombre: data.nombre,
-        apellido: data.primerapellido,
+        primerapellido: data.primerapellido,
+        segundoapellido: data.segundoapellido,
         urlFotoPerfil: data.urlfotoperfil,
         createdat: data.createdat,
         idestado: data.idestado,
@@ -78,7 +80,7 @@ export class UserModel {
       const { data, error } = await supabase
         .from('usuario')
         .select('id')
-        .eq('email', email)
+        .eq('correo', email)
         .eq('active', true)
         .single()
 
@@ -96,15 +98,18 @@ export class UserModel {
   /**
    * Update user profile
    */
-  static async updateProfile({ id, nombre, apellido, urlFotoPerfil, idestado }: UpdateUserParams): Promise<OperationResult> {
+  static async updateProfile({ id, nombre, primerapellido, segundoapellido, urlFotoPerfil, idestado }: UpdateUserParams): Promise<OperationResult> {
     try {
       const updateData: Record<string, unknown> = {}
       
       if (nombre !== undefined) {
         updateData.nombre = nombre
       }
-      if (apellido !== undefined) {
-        updateData.primerapellido = apellido
+      if (primerapellido !== undefined) {
+        updateData.primerapellido = primerapellido
+      }
+      if (segundoapellido !== undefined) {
+        updateData.segundoapellido = segundoapellido
       }
       if (urlFotoPerfil !== undefined) {
         updateData.urlfotoperfil = urlFotoPerfil

@@ -29,7 +29,7 @@ Register a new user account with email and password.
   "email": "user@example.com",
   "password": "SecurePass123!",
   "nombre": "John",
-  "primer": "Doe"
+  "primerapellido": "Doe"
 }
 ```
 
@@ -38,7 +38,7 @@ Register a new user account with email and password.
 | email | string | Yes | Valid email format |
 | password | string | Yes | Min 8 characters |
 | nombre | string | Yes | Min 2 characters |
-| apellido | string | Yes | Min 2 characters |
+| primerapellido | string | Yes | Min 2 characters |
 
 **Response (200 OK):**
 ```json
@@ -48,7 +48,7 @@ Register a new user account with email and password.
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "email": "user@example.com",
     "nombre": "John",
-    "apellido": "Doe"
+    "primerapellido": "Doe"
   }
 }
 ```
@@ -235,7 +235,7 @@ Authorization: Bearer <your-jwt-token>
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "email": "user@example.com",
     "nombre": "John",
-    "apellido": "Doe",
+    "primerapellido": "Doe",
     "createdat": "2026-01-22T10:30:00.000Z",
     "urlfotoperfil": "https://supabase-url.com/profile-photos/...",
     "idestado": "9aca8808-a7a2-4d43-8be8-d341655caa3e",
@@ -285,7 +285,7 @@ curl -X POST http://localhost:3000/auth/register \
     "email": "user@example.com",
     "password": "SecurePass123!",
     "nombre": "John",
-    "apellido": "Doe"
+    "primerapellido": "Doe"
   }'
 ```
 
