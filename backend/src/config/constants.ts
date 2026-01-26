@@ -1,0 +1,26 @@
+// Foursquare API configuration constants
+
+export const FOURSQUARE_API_URL = 'https://api.foursquare.com/v3'
+
+// Default search parameters
+export const DEFAULT_SEARCH_NEAR = 'Costa Rica'
+export const DEFAULT_SEARCH_RADIUS = 10000 // meters (10km)
+export const DEFAULT_SEARCH_LIMIT = 20
+export const MAX_SEARCH_LIMIT = 50
+
+// Foursquare category IDs for restaurants
+// See: https://docs.foursquare.com/data-products/docs/categories
+export const FOURSQUARE_RESTAURANT_CATEGORY = '13000' // Food & Dining
+
+// Costa Rica provinces for validation
+export const COSTA_RICA_PROVINCES = [
+  'San Jose',
+  'Cartago', 
+  'Heredia',
+  'Alajuela',
+  'Guanacaste',
+  'Puntarenas',
+  'Limon'
+] as const
+
+export type CostaRicaProvince = typeof COSTA_RICA_PROVINCES[number]

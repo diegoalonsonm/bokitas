@@ -90,7 +90,7 @@ This document outlines the backend architecture, API endpoints, and development 
 | urlFotoPerfil | text | | Main photo URL |
 | urlPaginaRestaurante | text | | Website URL |
 | puntuacion | decimal(3,2) | DEFAULT 0 | Average rating (calculated) |
-| googlePlaceId | varchar | UNIQUE | Google Places API ID |
+| foursquareid | varchar | UNIQUE | Foursquare Places API ID |
 | createdAt | TIMESTAMPTZ | DEFAULT now() | Creation date |
 | updatedAt | TIMESTAMPTZ | DEFAULT now() | Last update timestamp |
 | idEstado | UUID | FK -> estado | Restaurant status |
@@ -229,7 +229,7 @@ This document outlines the backend architecture, API endpoints, and development 
 |--------|----------|-------------|-------|
 | GET | `/restaurants` | List restaurants (with filters) | 1 |
 | GET | `/restaurants/:id` | Get restaurant details | 1 |
-| GET | `/restaurants/search` | Search restaurants (Google Places) | 1 |
+| GET | `/restaurants/search` | Search restaurants (Foursquare API) | 1 |
 | GET | `/restaurants/nearby` | Get nearby restaurants | 1 |
 | GET | `/restaurants/:id/reviews` | Get restaurant reviews | 1 |
 | GET | `/restaurants/top` | Get top rated restaurants | 1 |
@@ -344,12 +344,12 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement top 4 restaurants feature (TypeScript)
 
 #### Restaurant Module
-- [ ] Integrate Google Places API
+- [ ] Integrate Foursquare Places API
 - [ ] Implement restaurant search endpoint
 - [ ] Implement nearby restaurants endpoint
 - [ ] Implement restaurant details endpoint
 - [ ] Implement restaurant filters (food type, distance, rating)
-- [ ] Implement caching for Google Places results
+- [ ] Implement caching (save to local DB on user interaction)
 - [ ] Implement save restaurant to local DB
 
 #### Review Module
@@ -452,23 +452,28 @@ This document outlines the backend architecture, API endpoints, and development 
 
 ## External Integrations
 
-### Google Places API
+### Foursquare Places API
 
 **Setup:**
-1. Create Google Cloud project
-2. Enable Places API
+1. Create Foursquare Developer account
+2. Create a new project
 3. Generate API key
-4. Set up billing (free $200/month credit)
+4. Free tier: 10,000 calls/month
 
 **Key endpoints to use:**
-- Place Search (Nearby Search, Text Search)
-- Place Details
-- Place Photos
+- `GET /places/search` - Search for places (Text Search, Nearby Search)
+- `GET /places/{fsq_id}` - Get place details
 
 **Caching Strategy:**
-- Cache restaurant data in local DB after first fetch
-- Set cache expiration (e.g., 7 days)
-- Store Google Place ID for reference
+- Save restaurant to local DB when user interacts (reviews, eatlist)
+- Check local DB by `foursquareid` before calling API
+- Reduces API calls as popular restaurants get cached
+- No expiration needed - user-driven updates
+
+**Geographic Search:**
+- Nearby: Use `ll` (lat,lng) + `radius` parameters
+- Browse: Use `near` parameter (e.g., "Guanacaste, Costa Rica")
+- Default: `near=Costa Rica` when no location provided
 
 ### Supabase Storage
 

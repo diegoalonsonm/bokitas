@@ -6,7 +6,7 @@
 >
 > **Created**: 2026-01-26
 >
-> **Status**: Planning
+> **Status**: **COMPLETED** (2026-01-26)
 
 ---
 
@@ -702,14 +702,14 @@ FOURSQUARE_API_KEY=your-foursquare-api-key
 
 Restaurant module is complete when:
 
-- [ ] Foursquare API integration works
-- [ ] Search with coordinates returns results
-- [ ] Search with text location (city/province) returns results
-- [ ] Default search (Costa Rica) works
-- [ ] Restaurants are saved to local DB on user interaction
-- [ ] Food type mapping works for common categories
-- [ ] All 7 endpoints are functional
-- [ ] Documentation is complete
+- [x] Foursquare API integration works
+- [x] Search with coordinates returns results
+- [x] Search with text location (city/province) returns results
+- [x] Default search (Costa Rica) works
+- [x] Restaurants are saved to local DB on user interaction
+- [x] Food type mapping works for common categories
+- [x] All 7 endpoints are functional
+- [x] Documentation is complete
 
 ---
 
