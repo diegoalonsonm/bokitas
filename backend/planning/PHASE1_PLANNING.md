@@ -547,9 +547,9 @@ Backend responsibilities: Verify JWT, create/sync `usuario` record, provide user
 
 Phase 1 is complete when:
 
-- [ ] User can register and login via Supabase Auth
-- [ ] User can view and update their profile
-- [ ] User can upload profile photo
+- [x] User can register and login via Supabase Auth
+- [x] User can view and update their profile
+- [x] User can upload profile photo
 - [ ] User can search restaurants via Foursquare
 - [ ] User can view restaurant details
 - [ ] User can filter restaurants by food type, distance, rating
@@ -610,12 +610,14 @@ Phase 1 is complete when:
 - [x] Task 0.7 - Create utility constants - Done (TypeScript)
 - [x] Task 1.1 - Auth middleware - Done (TypeScript)
 - [x] Task 1.2-1.9 - Auth controllers and routers - Done (TypeScript)
-- [ ] Task 2.1-2.10 - User module - Partially done (missing storage service)
+- [x] Task 2.1-2.10 - User module - Done
+- [x] Task 2.11 - User documentation - Done
 - [ ] Task 3.1-3.11 - Restaurant module - Not started
 - [ ] Task 4.1-4.10 - Review module - Not started
 - [ ] Task 5.1-5.7 - Eatlist module - Not started
 - [ ] Task 6.1-6.3 - Food Types module - Not started
-- [ ] Task 7.1-7.3 - Supabase Storage setup - Not started
+- [ ] Task 7.1-7.2 - Supabase Storage buckets + policies - Not started
+- [x] Task 7.3 - Storage service helpers - Done
 - [ ] Task 8.1-8.3 - Error handling - Not started
 - [ ] Task 9.1-9.3 - Testing & Documentation - Not started
 
