@@ -1,5 +1,6 @@
-// Foursquare Places API types
-// Based on Foursquare Places API v3
+// Foursquare Places API v3 types
+// Based on standard Foursquare Places API (api.foursquare.com/v3)
+// See: https://docs.foursquare.com/developer/reference/place-search
 
 export interface FoursquareSearchResponse {
   results: FoursquarePlace[]
@@ -111,14 +112,88 @@ export interface FoursquareTip {
   disagree_count?: number
 }
 
-// Search parameters for Foursquare API
+// Search parameters for Foursquare Places API v3
+// See: https://docs.foursquare.com/developer/reference/place-search
 export interface FoursquareSearchParams {
   query?: string
-  ll?: string // latitude,longitude
-  radius?: number
-  near?: string
-  limit?: number
+  ll?: string // latitude,longitude format: "lat,lng"
+  radius?: number // in meters, max 100000
+  near?: string // location name (e.g., "San José, Costa Rica")
+  limit?: number // max 50
   categories?: string // comma-separated category IDs
   sort?: 'RELEVANCE' | 'RATING' | 'DISTANCE' | 'POPULARITY'
-  fields?: string // comma-separated field names
+  fields?: string // comma-separated field names to include in response
+}
+
+// Autocomplete API types
+// See: https://docs.foursquare.com/developer/reference/places-api-overview
+export interface FoursquareAutocompleteParams {
+  query: string // Required - The search term to autocomplete
+  ll?: string // Optional - Latitude,longitude to bias results (e.g., "40.7,-74")
+  radius?: number // Optional - Radius in meters to limit results
+  types?: string // Optional - Comma-separated types to include (place, geo, address, search)
+  session_token?: string // Optional - Session token for billing purposes
+  limit?: number // Optional - Max number of results
+}
+
+export interface FoursquareAutocompleteResponse {
+  results: FoursquareAutocompleteResult[]
+}
+
+export interface FoursquareAutocompleteResult {
+  type: 'place' | 'geo' | 'address' | 'search'
+  text: FoursquareAutocompleteText
+  place?: FoursquareAutocompletePlace
+  geo?: FoursquareAutocompleteGeo
+  address?: FoursquareAutocompleteAddress
+  search?: FoursquareAutocompleteSearch
+}
+
+export interface FoursquareAutocompleteText {
+  primary: string
+  secondary?: string
+  highlight?: FoursquareAutocompleteHighlight[]
+}
+
+export interface FoursquareAutocompleteHighlight {
+  start: number
+  length: number
+}
+
+export interface FoursquareAutocompletePlace {
+  fsq_id: string
+  name: string
+  categories?: FoursquareCategory[]
+  location?: FoursquareLocation
+  geocodes?: {
+    main?: {
+      latitude: number
+      longitude: number
+    }
+  }
+}
+
+export interface FoursquareAutocompleteGeo {
+  name: string
+  center?: {
+    latitude: number
+    longitude: number
+  }
+  bounds?: {
+    ne: { latitude: number; longitude: number }
+    sw: { latitude: number; longitude: number }
+  }
+}
+
+export interface FoursquareAutocompleteAddress {
+  address_id?: string
+  text?: string
+  center?: {
+    latitude: number
+    longitude: number
+  }
+}
+
+export interface FoursquareAutocompleteSearch {
+  query: string
 }

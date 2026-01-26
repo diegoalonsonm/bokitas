@@ -1,5 +1,5 @@
+import { foursquareClient } from '../config/httpClient.js'
 import { 
-  FOURSQUARE_API_URL, 
   DEFAULT_SEARCH_NEAR, 
   DEFAULT_SEARCH_RADIUS,
   DEFAULT_SEARCH_LIMIT,
@@ -30,29 +30,16 @@ export interface TransformedRestaurant extends Omit<CreateRestaurantParams, 'foo
 }
 
 export class FoursquareService {
-  private static readonly apiKey = process.env.FOURSQUARE_API_KEY
-
   /**
-   * Build headers for Foursquare API requests
-   */
-  private static getHeaders(): HeadersInit {
-    if (!this.apiKey) {
-      throw new Error('FOURSQUARE_API_KEY environment variable is not set')
-    }
-    return {
-      'Authorization': this.apiKey,
-      'Accept': 'application/json'
-    }
-  }
-
-  /**
-   * Search for restaurants using Foursquare Places API
+   * Search for restaurants using Foursquare Places API v3
    * Supports both coordinate-based and text-based location searches
+   * 
+   * API: https://api.foursquare.com/v3/places/search
    */
   static async searchPlaces(options: FoursquareSearchOptions): Promise<TransformedRestaurant[]> {
     const { query, lat, lng, radius, near, limit } = options
 
-    // Build query parameters
+    // Build query parameters for v3 API
     const params: FoursquareSearchParams = {
       categories: '13000', // Food & Dining
       limit: Math.min(limit || DEFAULT_SEARCH_LIMIT, MAX_SEARCH_LIMIT),
@@ -80,30 +67,13 @@ export class FoursquareService {
       params.sort = 'RELEVANCE'
     }
 
-    // Build URL with query string
-    const url = new URL(`${FOURSQUARE_API_URL}/places/search`)
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined) {
-        url.searchParams.append(key, String(value))
-      }
-    })
-
     try {
-      const response = await fetch(url.toString(), {
-        method: 'GET',
-        headers: this.getHeaders()
+      const response = await foursquareClient.get<FoursquareSearchResponse>('/places/search', {
+        params
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Foursquare API error:', response.status, errorText)
-        throw new Error(`Foursquare API error: ${response.status}`)
-      }
-
-      const data: FoursquareSearchResponse = await response.json()
-      
       // Transform results to our format
-      return data.results.map(place => this.transformToRestaurant(place))
+      return response.data.results.map(place => this.transformToRestaurant(place))
     } catch (error) {
       console.error('Foursquare search error:', error)
       throw error
@@ -112,25 +82,18 @@ export class FoursquareService {
 
   /**
    * Get detailed information for a specific place by Foursquare ID
+   * 
+   * API: https://api.foursquare.com/v3/places/{fsq_id}
    */
   static async getPlaceDetails(fsqId: string): Promise<TransformedRestaurant> {
-    const url = new URL(`${FOURSQUARE_API_URL}/places/${fsqId}`)
-    url.searchParams.append('fields', 'fsq_id,name,location,categories,geocodes,website,tel,rating,price,photos,description')
-
     try {
-      const response = await fetch(url.toString(), {
-        method: 'GET',
-        headers: this.getHeaders()
+      const response = await foursquareClient.get<FoursquarePlace>(`/places/${fsqId}`, {
+        params: {
+          fields: 'fsq_id,name,location,categories,geocodes,website,tel,rating,price,photos,description'
+        }
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Foursquare API error:', response.status, errorText)
-        throw new Error(`Foursquare API error: ${response.status}`)
-      }
-
-      const place: FoursquarePlace = await response.json()
-      return this.transformToRestaurant(place)
+      return this.transformToRestaurant(response.data)
     } catch (error) {
       console.error('Foursquare get details error:', error)
       throw error

@@ -1,4 +1,5 @@
 // Foursquare API configuration constants
+// Using standard Places API v3 - see: https://docs.foursquare.com/developer/reference/place-search
 
 export const FOURSQUARE_API_URL = 'https://api.foursquare.com/v3'
 
