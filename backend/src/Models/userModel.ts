@@ -104,10 +104,10 @@ export class UserModel {
         updateData.nombre = nombre
       }
       if (apellido !== undefined) {
-        updateData.apellido = apellido
+        updateData.primerapellido = apellido
       }
       if (urlFotoPerfil !== undefined) {
-        updateData.urlFotoPerfil = urlFotoPerfil
+        updateData.urlfotoperfil = urlFotoPerfil
       }
       if (idestado !== undefined) {
         updateData.idestado = idestado
@@ -117,16 +117,20 @@ export class UserModel {
         return { success: false, message: 'No fields to update' }
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('usuario')
         .update(updateData)
-        .eq('id', id)
+        .eq('authid', id)
         .eq('active', true)
-        .select()
-        .single()
+        .select('id')
+        .maybeSingle()
 
       if (error) {
         throw error
+      }
+
+      if (!data) {
+        return { success: false, message: 'User not found or inactive' }
       }
 
       return { success: true, message: 'Profile updated successfully' }

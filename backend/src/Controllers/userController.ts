@@ -73,6 +73,21 @@ export class UserController {
     try {
       const id = req.params.id
       const updates = req.body
+      if (updates.primerapellido && updates.apellido) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Use either apellido or primerapellido, not both'
+          }
+        })
+        return
+      }
+
+      if (updates.primerapellido && !updates.apellido) {
+        updates.apellido = updates.primerapellido
+        delete updates.primerapellido
+      }
 
       const validation = validateProfileUpdate(updates)
 
@@ -99,6 +114,17 @@ export class UserController {
       }
 
       const result = await UserModel.updateProfile({ id, ...updates })
+
+      if (!result.success) {
+        res.status(404).json({
+          success: false,
+          error: {
+            code: ERROR_CODES.NOT_FOUND,
+            message: result.message
+          }
+        })
+        return
+      }
 
       res.status(200).json(result)
     } catch (err) {

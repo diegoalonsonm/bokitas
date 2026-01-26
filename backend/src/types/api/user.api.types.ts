@@ -5,6 +5,7 @@ import type { Request } from 'express'
 export interface UpdateProfileBody {
   nombre?: string
   apellido?: string
+  primerapellido?: string
   urlfotoperfil?: string
 }
 

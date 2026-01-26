@@ -73,6 +73,7 @@ Update the authenticated user's own profile.
 {
   "nombre": "John",
   "apellido": "Smith",
+  "primerapellido": "Smith",
   "urlfotoperfil": "https://example.com/photo.jpg"
 }
 ```
@@ -81,6 +82,7 @@ Update the authenticated user's own profile.
 |-------|------|----------|--------------|
 | nombre | string | No | Min 2 characters |
 | apellido | string | No | Min 2 characters |
+| primerapellido | string | No | Min 2 characters (alias of apellido) |
 | urlfotoperfil | string | No | Valid URL |
 
 **Response (200 OK):**
