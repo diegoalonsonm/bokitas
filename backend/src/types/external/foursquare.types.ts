@@ -197,3 +197,63 @@ export interface FoursquareAutocompleteAddress {
 export interface FoursquareAutocompleteSearch {
   query: string
 }
+
+// Photos API types
+// See: https://docs.foursquare.com/developer/reference/place-photos
+export interface FoursquarePhotosParams {
+  limit?: number
+  sort?: 'POPULAR' | 'NEWEST'
+  classifications?: string // comma-separated: food, indoor, outdoor, menu
+}
+
+export interface FoursquarePhotosResponse {
+  photos: FoursquarePhoto[]
+}
+
+// Tips API types
+// See: https://docs.foursquare.com/developer/reference/place-tips
+export interface FoursquareTipsParams {
+  limit?: number
+  sort?: 'POPULAR' | 'NEWEST'
+}
+
+export interface FoursquareTipsResponse {
+  tips: FoursquareTip[]
+}
+
+// Match API types
+// See: https://docs.foursquare.com/developer/reference/place-match
+export interface FoursquareMatchParams {
+  name: string
+  address?: string
+  city?: string
+  state?: string
+  postalCode?: string
+  cc?: string // 2-digit country code
+  ll?: string
+  fields?: string
+}
+
+export interface FoursquareMatchResponse {
+  place?: {
+    fsq_id: string
+    categories?: FoursquareCategory[]
+    name?: string
+    location?: FoursquareLocation
+  }
+}
+
+// Nearby API types
+// See: https://docs.foursquare.com/developer/reference/places-nearby
+export interface FoursquareNearbyParams {
+  ll: string
+  hacc?: number // horizontal accuracy in meters
+  altitude?: number
+  query?: string
+  limit?: number
+  fields?: string
+}
+
+export interface FoursquareNearbyResponse {
+  results: FoursquarePlace[]
+}

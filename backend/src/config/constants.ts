@@ -1,7 +1,8 @@
 // Foursquare API configuration constants
-// Using standard Places API v3 - see: https://docs.foursquare.com/developer/reference/place-search
+// Using standard Places API - see: https://docs.foursquare.com/developer/reference/place-search
 
-export const FOURSQUARE_API_URL = 'https://api.foursquare.com/v3'
+export const FOURSQUARE_API_URL = 'https://places-api.foursquare.com'
+export const FOURSQUARE_API_VERSION = '2025-06-17'
 
 // Default search parameters
 export const DEFAULT_SEARCH_NEAR = 'Costa Rica'

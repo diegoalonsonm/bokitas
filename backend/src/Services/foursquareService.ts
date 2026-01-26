@@ -9,7 +9,15 @@ import { mapFoursquareCategories } from '../config/foursquareCategoryMapping.js'
 import type { 
   FoursquareSearchResponse, 
   FoursquarePlace,
-  FoursquareSearchParams 
+  FoursquareSearchParams,
+  FoursquarePhoto,
+  FoursquareTip,
+  FoursquarePhotosParams,
+  FoursquareTipsParams,
+  FoursquareMatchParams,
+  FoursquareMatchResponse,
+  FoursquareNearbyParams,
+  FoursquareNearbyResponse
 } from '../types/external/foursquare.types.js'
 import type { CreateRestaurantParams } from '../types/entities/restaurant.types.js'
 
@@ -39,11 +47,11 @@ export class FoursquareService {
   static async searchPlaces(options: FoursquareSearchOptions): Promise<TransformedRestaurant[]> {
     const { query, lat, lng, radius, near, limit } = options
 
-    // Build query parameters for v3 API
+    // Build query parameters for Places API
     const params: FoursquareSearchParams = {
       categories: '13000', // Food & Dining
-      limit: Math.min(limit || DEFAULT_SEARCH_LIMIT, MAX_SEARCH_LIMIT),
-      fields: 'fsq_id,name,location,categories,distance,geocodes,website,tel,rating,price,photos'
+      limit: Math.min(limit || DEFAULT_SEARCH_LIMIT, MAX_SEARCH_LIMIT)
+      // Note: fields parameter removed - API returns all core fields by default
     }
 
     // Add search query if provided
@@ -87,11 +95,7 @@ export class FoursquareService {
    */
   static async getPlaceDetails(fsqId: string): Promise<TransformedRestaurant> {
     try {
-      const response = await foursquareClient.get<FoursquarePlace>(`/places/${fsqId}`, {
-        params: {
-          fields: 'fsq_id,name,location,categories,geocodes,website,tel,rating,price,photos,description'
-        }
-      })
+      const response = await foursquareClient.get<FoursquarePlace>(`/places/${fsqId}`)
 
       return this.transformToRestaurant(response.data)
     } catch (error) {
@@ -168,5 +172,120 @@ export class FoursquareService {
       query: options.query,
       limit: options.limit
     })
+  }
+
+  /**
+   * Get photos for a specific place by Foursquare ID
+   * 
+   * API: https://api.foursquare.com/v3/places/{fsq_id}/photos
+   */
+  static async getPhotos(
+    fsqId: string, 
+    options: FoursquarePhotosParams = {}
+  ): Promise<FoursquarePhoto[]> {
+    try {
+      const params: FoursquarePhotosParams = {
+        limit: options.limit || 10,
+        sort: options.sort || 'POPULAR'
+      }
+
+      if (options.classifications) {
+        params.classifications = options.classifications
+      }
+
+      const response = await foursquareClient.get<FoursquarePhoto[]>(`/places/${fsqId}/photos`, {
+        params
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Foursquare get photos error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get tips/reviews for a specific place by Foursquare ID
+   * 
+   * API: https://api.foursquare.com/v3/places/{fsq_id}/tips
+   */
+  static async getTips(
+    fsqId: string,
+    options: FoursquareTipsParams = {}
+  ): Promise<FoursquareTip[]> {
+    try {
+      const params: FoursquareTipsParams = {
+        limit: options.limit || 10,
+        sort: options.sort || 'POPULAR'
+      }
+
+      const response = await foursquareClient.get<FoursquareTip[]>(`/places/${fsqId}/tips`, {
+        params
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Foursquare get tips error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Match a place by name and location to get its Foursquare ID
+   * Useful for identifying a specific place when you have some of its details
+   * 
+   * API: https://api.foursquare.com/v3/places/match
+   */
+  static async matchPlace(options: FoursquareMatchParams): Promise<FoursquareMatchResponse> {
+    try {
+      const params: Record<string, string | undefined> = {
+        name: options.name,
+        fields: options.fields || 'fsq_id,name,location,categories'
+      }
+
+      if (options.address) params.address = options.address
+      if (options.city) params.city = options.city
+      if (options.state) params.state = options.state
+      if (options.postalCode) params.postal_code = options.postalCode
+      if (options.cc) params.cc = options.cc
+      if (options.ll) params.ll = options.ll
+
+      const response = await foursquareClient.get<FoursquareMatchResponse>('/places/match', {
+        params
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Foursquare match place error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Find nearby places using Foursquare's Snap to Place technology
+   * Designed for POI tagging and check-in use cases
+   * 
+   * API: https://api.foursquare.com/v3/places/nearby
+   */
+  static async getNearbyPlaces(options: FoursquareNearbyParams): Promise<TransformedRestaurant[]> {
+    try {
+      const params: Record<string, string | number | undefined> = {
+        ll: options.ll,
+        limit: options.limit || 10
+      }
+
+      if (options.query) params.query = options.query
+      if (options.hacc) params.hacc = options.hacc
+      if (options.altitude) params.altitude = options.altitude
+
+      const response = await foursquareClient.get<FoursquareNearbyResponse>('/places/nearby', {
+        params
+      })
+
+      return response.data.results.map(place => this.transformToRestaurant(place))
+    } catch (error) {
+      console.error('Foursquare get nearby places error:', error)
+      throw error
+    }
   }
 }
