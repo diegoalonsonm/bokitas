@@ -11,8 +11,11 @@ This document outlines the backend architecture, API endpoints, and development 
 * **Authentication**: Supabase Auth
 * **Validation**: Zod
 * **API Client**: Supabase JS Client
+* **HTTP Client**: Axios (for external API calls)
+* **External API**: Foursquare Places API
 
 *Note: Backend migrated to TypeScript on 2026-01-23 following AGENTS.md standards.*
+*Note: Foursquare integration migrated to Axios on 2026-01-26.*
 
 ---
 
@@ -344,13 +347,15 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement top 4 restaurants feature (TypeScript)
 
 #### Restaurant Module
-- [ ] Integrate Foursquare Places API
-- [ ] Implement restaurant search endpoint
-- [ ] Implement nearby restaurants endpoint
-- [ ] Implement restaurant details endpoint
-- [ ] Implement restaurant filters (food type, distance, rating)
-- [ ] Implement caching (save to local DB on user interaction)
-- [ ] Implement save restaurant to local DB
+- [x] Integrate Foursquare Places API (axios client with proper headers)
+- [x] Implement restaurant search endpoint (`GET /restaurants/search`)
+- [x] Implement nearby restaurants endpoint (`GET /restaurants/nearby` via FoursquareService)
+- [x] Implement restaurant details endpoint (`GET /restaurants/:id`)
+- [x] Implement restaurant filters (food type, distance, rating)
+- [x] Implement get/create by Foursquare ID (`GET /restaurants/foursquare/:fsqId`)
+- [x] Implement restaurant reviews endpoint (`GET /restaurants/:id/reviews`)
+- [x] Implement top restaurants endpoint (`GET /restaurants/top`)
+- [x] Implement update restaurant endpoint (`PUT /restaurants/:id`)
 
 #### Review Module
 - [ ] Implement create review endpoint
@@ -460,9 +465,21 @@ This document outlines the backend architecture, API endpoints, and development 
 3. Generate API key
 4. Free tier: 10,000 calls/month
 
-**Key endpoints to use:**
+**Configuration (Updated 2026-01-26):**
+- Base URL: `https://places-api.foursquare.com`
+- API Version: `2025-06-17`
+- Required Headers:
+  - `X-Places-Api-Version: 2025-06-17`
+  - `Authorization: Bearer <API_KEY>`
+  - `Accept: application/json`
+
+**Key endpoints implemented:**
 - `GET /places/search` - Search for places (Text Search, Nearby Search)
 - `GET /places/{fsq_id}` - Get place details
+- `GET /places/{fsq_id}/photos` - Get place photos
+- `GET /places/{fsq_id}/tips` - Get user tips/reviews
+- `GET /places/match` - Match place by name/address
+- `GET /places/nearby` - Find nearby places (Snap to Place)
 
 **Caching Strategy:**
 - Save restaurant to local DB when user interacts (reviews, eatlist)
@@ -474,6 +491,11 @@ This document outlines the backend architecture, API endpoints, and development 
 - Nearby: Use `ll` (lat,lng) + `radius` parameters
 - Browse: Use `near` parameter (e.g., "Guanacaste, Costa Rica")
 - Default: `near=Costa Rica` when no location provided
+
+**Implementation Notes:**
+- Uses Axios HTTP client via configured `foursquareClient`
+- See `docs/endpoints/foursquare-service.md` for full documentation
+- See `docs/postmortem/01-26-26_FOURSQUARE_API_MIGRATION.md` for migration details
 
 ### Supabase Storage
 
