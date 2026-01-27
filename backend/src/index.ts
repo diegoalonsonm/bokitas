@@ -6,6 +6,7 @@ import { config } from 'dotenv'
 import authRouter from './Routes/authRouter.js'
 import userRouter from './Routes/userRouter.js'
 import restaurantRouter from './Routes/restaurantRouter.js'
+import reviewRouter from './Routes/reviewRouter.js'
 
 config()
 
@@ -25,6 +26,7 @@ app.use(express.json())
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
 app.use('/restaurants', restaurantRouter)
+app.use('/reviews', reviewRouter)
 
 // Health check
 app.get('/', (_req: Request, res: Response) => {

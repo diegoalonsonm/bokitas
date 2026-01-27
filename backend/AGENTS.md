@@ -1194,19 +1194,21 @@ When creating new documentation, the folders are already created. Check them out
 - [x] Project initialized
 - [x] TypeScript configured
 - [x] Base structure created
-- [ ] Core entities implemented
+- [x] Core entities implemented
 - [ ] Documentation complete
 
 ### Implemented Entities
 - User (TypeScript) - CRUD operations, reviews, eatlist, top4
 - Auth (TypeScript) - Register, login, logout, forgot password, reset password, me
 - Authentication Middleware (TypeScript) - JWT verification with Supabase
+- Review (TypeScript) - CRUD operations, photo upload
 
 ### Recent Changes
 - 2026-01-23: Migrated from JavaScript to TypeScript following AGENTS.md standards
 - 2026-01-23: Created src/ directory structure with proper TypeScript types
 - 2026-01-23: Implemented auth and user modules with full type safety
 - 2026-01-23: Type checking passes successfully
+- 2026-01-27: Implemented review module (types, validation, model, controller, router, docs)
 
 ### Known Issues
 _None yet_

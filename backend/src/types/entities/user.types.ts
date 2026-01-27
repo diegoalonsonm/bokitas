@@ -37,6 +37,10 @@ export interface GetUserByEmailParams {
   email: string
 }
 
+export interface GetUserByAuthIdParams {
+  authId: string
+}
+
 export interface DeleteUserParams {
   id: string
 }

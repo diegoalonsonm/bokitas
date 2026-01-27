@@ -1,6 +1,6 @@
 import { supabase } from './supabase/client.js'
 import { ESTADO } from '../Utils/constants.js'
-import type { User, GetUserParams, UpdateUserParams, DeleteUserParams, GetUserByEmailParams } from '../types/entities/user.types.js'
+import type { User, GetUserParams, UpdateUserParams, DeleteUserParams, GetUserByEmailParams, GetUserByAuthIdParams } from '../types/entities/user.types.js'
 import type { OperationResult } from '../types/index.js'
 import { randomUUID } from 'crypto'
 
@@ -91,6 +91,29 @@ export class UserModel {
       return data.id
     } catch (err) {
       console.error('Error getting user by email:', err)
+      throw err
+    }
+  }
+
+  /**
+   * Get user ID by auth ID (Supabase auth user ID)
+   */
+  static async getUserIdByAuthId({ authId }: GetUserByAuthIdParams): Promise<string | null> {
+    try {
+      const { data, error } = await supabase
+        .from('usuario')
+        .select('id')
+        .eq('authid', authId)
+        .eq('active', true)
+        .single()
+
+      if (error || !data) {
+        return null
+      }
+
+      return data.id
+    } catch (err) {
+      console.error('Error getting user by auth ID:', err)
       throw err
     }
   }

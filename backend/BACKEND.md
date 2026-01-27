@@ -358,11 +358,11 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement update restaurant endpoint (`PUT /restaurants/:id`)
 
 #### Review Module
-- [ ] Implement create review endpoint
-- [ ] Implement get review endpoint
-- [ ] Implement update review endpoint
-- [ ] Implement delete review endpoint
-- [ ] Implement review photo upload
+- [x] Implement create review endpoint
+- [x] Implement get review endpoint
+- [x] Implement update review endpoint
+- [x] Implement delete review endpoint
+- [x] Implement review photo upload
 - [ ] Implement restaurant rating calculation (trigger/function)
 
 #### Eatlist Module

@@ -633,7 +633,7 @@ Phase 1 is complete when:
 - [x] Task 3.9 - GET `/restaurants/foursquare/:fsqId` - Done
 - [x] Task 3.10 - PUT `/restaurants/:id` - Done
 - [x] Task 3.11 - Restaurant documentation - Done
-- [ ] Task 4.1-4.10 - Review module - Not started
+- [x] Task 4.1-4.10 - Review module - Done
 - [ ] Task 5.1-5.7 - Eatlist module - Not started
 - [ ] Task 6.1-6.3 - Food Types module - Not started
 - [ ] Task 7.1-7.2 - Supabase Storage buckets + policies - Not started

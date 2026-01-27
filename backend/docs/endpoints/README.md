@@ -8,6 +8,7 @@ Complete API reference for the Bokitas backend.
 |---------|-------------|------------|
 | [Authentication](./auth-endpoints.md) | User registration, login, logout, password reset | 6 endpoints |
 | [Users](./user-endpoints.md) | User profiles, photos, reviews, eatlist | 7 endpoints |
+| [Reviews](./review-endpoints.md) | Review CRUD and photo upload | 5 endpoints |
 
 ---
 
