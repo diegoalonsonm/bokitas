@@ -156,6 +156,7 @@ export const CATEGORY_NAME_KEYWORDS: Record<string, string> = {
   'kebab': FOOD_TYPE_IDS.MIDDLE_EASTERN,
   'falafel': FOOD_TYPE_IDS.MIDDLE_EASTERN,
   'pizza': FOOD_TYPE_IDS.PIZZA,
+  'pizzeria': FOOD_TYPE_IDS.PIZZA,
   'seafood': FOOD_TYPE_IDS.SEAFOOD,
   'fish': FOOD_TYPE_IDS.SEAFOOD,
   'spanish': FOOD_TYPE_IDS.SPANISH,
@@ -167,20 +168,20 @@ export const CATEGORY_NAME_KEYWORDS: Record<string, string> = {
 }
 
 /**
- * Maps a Foursquare category to our food type UUID
- * @param categoryId - Foursquare category ID
- * @param categoryName - Foursquare category name (fallback for keyword matching)
- * @returns Food type UUID or null if no mapping found
- */
+  * Maps a Foursquare category to our food type UUID
+  * @param categoryId - Foursquare category ID (number or undefined)
+  * @param categoryName - Foursquare category name (fallback for keyword matching)
+  * @returns Food type UUID or null if no mapping found
+  */
 export function mapFoursquareCategory(
-  categoryId: number,
+  categoryId: number | undefined,
   categoryName?: string
 ): string | null {
-  // First try direct ID mapping
-  if (FOURSQUARE_CATEGORY_MAP[categoryId]) {
+  // First try direct ID mapping (old API format)
+  if (categoryId && FOURSQUARE_CATEGORY_MAP[categoryId]) {
     return FOURSQUARE_CATEGORY_MAP[categoryId]
   }
-  
+
   // Fallback to keyword matching in category name
   if (categoryName) {
     const lowerName = categoryName.toLowerCase()
@@ -190,26 +191,27 @@ export function mapFoursquareCategory(
       }
     }
   }
-  
+
   return null
 }
 
 /**
- * Maps multiple Foursquare categories to our food type UUIDs
- * @param categories - Array of Foursquare categories
- * @returns Array of unique food type UUIDs
- */
+  * Maps multiple Foursquare categories to our food type UUIDs
+  * @param categories - Array of Foursquare categories
+  * @returns Array of unique food type UUIDs
+  */
 export function mapFoursquareCategories(
-  categories: Array<{ id: number; name: string }>
+  categories: Array<{ id?: number; name: string }>
 ): string[] {
   const foodTypeIds = new Set<string>()
-  
+
   for (const category of categories) {
+    // Map using ID (old API format) or fallback to name (new API format)
     const foodTypeId = mapFoursquareCategory(category.id, category.name)
     if (foodTypeId) {
       foodTypeIds.add(foodTypeId)
     }
   }
-  
+
   return Array.from(foodTypeIds)
 }

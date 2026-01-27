@@ -10,6 +10,13 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
   throw new Error('Missing Supabase environment variables: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required')
 }
 
+// Debug: Log which key is being used (first/last 10 chars only for security)
+const keyPreview = supabaseServiceRoleKey
+  ? `${supabaseServiceRoleKey.substring(0, 20)}...${supabaseServiceRoleKey.substring(supabaseServiceRoleKey.length - 10)}`
+  : 'NOT SET'
+console.log(`[Supabase] Initializing client with URL: ${supabaseUrl}`)
+console.log(`[Supabase] Using key: ${keyPreview}`)
+
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: {
     autoRefreshToken: false,

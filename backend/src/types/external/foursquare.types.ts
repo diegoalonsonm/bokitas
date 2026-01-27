@@ -18,23 +18,14 @@ export interface FoursquareSearchResponse {
 }
 
 export interface FoursquarePlace {
-  fsq_id: string
+  fsq_place_id: string
   name: string
   location: FoursquareLocation
   categories: FoursquareCategory[]
   distance?: number
-  geocodes?: {
-    main?: {
-      latitude: number
-      longitude: number
-    }
-    roof?: {
-      latitude: number
-      longitude: number
-    }
-  }
+  latitude?: number
+  longitude?: number
   link?: string
-  timezone?: string
   website?: string
   tel?: string
   email?: string
@@ -47,6 +38,17 @@ export interface FoursquarePlace {
   description?: string
   verified?: boolean
   closed_bucket?: string
+  geocodes?: {
+    main?: {
+      latitude: number
+      longitude: number
+    }
+    roof?: {
+      latitude: number
+      longitude: number
+    }
+  }
+  timezone?: string
 }
 
 export interface FoursquareLocation {
@@ -66,7 +68,8 @@ export interface FoursquareLocation {
 }
 
 export interface FoursquareCategory {
-  id: number
+  id?: number
+  fsq_category_id?: string
   name: string
   short_name?: string
   plural_name?: string

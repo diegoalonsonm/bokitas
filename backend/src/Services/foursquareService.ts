@@ -34,7 +34,7 @@ export interface TransformedRestaurant extends Omit<CreateRestaurantParams, 'foo
   foursquareid: string
   foodTypeIds: string[]
   distance?: number
-  categories: Array<{ id: number; name: string }>
+  categories: Array<{ id?: number; name: string }>
 }
 
 export class FoursquareService {
@@ -108,18 +108,18 @@ export class FoursquareService {
    * Transform a Foursquare place response to our restaurant format
    */
   static transformToRestaurant(place: FoursquarePlace): TransformedRestaurant {
-    // Get coordinates from geocodes
-    const latitude = place.geocodes?.main?.latitude ?? null
-    const longitude = place.geocodes?.main?.longitude ?? null
+    // Get coordinates - API returns them directly or in geocodes
+    const latitude = place.latitude ?? place.geocodes?.main?.latitude ?? null
+    const longitude = place.longitude ?? place.geocodes?.main?.longitude ?? null
 
     // Build formatted address
-    const address = place.location?.formatted_address || 
+    const address = place.location?.formatted_address ||
       [place.location?.address, place.location?.locality, place.location?.region]
         .filter(Boolean)
         .join(', ') || null
 
     // Map Foursquare categories to our food types
-    const categories = place.categories.map(cat => ({ id: cat.id, name: cat.name }))
+    const categories = place.categories.map(cat => ({ id: cat.id, name: cat.name })) as Array<{ id: number | undefined; name: string }>
     const foodTypeIds = mapFoursquareCategories(categories)
 
     // Get first photo URL if available
@@ -130,7 +130,7 @@ export class FoursquareService {
     }
 
     return {
-      foursquareid: place.fsq_id,
+      foursquareid: place.fsq_place_id,
       nombre: place.name,
       direccion: address,
       latitud: latitude,
