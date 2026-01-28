@@ -24,6 +24,7 @@ export const ERROR_MESSAGES = {
   REVIEW_NOT_FOUND: 'Review not found',
   EATLIST_NOT_FOUND: 'Eatlist entry not found',
   EATLIST_ALREADY_EXISTS: 'Restaurant already in eatlist',
+  FOOD_TYPE_ALREADY_EXISTS: 'Food type already exists',
   INVALID_TOKEN: 'Invalid or expired token',
   NOT_OWNER: 'You do not have permission to perform this action',
   MISSING_REQUIRED_FIELD: 'Missing required field',

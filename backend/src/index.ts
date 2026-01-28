@@ -8,6 +8,7 @@ import userRouter from './Routes/userRouter.js'
 import restaurantRouter from './Routes/restaurantRouter.js'
 import reviewRouter from './Routes/reviewRouter.js'
 import eatlistRouter from './Routes/eatlistRouter.js'
+import foodTypeRouter from './Routes/foodTypeRouter.js'
 
 config()
 
@@ -29,6 +30,7 @@ app.use('/users', userRouter)
 app.use('/restaurants', restaurantRouter)
 app.use('/reviews', reviewRouter)
 app.use('/eatlist', eatlistRouter)
+app.use('/food-types', foodTypeRouter)
 
 // Health check
 app.get('/', (_req: Request, res: Response) => {
