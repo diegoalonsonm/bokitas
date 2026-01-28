@@ -1195,23 +1195,33 @@ When creating new documentation, the folders are already created. Check them out
 - [x] TypeScript configured
 - [x] Base structure created
 - [x] Core entities implemented
-- [ ] Documentation complete
+- [x] Documentation complete
 
 ### Implemented Entities
 - User (TypeScript) - CRUD operations, reviews, eatlist, top4
 - Auth (TypeScript) - Register, login, logout, forgot password, reset password, me
 - Authentication Middleware (TypeScript) - JWT verification with Supabase
+- Restaurant (TypeScript) - CRUD operations, Foursquare integration, search, nearby, filters
 - Review (TypeScript) - CRUD operations, photo upload
+- Eatlist (TypeScript) - CRUD operations (add, update, remove, get with filters)
+- FoodType (TypeScript) - Get all, create
 
 ### Recent Changes
 - 2026-01-23: Migrated from JavaScript to TypeScript following AGENTS.md standards
 - 2026-01-23: Created src/ directory structure with proper TypeScript types
 - 2026-01-23: Implemented auth and user modules with full type safety
 - 2026-01-23: Type checking passes successfully
+- 2026-01-26: Implemented Foursquare service with Axios client
 - 2026-01-27: Implemented review module (types, validation, model, controller, router, docs)
+- 2026-01-27: Implemented restaurant module with Foursquare integration
+- 2026-01-28: Implemented eatlist module (types, validation, model, controller, router, docs)
+- 2026-01-28: Implemented food-types module (types, validation, model, controller, router, docs)
+
+### Pending Items (Phase 1)
+- [ ] Supabase Storage buckets configuration (console)
+- [ ] Restaurant rating calculation trigger (Supabase function)
+- [ ] Error handling middleware
+- [ ] First review photo as restaurant cover logic
 
 ### Known Issues
-_None yet_
-
-### Known Issues
-_None yet_
+_None currently_

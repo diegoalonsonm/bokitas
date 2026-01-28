@@ -328,7 +328,7 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Create `review` table
 - [x] Create `eatlist` table
 - [x] Configure Row Level Security (RLS) policies
-- [ ] Set up Supabase Storage buckets for images
+- [ ] Set up Supabase Storage buckets for images (console configuration)
 
 #### Authentication Module
 - [x] Set up authentication middleware (TypeScript)
@@ -336,12 +336,12 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement login endpoint
 - [x] Implement logout endpoint
 - [x] Implement password reset flow
-- [ ] Implement JWT token management
+- [x] Implement JWT token management (via Supabase Auth)
 
 #### User Module
 - [x] Implement get user profile endpoint (TypeScript)
 - [x] Implement update user profile endpoint (TypeScript)
-- [ ] Implement profile photo upload (Supabase Storage)
+- [x] Implement profile photo upload (StorageService + uploadMiddleware)
 - [x] Implement get user's reviews endpoint (TypeScript)
 - [x] Implement get user's eatlist endpoint (TypeScript)
 - [x] Implement top 4 restaurants feature (TypeScript)
@@ -363,17 +363,18 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement update review endpoint
 - [x] Implement delete review endpoint
 - [x] Implement review photo upload
-- [ ] Implement restaurant rating calculation (trigger/function)
+- [ ] Implement restaurant rating calculation (trigger/function in Supabase)
 
 #### Eatlist Module
-- [ ] Implement get eatlist endpoint
-- [ ] Implement add to eatlist endpoint
-- [ ] Implement update eatlist entry endpoint
-- [ ] Implement remove from eatlist endpoint
+- [x] Implement get eatlist endpoint (`GET /eatlist`)
+- [x] Implement add to eatlist endpoint (`POST /eatlist`)
+- [x] Implement update eatlist entry endpoint (`PUT /eatlist/:restaurantId`)
+- [x] Implement remove from eatlist endpoint (`DELETE /eatlist/:restaurantId`)
 
 #### Food Types Module
-- [ ] Implement get all food types endpoint
-- [ ] Seed initial food types data
+- [x] Implement get all food types endpoint (`GET /food-types`)
+- [x] Implement create food type endpoint (`POST /food-types`)
+- [x] Seed initial food types data (20 types in database)
 
 ---
 

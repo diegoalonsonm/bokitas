@@ -563,14 +563,14 @@ Phase 1 is complete when:
 - [x] User can search restaurants via Foursquare
 - [x] User can view restaurant details
 - [x] User can filter restaurants by food type, distance, rating
-- [ ] User can create, update, delete reviews
-- [ ] User can upload review photos
-- [ ] First review photo becomes restaurant cover
-- [ ] Restaurant ratings are calculated from reviews
-- [ ] User can manage their eatlist (add, update, remove)
+- [x] User can create, update, delete reviews
+- [x] User can upload review photos
+- [ ] First review photo becomes restaurant cover (automatic logic pending)
+- [ ] Restaurant ratings are calculated from reviews (Supabase trigger pending)
+- [x] User can manage their eatlist (add, update, remove)
 - [x] All searches default to Costa Rica
-- [x] All endpoints documented (auth, user, restaurant, foursquare)
-- [ ] Error handling is consistent
+- [x] All endpoints documented (auth, user, restaurant, review, eatlist, food-types)
+- [ ] Error handling middleware is implemented
 
 ---
 
@@ -634,12 +634,12 @@ Phase 1 is complete when:
 - [x] Task 3.10 - PUT `/restaurants/:id` - Done
 - [x] Task 3.11 - Restaurant documentation - Done
 - [x] Task 4.1-4.10 - Review module - Done
-- [ ] Task 5.1-5.7 - Eatlist module - Not started
-- [ ] Task 6.1-6.3 - Food Types module - Not started
-- [ ] Task 7.1-7.2 - Supabase Storage buckets + policies - Not started
+- [x] Task 5.1-5.7 - Eatlist module - Done
+- [x] Task 6.1-6.3 - Food Types module - Done
+- [ ] Task 7.1-7.2 - Supabase Storage buckets + policies (console configuration) - Not started
 - [x] Task 7.3 - Storage service helpers - Done
-- [ ] Task 8.1-8.3 - Error handling - Not started
-- [ ] Task 9.1-9.3 - Testing & Documentation - Partially done
+- [ ] Task 8.1-8.3 - Error handling middleware - Not started
+- [x] Task 9.1-9.3 - Testing & Documentation - Done
 
 ### Foursquare Integration (2026-01-26)
 - [x] Create Axios HTTP client with proper configuration
@@ -659,7 +659,12 @@ Phase 1 is complete when:
 - `docs/endpoints/user-endpoints.md`
 - `docs/endpoints/restaurant-endpoints.md`
 - `docs/endpoints/foursquare-service.md`
+- `docs/endpoints/review-endpoints.md`
+- `docs/endpoints/eatlist-endpoints.md`
+- `docs/endpoints/foodtype-endpoints.md`
 - `docs/postmortem/01-26-26_FOURSQUARE_API_MIGRATION.md`
+- `docs/postmortem/01-27-26_RESTAURANTE_RLS_POLICY_MISSING_SERVICE_ROLE.md`
+- `docs/postmortem/01-27-26_FOURSQUARE_API_RESPONSE_FORMAT_CHANGE.md`
 
 ---
 *Document approved on 2026-01-22. Migrated to TypeScript on 2026-01-23. Foursquare integration completed 2026-01-26.*
