@@ -7,6 +7,7 @@ import authRouter from './Routes/authRouter.js'
 import userRouter from './Routes/userRouter.js'
 import restaurantRouter from './Routes/restaurantRouter.js'
 import reviewRouter from './Routes/reviewRouter.js'
+import eatlistRouter from './Routes/eatlistRouter.js'
 
 config()
 
@@ -27,6 +28,7 @@ app.use('/auth', authRouter)
 app.use('/users', userRouter)
 app.use('/restaurants', restaurantRouter)
 app.use('/reviews', reviewRouter)
+app.use('/eatlist', eatlistRouter)
 
 // Health check
 app.get('/', (_req: Request, res: Response) => {

@@ -22,6 +22,8 @@ export const ERROR_MESSAGES = {
   EMAIL_ALREADY_EXISTS: 'Email already registered',
   RESTAURANTE_NOT_FOUND: 'Restaurant not found',
   REVIEW_NOT_FOUND: 'Review not found',
+  EATLIST_NOT_FOUND: 'Eatlist entry not found',
+  EATLIST_ALREADY_EXISTS: 'Restaurant already in eatlist',
   INVALID_TOKEN: 'Invalid or expired token',
   NOT_OWNER: 'You do not have permission to perform this action',
   MISSING_REQUIRED_FIELD: 'Missing required field',
