@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { colors, spacing, typography } from '@/lib/constants';
@@ -88,7 +88,7 @@ export default function MapScreen() {
 
   const handleCardPress = () => {
     if (selectedRestaurant) {
-      router.push(`/(tabs)/(home,search)/restaurant/${selectedRestaurant.id}`);
+      router.push(`/(tabs)/(home,search)/restaurant/${selectedRestaurant.id}` as Href);
     }
   };
 

@@ -9,7 +9,7 @@ import {
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks';
@@ -64,11 +64,11 @@ export default function HomeScreen() {
   };
 
   const handleSearchPress = () => {
-    router.push('/(tabs)/(home,search)/search');
+    router.push('/(tabs)/(home,search)/search' as Href);
   };
 
   const handleMapPress = () => {
-    router.push('/(tabs)/(home,search)/map');
+    router.push('/(tabs)/(home,search)/map' as Href);
   };
 
   if (isLoading) {

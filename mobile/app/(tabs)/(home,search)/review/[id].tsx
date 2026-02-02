@@ -8,7 +8,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
 import { reviewsApi } from '@/lib/api';
@@ -50,13 +50,13 @@ export default function ReviewDetailScreen() {
 
   const handleUserPress = () => {
     if (review?.userId) {
-      router.push(`/(tabs)/(home,search)/user/${review.userId}`);
+      router.push(`/(tabs)/(home,search)/user/${review.userId}` as Href);
     }
   };
 
   const handleRestaurantPress = () => {
     if (review?.restaurantId) {
-      router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}`);
+      router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}` as Href);
     }
   };
 

@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks';
@@ -43,7 +43,7 @@ export default function LoginScreen() {
 
     try {
       await login(email, password);
-      router.replace('/(tabs)/(home,search)/home');
+      router.replace('/(tabs)/(home,search)/home' as Href);
     } catch (error) {
       Alert.alert(
         'Login Failed',

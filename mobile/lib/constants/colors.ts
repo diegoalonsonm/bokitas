@@ -1,46 +1,46 @@
 /**
  * Bokitas Color Palette
- * Dark mode only - Costa Rica inspired warm colors
+ * Dark mode only - Modern charcoal with vibrant coral accents
  */
 export const colors = {
-  // Primary brand - Warm Costa Rica inspired
-  primary: '#E85D04',
-  primaryLight: '#F48C06',
-  primaryDark: '#DC2F02',
+  // Primary brand - Vibrant Coral
+  primary: '#FF6B6B',
+  primaryLight: '#FF8A8A',
+  primaryDark: '#E85555',
   
-  // Secondary - Fresh tropical green
-  accent: '#6A994E',
-  accentLight: '#A7C957',
+  // Secondary - Cool Gray (for subtitles, placeholders)
+  accent: '#A1A1AA',
+  accentLight: '#D4D4D8',
   
-  // Dark Mode Backgrounds (no light mode)
-  background: '#0D0D0D',
-  surface: '#1A1A1A',
-  surfaceElevated: '#262626',
-  surfaceBorder: '#333333',
+  // Dark Mode Backgrounds - Soft Charcoal / Deep Slate
+  background: '#18181B',
+  surface: '#27272A',
+  surfaceElevated: '#3F3F46',
+  surfaceBorder: '#3F3F46',
   
   // Dark Mode Text
-  text: '#FAFAFA',
+  text: '#F4F4F5',
   textSecondary: '#A1A1AA',
   textMuted: '#71717A',
-  textInverse: '#0D0D0D',
+  textInverse: '#18181B',
   
   // Semantic
-  success: '#22C55E',
+  success: '#34D399',
   warning: '#FBBF24',
   error: '#EF4444',
   info: '#3B82F6',
   
   // Rating stars
   starFilled: '#FBBF24',
-  starEmpty: '#404040',
+  starEmpty: '#3F3F46',
   
   // Overlays
-  overlay: 'rgba(0, 0, 0, 0.7)',
+  overlay: 'rgba(24, 24, 27, 0.8)',
   overlayLight: 'rgba(255, 255, 255, 0.05)',
   
   // Gradients
-  gradientPrimary: ['#E85D04', '#DC2F02'],
-  gradientAccent: ['#6A994E', '#A7C957'],
+  gradientPrimary: ['#FF6B6B', '#E85555'],
+  gradientAccent: ['#A1A1AA', '#D4D4D8'],
 } as const;
 
 export type ColorKey = keyof typeof colors;

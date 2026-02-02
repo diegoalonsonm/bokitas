@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useEatlistStore } from '@/lib/stores';
@@ -64,7 +64,7 @@ export default function EatlistScreen() {
   };
 
   const handleExplore = () => {
-    router.push('/(tabs)/(home,search)/search');
+    router.push('/(tabs)/(home,search)/search' as Href);
   };
 
   const renderEntry = ({ item }: { item: EatlistEntry }) => {

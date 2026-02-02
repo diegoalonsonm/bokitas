@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
 import { Rating, Badge } from '@/components/ui';
 import type { Restaurant } from '@/types';
@@ -23,7 +23,7 @@ export function RestaurantCard({
     if (onPress) {
       onPress();
     } else {
-      router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}`);
+      router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}` as Href);
     }
   };
 

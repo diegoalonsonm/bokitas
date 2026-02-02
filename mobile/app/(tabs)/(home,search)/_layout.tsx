@@ -10,6 +10,7 @@ export default function HomeSearchLayout() {
         animation: 'slide_from_right',
       }}
     >
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="home" />
       <Stack.Screen name="search" />
       <Stack.Screen name="map" />

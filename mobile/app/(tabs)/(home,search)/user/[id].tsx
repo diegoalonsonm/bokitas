@@ -8,7 +8,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
 import { usersApi } from '@/lib/api';
@@ -157,7 +157,7 @@ export default function UserProfileScreen() {
                 <Pressable
                   key={restaurant.id}
                   style={styles.top4Item}
-                  onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}`)}
+                  onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}` as Href)}
                 >
                   <View style={styles.top4Rank}>
                     <Text style={styles.top4RankText}>{index + 1}</Text>

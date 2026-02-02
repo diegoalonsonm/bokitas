@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   splash: {
     image: './assets/splash-icon.png',
     resizeMode: 'contain',
-    backgroundColor: '#0D0D0D',
+    backgroundColor: '#18181B',
   },
   ios: {
     supportsTablet: true,
@@ -20,7 +20,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#0D0D0D',
+      backgroundColor: '#18181B',
     },
     package: 'com.bokitas.app',
   },

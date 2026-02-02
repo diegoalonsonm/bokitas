@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, ViewStyle } from 'react-native';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
 import { Avatar, Rating } from '@/components/ui';
 import type { Review } from '@/types';
@@ -23,12 +23,12 @@ export function ReviewCard({
     if (onPress) {
       onPress();
     } else {
-      router.push(`/(tabs)/(home,search)/review/${review.id}`);
+      router.push(`/(tabs)/(home,search)/review/${review.id}` as Href);
     }
   };
 
   const handleUserPress = () => {
-    router.push(`/(tabs)/(home,search)/user/${review.userId}`);
+    router.push(`/(tabs)/(home,search)/user/${review.userId}` as Href);
   };
 
   return (
@@ -58,7 +58,7 @@ export function ReviewCard({
       {showRestaurant && review.restaurant && (
         <Pressable 
           style={styles.restaurantRow}
-          onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}`)}
+          onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}` as Href)}
         >
           <Text style={styles.restaurantLabel}>at </Text>
           <Text style={styles.restaurantName}>{review.restaurant.name}</Text>
