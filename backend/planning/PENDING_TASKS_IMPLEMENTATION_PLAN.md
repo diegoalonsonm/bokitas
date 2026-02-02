@@ -610,10 +610,10 @@ Only RLS policies need to be added.
 
 Implementation is complete when:
 
-- [ ] Storage RLS policies are created and tested
-- [ ] Error middleware catches all exceptions
-- [ ] All routes return consistent error JSON format
-- [ ] 404 handler returns proper format
+- [x] Storage RLS policies are created and tested (Completed 2026-02-02)
+- [x] Error middleware catches all exceptions (Completed 2026-02-02)
+- [x] All routes return consistent error JSON format (Completed 2026-02-02)
+- [x] 404 handler returns proper format (Completed 2026-02-02)
 - [ ] All controllers refactored to use asyncHandler
 - [ ] All try/catch blocks removed from controllers
 - [ ] Type checking passes (`npm run typecheck`)

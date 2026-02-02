@@ -10,6 +10,9 @@ import reviewRouter from './Routes/reviewRouter.js'
 import eatlistRouter from './Routes/eatlistRouter.js'
 import foodTypeRouter from './Routes/foodTypeRouter.js'
 
+// Import error middleware
+import { errorHandler, notFoundHandler } from './Middleware/errorMiddleware.js'
+
 config()
 
 const PORT: number = parseInt(process.env.PORT || '3000', 10)
@@ -24,6 +27,11 @@ app.use(cors({
 
 app.use(express.json())
 
+// Health check (before routes so it's always accessible)
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).send('API is running')
+})
+
 // Routes
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
@@ -32,10 +40,11 @@ app.use('/reviews', reviewRouter)
 app.use('/eatlist', eatlistRouter)
 app.use('/food-types', foodTypeRouter)
 
-// Health check
-app.get('/', (_req: Request, res: Response) => {
-  res.status(200).send('API is running')
-})
+// 404 handler (must be after all routes)
+app.use(notFoundHandler)
+
+// Global error handler (must be last)
+app.use(errorHandler)
 
 // Start server
 app.listen(PORT, () => {

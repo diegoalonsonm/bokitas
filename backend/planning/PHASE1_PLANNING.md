@@ -570,7 +570,7 @@ Phase 1 is complete when:
 - [x] User can manage their eatlist (add, update, remove)
 - [x] All searches default to Costa Rica
 - [x] All endpoints documented (auth, user, restaurant, review, eatlist, food-types)
-- [ ] Error handling middleware is implemented
+- [x] Error handling middleware is implemented (2026-02-02)
 
 ---
 
@@ -636,9 +636,9 @@ Phase 1 is complete when:
 - [x] Task 4.1-4.10 - Review module - Done
 - [x] Task 5.1-5.7 - Eatlist module - Done
 - [x] Task 6.1-6.3 - Food Types module - Done
-- [ ] Task 7.1-7.2 - Supabase Storage buckets + policies (console configuration) - Not started
+- [x] Task 7.1-7.2 - Supabase Storage buckets + policies - Done (buckets created manually, RLS policies via migration 2026-02-02)
 - [x] Task 7.3 - Storage service helpers - Done
-- [ ] Task 8.1-8.3 - Error handling middleware - Not started
+- [x] Task 8.1-8.3 - Error handling middleware - Done (2026-02-02)
 - [x] Task 9.1-9.3 - Testing & Documentation - Done
 
 ### Foursquare Integration (2026-01-26)
