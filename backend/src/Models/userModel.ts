@@ -1,6 +1,6 @@
 import { supabase } from './supabase/client.js'
 import { ESTADO } from '../Utils/constants.js'
-import type { User, GetUserParams, UpdateUserParams, DeleteUserParams, GetUserByEmailParams } from '../types/entities/user.types.js'
+import type { User, GetUserParams, UpdateUserParams, DeleteUserParams, GetUserByEmailParams, GetUserByAuthIdParams } from '../types/entities/user.types.js'
 import type { OperationResult } from '../types/index.js'
 import { randomUUID } from 'crypto'
 
@@ -8,16 +8,17 @@ export class UserModel {
   /**
    * Create a new user
    */
-  static async create({ email, nombre, apellido, authId }: { email: string; nombre: string; apellido: string; authId: string }): Promise<User> {
+  static async create({ email, nombre, primerapellido, segundoapellido, authId }: { email: string; nombre: string; primerapellido: string; segundoapellido?: string | null; authId: string }): Promise<User> {
     try {
       const { data, error } = await supabase
         .from('usuario')
         .insert({
           id: randomUUID(),
-          email,
+          correo: email,
           nombre,
-          apellido,
-          idauth: authId,
+          primerapellido,
+          segundoapellido,
+          authid: authId,
           idestado: ESTADO.PENDIENTE,
           active: true,
           createdat: new Date().toISOString()
@@ -43,7 +44,7 @@ export class UserModel {
     try {
       const { data, error } = await supabase
         .from('usuario')
-        .select('id, email, nombre, apellido, urlfotoperfil, createdat, idestado, active')
+        .select('id, correo, nombre, primerapellido, segundoapellido, urlfotoperfil, createdat, idestado, active')
         .eq('id', id)
         .eq('active', true)
         .single()
@@ -52,7 +53,19 @@ export class UserModel {
         return null
       }
 
-      return data as User
+      const transformedData = {
+        id: data.id,
+        email: data.correo,
+        nombre: data.nombre,
+        primerapellido: data.primerapellido,
+        segundoapellido: data.segundoapellido,
+        urlFotoPerfil: data.urlfotoperfil,
+        createdat: data.createdat,
+        idestado: data.idestado,
+        active: data.active
+      }
+
+      return transformedData as User
     } catch (err) {
       console.error('Error getting user by ID:', err)
       throw err
@@ -67,7 +80,7 @@ export class UserModel {
       const { data, error } = await supabase
         .from('usuario')
         .select('id')
-        .eq('email', email)
+        .eq('correo', email)
         .eq('active', true)
         .single()
 
@@ -83,20 +96,46 @@ export class UserModel {
   }
 
   /**
+   * Get user ID by auth ID (Supabase auth user ID)
+   */
+  static async getUserIdByAuthId({ authId }: GetUserByAuthIdParams): Promise<string | null> {
+    try {
+      const { data, error } = await supabase
+        .from('usuario')
+        .select('id')
+        .eq('authid', authId)
+        .eq('active', true)
+        .single()
+
+      if (error || !data) {
+        return null
+      }
+
+      return data.id
+    } catch (err) {
+      console.error('Error getting user by auth ID:', err)
+      throw err
+    }
+  }
+
+  /**
    * Update user profile
    */
-  static async updateProfile({ id, nombre, apellido, urlfotoperfil, idestado }: UpdateUserParams): Promise<OperationResult> {
+  static async updateProfile({ id, nombre, primerapellido, segundoapellido, urlFotoPerfil, idestado }: UpdateUserParams): Promise<OperationResult> {
     try {
       const updateData: Record<string, unknown> = {}
       
       if (nombre !== undefined) {
         updateData.nombre = nombre
       }
-      if (apellido !== undefined) {
-        updateData.apellido = apellido
+      if (primerapellido !== undefined) {
+        updateData.primerapellido = primerapellido
       }
-      if (urlfotoperfil !== undefined) {
-        updateData.urlfotoperfil = urlfotoperfil
+      if (segundoapellido !== undefined) {
+        updateData.segundoapellido = segundoapellido
+      }
+      if (urlFotoPerfil !== undefined) {
+        updateData.urlfotoperfil = urlFotoPerfil
       }
       if (idestado !== undefined) {
         updateData.idestado = idestado
@@ -106,16 +145,20 @@ export class UserModel {
         return { success: false, message: 'No fields to update' }
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('usuario')
         .update(updateData)
-        .eq('id', id)
+        .eq('authid', id)
         .eq('active', true)
-        .select()
-        .single()
+        .select('id')
+        .maybeSingle()
 
       if (error) {
         throw error
+      }
+
+      if (!data) {
+        return { success: false, message: 'User not found or inactive' }
       }
 
       return { success: true, message: 'Profile updated successfully' }

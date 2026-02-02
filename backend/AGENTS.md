@@ -1148,9 +1148,11 @@ EMAIL_PASS=your-app-password
    - Pattern could repeat elsewhere
 
 ### Documentation Updates
+When creating new documentation, the folders are already created. Check them out before creating the files and fill that path out. 
+
 - **Entity created/updated/deleted** → Update `docs/entities/`
 - **Endpoint created/updated/deleted** → Update `docs/endpoints/`
-- **Bug fixed after struggle** → Create postmortem
+- **Bug fixed after struggle** → Create postmortem. Use the path `docs/postmortem/`
 
 ---
 
@@ -1192,22 +1194,44 @@ EMAIL_PASS=your-app-password
 - [x] Project initialized
 - [x] TypeScript configured
 - [x] Base structure created
-- [ ] Core entities implemented
-- [ ] Documentation complete
+- [x] Core entities implemented
+- [x] Documentation complete
+- [x] Phase 1 MVP complete (2026-02-02)
 
 ### Implemented Entities
 - User (TypeScript) - CRUD operations, reviews, eatlist, top4
 - Auth (TypeScript) - Register, login, logout, forgot password, reset password, me
 - Authentication Middleware (TypeScript) - JWT verification with Supabase
+- Restaurant (TypeScript) - CRUD operations, Foursquare integration, search, nearby, filters
+- Review (TypeScript) - CRUD operations, photo upload
+- Eatlist (TypeScript) - CRUD operations (add, update, remove, get with filters)
+- FoodType (TypeScript) - Get all, create
+- Error Middleware (TypeScript) - Global error handler, custom error classes, asyncHandler
 
 ### Recent Changes
 - 2026-01-23: Migrated from JavaScript to TypeScript following AGENTS.md standards
 - 2026-01-23: Created src/ directory structure with proper TypeScript types
 - 2026-01-23: Implemented auth and user modules with full type safety
 - 2026-01-23: Type checking passes successfully
+- 2026-01-26: Implemented Foursquare service with Axios client
+- 2026-01-27: Implemented review module (types, validation, model, controller, router, docs)
+- 2026-01-27: Implemented restaurant module with Foursquare integration
+- 2026-01-28: Implemented eatlist module (types, validation, model, controller, router, docs)
+- 2026-01-28: Implemented food-types module (types, validation, model, controller, router, docs)
+- 2026-02-02: Implemented Storage RLS policies via Supabase migration
+- 2026-02-02: Implemented error middleware with custom error classes (AppError, NotFoundError, ValidationError, UnauthorizedError, ForbiddenError, ConflictError)
+- 2026-02-02: Refactored all controllers to use asyncHandler and throw errors instead of try/catch
+- 2026-02-02: Phase 1 MVP complete - all tasks finished
+
+### Pending Items (Phase 1)
+_All Phase 1 items complete_
+
+### Phase 2 Candidates
+- [ ] Rate limiting middleware
+- [ ] Request logging middleware
+- [ ] API versioning
+- [ ] Integration tests
+- [ ] CI/CD pipeline
 
 ### Known Issues
-_None yet_
-
-### Known Issues
-_None yet_
+_None currently_

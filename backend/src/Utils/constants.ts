@@ -22,6 +22,9 @@ export const ERROR_MESSAGES = {
   EMAIL_ALREADY_EXISTS: 'Email already registered',
   RESTAURANTE_NOT_FOUND: 'Restaurant not found',
   REVIEW_NOT_FOUND: 'Review not found',
+  EATLIST_NOT_FOUND: 'Eatlist entry not found',
+  EATLIST_ALREADY_EXISTS: 'Restaurant already in eatlist',
+  FOOD_TYPE_ALREADY_EXISTS: 'Food type already exists',
   INVALID_TOKEN: 'Invalid or expired token',
   NOT_OWNER: 'You do not have permission to perform this action',
   MISSING_REQUIRED_FIELD: 'Missing required field',
@@ -35,8 +38,8 @@ export const DEFAULT_PAGINATION_PAGE = 1
 export const DEFAULT_PAGINATION_LIMIT = 20
 
 export const STORAGE_BUCKETS = {
-  PROFILE_PHOTOS: 'profile-photos',
-  REVIEW_PHOTOS: 'review-photos'
+  PROFILE_PHOTOS: process.env.SUPABASE_PROFILE_PICTURES_BUCKET || 'profile-pictures',
+  REVIEW_PHOTOS: process.env.SUPABASE_RESTAURANT_REVIEWS_BUCKET || 'restaurant-reviews'
 } as const
 
 export const STORAGE_MAX_SIZE = {

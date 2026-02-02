@@ -13,7 +13,7 @@ const registerSchema = z.object({
     required_error: 'Name is required',
     invalid_type_error: 'Name must be a string'
   }).min(2, 'Name must be at least 2 characters'),
-  apellido: z.string({
+  primerapellido: z.string({
     required_error: 'Last name is required',
     invalid_type_error: 'Last name must be a string'
   }).min(2, 'Last name must be at least 2 characters')

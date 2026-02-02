@@ -6,7 +6,7 @@ export interface RegisterBody {
   email: string
   password: string
   nombre: string
-  apellido: string
+  primerapellido: string
 }
 
 export interface LoginBody {

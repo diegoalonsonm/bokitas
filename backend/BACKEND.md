@@ -11,8 +11,11 @@ This document outlines the backend architecture, API endpoints, and development 
 * **Authentication**: Supabase Auth
 * **Validation**: Zod
 * **API Client**: Supabase JS Client
+* **HTTP Client**: Axios (for external API calls)
+* **External API**: Foursquare Places API
 
 *Note: Backend migrated to TypeScript on 2026-01-23 following AGENTS.md standards.*
+*Note: Foursquare integration migrated to Axios on 2026-01-26.*
 
 ---
 
@@ -90,7 +93,7 @@ This document outlines the backend architecture, API endpoints, and development 
 | urlFotoPerfil | text | | Main photo URL |
 | urlPaginaRestaurante | text | | Website URL |
 | puntuacion | decimal(3,2) | DEFAULT 0 | Average rating (calculated) |
-| googlePlaceId | varchar | UNIQUE | Google Places API ID |
+| foursquareid | varchar | UNIQUE | Foursquare Places API ID |
 | createdAt | TIMESTAMPTZ | DEFAULT now() | Creation date |
 | updatedAt | TIMESTAMPTZ | DEFAULT now() | Last update timestamp |
 | idEstado | UUID | FK -> estado | Restaurant status |
@@ -229,7 +232,7 @@ This document outlines the backend architecture, API endpoints, and development 
 |--------|----------|-------------|-------|
 | GET | `/restaurants` | List restaurants (with filters) | 1 |
 | GET | `/restaurants/:id` | Get restaurant details | 1 |
-| GET | `/restaurants/search` | Search restaurants (Google Places) | 1 |
+| GET | `/restaurants/search` | Search restaurants (Foursquare API) | 1 |
 | GET | `/restaurants/nearby` | Get nearby restaurants | 1 |
 | GET | `/restaurants/:id/reviews` | Get restaurant reviews | 1 |
 | GET | `/restaurants/top` | Get top rated restaurants | 1 |
@@ -325,7 +328,7 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Create `review` table
 - [x] Create `eatlist` table
 - [x] Configure Row Level Security (RLS) policies
-- [ ] Set up Supabase Storage buckets for images
+- [ ] Set up Supabase Storage buckets for images (console configuration)
 
 #### Authentication Module
 - [x] Set up authentication middleware (TypeScript)
@@ -333,42 +336,45 @@ This document outlines the backend architecture, API endpoints, and development 
 - [x] Implement login endpoint
 - [x] Implement logout endpoint
 - [x] Implement password reset flow
-- [ ] Implement JWT token management
+- [x] Implement JWT token management (via Supabase Auth)
 
 #### User Module
 - [x] Implement get user profile endpoint (TypeScript)
 - [x] Implement update user profile endpoint (TypeScript)
-- [ ] Implement profile photo upload (Supabase Storage)
+- [x] Implement profile photo upload (StorageService + uploadMiddleware)
 - [x] Implement get user's reviews endpoint (TypeScript)
 - [x] Implement get user's eatlist endpoint (TypeScript)
 - [x] Implement top 4 restaurants feature (TypeScript)
 
 #### Restaurant Module
-- [ ] Integrate Google Places API
-- [ ] Implement restaurant search endpoint
-- [ ] Implement nearby restaurants endpoint
-- [ ] Implement restaurant details endpoint
-- [ ] Implement restaurant filters (food type, distance, rating)
-- [ ] Implement caching for Google Places results
-- [ ] Implement save restaurant to local DB
+- [x] Integrate Foursquare Places API (axios client with proper headers)
+- [x] Implement restaurant search endpoint (`GET /restaurants/search`)
+- [x] Implement nearby restaurants endpoint (`GET /restaurants/nearby` via FoursquareService)
+- [x] Implement restaurant details endpoint (`GET /restaurants/:id`)
+- [x] Implement restaurant filters (food type, distance, rating)
+- [x] Implement get/create by Foursquare ID (`GET /restaurants/foursquare/:fsqId`)
+- [x] Implement restaurant reviews endpoint (`GET /restaurants/:id/reviews`)
+- [x] Implement top restaurants endpoint (`GET /restaurants/top`)
+- [x] Implement update restaurant endpoint (`PUT /restaurants/:id`)
 
 #### Review Module
-- [ ] Implement create review endpoint
-- [ ] Implement get review endpoint
-- [ ] Implement update review endpoint
-- [ ] Implement delete review endpoint
-- [ ] Implement review photo upload
-- [ ] Implement restaurant rating calculation (trigger/function)
+- [x] Implement create review endpoint
+- [x] Implement get review endpoint
+- [x] Implement update review endpoint
+- [x] Implement delete review endpoint
+- [x] Implement review photo upload
+- [ ] Implement restaurant rating calculation (trigger/function in Supabase)
 
 #### Eatlist Module
-- [ ] Implement get eatlist endpoint
-- [ ] Implement add to eatlist endpoint
-- [ ] Implement update eatlist entry endpoint
-- [ ] Implement remove from eatlist endpoint
+- [x] Implement get eatlist endpoint (`GET /eatlist`)
+- [x] Implement add to eatlist endpoint (`POST /eatlist`)
+- [x] Implement update eatlist entry endpoint (`PUT /eatlist/:restaurantId`)
+- [x] Implement remove from eatlist endpoint (`DELETE /eatlist/:restaurantId`)
 
 #### Food Types Module
-- [ ] Implement get all food types endpoint
-- [ ] Seed initial food types data
+- [x] Implement get all food types endpoint (`GET /food-types`)
+- [x] Implement create food type endpoint (`POST /food-types`)
+- [x] Seed initial food types data (20 types in database)
 
 ---
 
@@ -452,23 +458,45 @@ This document outlines the backend architecture, API endpoints, and development 
 
 ## External Integrations
 
-### Google Places API
+### Foursquare Places API
 
 **Setup:**
-1. Create Google Cloud project
-2. Enable Places API
+1. Create Foursquare Developer account
+2. Create a new project
 3. Generate API key
-4. Set up billing (free $200/month credit)
+4. Free tier: 10,000 calls/month
 
-**Key endpoints to use:**
-- Place Search (Nearby Search, Text Search)
-- Place Details
-- Place Photos
+**Configuration (Updated 2026-01-26):**
+- Base URL: `https://places-api.foursquare.com`
+- API Version: `2025-06-17`
+- Required Headers:
+  - `X-Places-Api-Version: 2025-06-17`
+  - `Authorization: Bearer <API_KEY>`
+  - `Accept: application/json`
+
+**Key endpoints implemented:**
+- `GET /places/search` - Search for places (Text Search, Nearby Search)
+- `GET /places/{fsq_id}` - Get place details
+- `GET /places/{fsq_id}/photos` - Get place photos
+- `GET /places/{fsq_id}/tips` - Get user tips/reviews
+- `GET /places/match` - Match place by name/address
+- `GET /places/nearby` - Find nearby places (Snap to Place)
 
 **Caching Strategy:**
-- Cache restaurant data in local DB after first fetch
-- Set cache expiration (e.g., 7 days)
-- Store Google Place ID for reference
+- Save restaurant to local DB when user interacts (reviews, eatlist)
+- Check local DB by `foursquareid` before calling API
+- Reduces API calls as popular restaurants get cached
+- No expiration needed - user-driven updates
+
+**Geographic Search:**
+- Nearby: Use `ll` (lat,lng) + `radius` parameters
+- Browse: Use `near` parameter (e.g., "Guanacaste, Costa Rica")
+- Default: `near=Costa Rica` when no location provided
+
+**Implementation Notes:**
+- Uses Axios HTTP client via configured `foursquareClient`
+- See `docs/endpoints/foursquare-service.md` for full documentation
+- See `docs/postmortem/01-26-26_FOURSQUARE_API_MIGRATION.md` for migration details
 
 ### Supabase Storage
 

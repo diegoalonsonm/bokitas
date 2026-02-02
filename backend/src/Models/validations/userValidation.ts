@@ -4,9 +4,12 @@ const profileUpdateSchema = z.object({
   nombre: z.string({
     invalid_type_error: 'Name must be a string'
   }).min(2, 'Name must be at least 2 characters').optional(),
-  apellido: z.string({
+  primerapellido: z.string({
     invalid_type_error: 'Last name must be a string'
   }).min(2, 'Last name must be at least 2 characters').optional(),
+  segundoapellido: z.string({
+    invalid_type_error: 'Second last name must be a string'
+  }).min(2, 'Second last name must be at least 2 characters').optional().nullable(),
   urlfotoperfil: z.string({
     invalid_type_error: 'Profile photo URL must be a string'
   }).url('Must be a valid URL').optional()

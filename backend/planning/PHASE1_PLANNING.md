@@ -6,7 +6,7 @@
 >
 > **Created**: 2026-01-22
 >
-> **Status**: Approved
+> **Status**: ✅ COMPLETED (2026-02-02)
 
 ---
 
@@ -105,6 +105,11 @@ backend/
 │   │   ├── foursquareService.ts       # Foursquare API integration
 │   │   └── storageService.ts          # Supabase Storage helpers
 │   │
+│   ├── config/
+│   │   ├── constants.ts               # API URLs, default values
+│   │   ├── httpClient.ts              # Axios client for Foursquare
+│   │   └── foursquareCategoryMapping.ts # Category ID mapping
+│   │
 │   ├── Utils/
 │   │   └── constants.ts               # Status IDs, error messages
 │   │
@@ -151,6 +156,7 @@ backend/
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
+    "axios": "^1.13.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -169,6 +175,8 @@ backend/
 }
 ```
 
+*Note: Axios added on 2026-01-26 for Foursquare API integration.*
+
 ---
 
 ## Environment Variables
@@ -183,7 +191,9 @@ SUPABASE_URL=https://kzzbsnpopncseymphchl.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Foursquare
+# Foursquare Places API
+# Note: API key is used with "Bearer " prefix in Authorization header
+# Required header: X-Places-Api-Version: 2025-06-17
 FOURSQUARE_API_KEY=your-api-key
 
 # CORS
@@ -547,20 +557,20 @@ Backend responsibilities: Verify JWT, create/sync `usuario` record, provide user
 
 Phase 1 is complete when:
 
-- [ ] User can register and login via Supabase Auth
-- [ ] User can view and update their profile
-- [ ] User can upload profile photo
-- [ ] User can search restaurants via Foursquare
-- [ ] User can view restaurant details
-- [ ] User can filter restaurants by food type, distance, rating
-- [ ] User can create, update, delete reviews
-- [ ] User can upload review photos
-- [ ] First review photo becomes restaurant cover
-- [ ] Restaurant ratings are calculated from reviews
-- [ ] User can manage their eatlist (add, update, remove)
-- [ ] All searches default to Costa Rica
-- [ ] All endpoints documented
-- [ ] Error handling is consistent
+- [x] User can register and login via Supabase Auth
+- [x] User can view and update their profile
+- [x] User can upload profile photo
+- [x] User can search restaurants via Foursquare
+- [x] User can view restaurant details
+- [x] User can filter restaurants by food type, distance, rating
+- [x] User can create, update, delete reviews
+- [x] User can upload review photos
+- [x] First review photo becomes restaurant cover (implemented in ReviewModel.updatePhoto)
+- [x] Restaurant ratings are calculated from reviews (implemented in RestaurantModel.updateRating)
+- [x] User can manage their eatlist (add, update, remove)
+- [x] All searches default to Costa Rica
+- [x] All endpoints documented (auth, user, restaurant, review, eatlist, food-types)
+- [x] Error handling middleware is implemented (2026-02-02)
 
 ---
 
@@ -602,7 +612,7 @@ Phase 1 is complete when:
 
 ### Original Phase 1 Progress
 - [x] Task 0.1 - Initialize npm project - Done
-- [x] Task 0.2 - Install dependencies - Done
+- [x] Task 0.2 - Install dependencies - Done (axios added 2026-01-26)
 - [x] Task 0.3 - Create folder structure - Done (migrated to src/)
 - [x] Task 0.4 - Configure environment - Done
 - [x] Task 0.5 - Setup Supabase client - Done (TypeScript)
@@ -610,14 +620,86 @@ Phase 1 is complete when:
 - [x] Task 0.7 - Create utility constants - Done (TypeScript)
 - [x] Task 1.1 - Auth middleware - Done (TypeScript)
 - [x] Task 1.2-1.9 - Auth controllers and routers - Done (TypeScript)
-- [ ] Task 2.1-2.10 - User module - Partially done (missing storage service)
-- [ ] Task 3.1-3.11 - Restaurant module - Not started
-- [ ] Task 4.1-4.10 - Review module - Not started
-- [ ] Task 5.1-5.7 - Eatlist module - Not started
-- [ ] Task 6.1-6.3 - Food Types module - Not started
-- [ ] Task 7.1-7.3 - Supabase Storage setup - Not started
-- [ ] Task 8.1-8.3 - Error handling - Not started
-- [ ] Task 9.1-9.3 - Testing & Documentation - Not started
+- [x] Task 2.1-2.10 - User module - Done
+- [x] Task 2.11 - User documentation - Done
+- [x] Task 3.1 - Foursquare service (Axios client) - Done (2026-01-26)
+- [x] Task 3.2 - Restaurant model (CRUD + search) - Done
+- [x] Task 3.3 - Restaurant validation schemas - Done
+- [x] Task 3.4 - GET `/restaurants` (with filters) - Done
+- [x] Task 3.5 - GET `/restaurants/search` - Done
+- [x] Task 3.6 - GET `/restaurants/nearby` (via FoursquareService) - Done
+- [x] Task 3.7 - GET `/restaurants/:id` - Done
+- [x] Task 3.8 - GET `/restaurants/:id/reviews` - Done
+- [x] Task 3.9 - GET `/restaurants/foursquare/:fsqId` - Done
+- [x] Task 3.10 - PUT `/restaurants/:id` - Done
+- [x] Task 3.11 - Restaurant documentation - Done
+- [x] Task 4.1-4.10 - Review module - Done
+- [x] Task 5.1-5.7 - Eatlist module - Done
+- [x] Task 6.1-6.3 - Food Types module - Done
+- [x] Task 7.1-7.2 - Supabase Storage buckets + policies - Done (buckets created manually, RLS policies via migration 2026-02-02)
+- [x] Task 7.3 - Storage service helpers - Done
+- [x] Task 8.1-8.3 - Error handling middleware - Done (2026-02-02)
+- [x] Task 9.1-9.3 - Testing & Documentation - Done
+
+### Foursquare Integration (2026-01-26)
+- [x] Create Axios HTTP client with proper configuration
+- [x] Add `X-Places-Api-Version: 2025-06-17` header
+- [x] Add `Authorization: Bearer <API_KEY>` header
+- [x] Implement `searchPlaces()` method
+- [x] Implement `getPlaceDetails()` method
+- [x] Implement `getPhotos()` method
+- [x] Implement `getTips()` method
+- [x] Implement `matchPlace()` method
+- [x] Implement `getNearbyPlaces()` method
+- [x] Create Foursquare service documentation
+- [x] Create postmortem for API migration issues
+
+### Documentation Created
+- `docs/endpoints/auth-endpoints.md`
+- `docs/endpoints/user-endpoints.md`
+- `docs/endpoints/restaurant-endpoints.md`
+- `docs/endpoints/foursquare-service.md`
+- `docs/endpoints/review-endpoints.md`
+- `docs/endpoints/eatlist-endpoints.md`
+- `docs/endpoints/foodtype-endpoints.md`
+- `docs/postmortem/01-26-26_FOURSQUARE_API_MIGRATION.md`
+- `docs/postmortem/01-27-26_RESTAURANTE_RLS_POLICY_MISSING_SERVICE_ROLE.md`
+- `docs/postmortem/01-27-26_FOURSQUARE_API_RESPONSE_FORMAT_CHANGE.md`
 
 ---
-*Document approved on 2026-01-22. Migrated to TypeScript on 2026-01-23.*
+*Document approved on 2026-01-22. Migrated to TypeScript on 2026-01-23. Foursquare integration completed 2026-01-26.*
+
+---
+
+## Phase 1 Completion Summary (2026-02-02)
+
+**All Phase 1 tasks have been completed:**
+
+### Controllers Refactored with Error Middleware
+All 6 controllers now use the `asyncHandler` wrapper and custom error classes:
+- `authController.ts` - 6 methods
+- `userController.ts` - 7 methods
+- `restaurantController.ts` - 7 methods
+- `reviewController.ts` - 6 methods
+- `eatlistController.ts` - 4 methods
+- `foodTypeController.ts` - 2 methods
+
+### Error Middleware Implementation
+- **Custom error classes:** `AppError`, `NotFoundError`, `ValidationError`, `UnauthorizedError`, `ForbiddenError`, `ConflictError`
+- **`asyncHandler`:** Wraps async route handlers to eliminate try/catch blocks
+- **`notFoundHandler`:** Returns 404 for undefined routes
+- **`errorHandler`:** Global error handler for all error types (AppError, Zod, Supabase)
+
+### Storage RLS Policies
+6 RLS policies created for Supabase Storage buckets:
+- `profile-pictures`: INSERT, UPDATE, DELETE policies for authenticated users
+- `restaurant-reviews`: INSERT, UPDATE, DELETE policies for authenticated users
+- Public SELECT access for both buckets
+
+### Code Quality
+- ✅ All TypeScript type checks pass
+- ✅ Consistent error response format across all endpoints
+- ✅ No try/catch blocks in controllers (errors bubble up to middleware)
+- ✅ All routers use `asyncHandler` wrapper
+
+**Phase 1 MVP is now complete and ready for frontend integration.**

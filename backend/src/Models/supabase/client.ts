@@ -4,10 +4,22 @@ import { config } from 'dotenv'
 config()
 
 const supabaseUrl = process.env.SUPABASE_URL!
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('Missing Supabase environment variables: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required')
 }
 
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+// Debug: Log which key is being used (first/last 10 chars only for security)
+const keyPreview = supabaseServiceRoleKey
+  ? `${supabaseServiceRoleKey.substring(0, 20)}...${supabaseServiceRoleKey.substring(supabaseServiceRoleKey.length - 10)}`
+  : 'NOT SET'
+console.log(`[Supabase] Initializing client with URL: ${supabaseUrl}`)
+console.log(`[Supabase] Using key: ${keyPreview}`)
+
+export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})

@@ -4,8 +4,9 @@ export interface User {
   id: string
   email: string
   nombre: string
-  apellido: string
-  urlfotoperfil?: string | null
+  primerapellido: string
+  segundoapellido?: string | null
+  urlFotoPerfil?: string | null
   createdat?: Date
   idestado: string
   active: boolean
@@ -14,15 +15,17 @@ export interface User {
 export interface CreateUserParams {
   email: string
   nombre: string
-  apellido: string
+  primerapellido: string
+  segundoapellido?: string | null
   authId: string
 }
 
 export interface UpdateUserParams {
   id: string
   nombre?: string
-  apellido?: string
-  urlfotoperfil?: string
+  primerapellido?: string
+  segundoapellido?: string | null
+  urlFotoPerfil?: string
   idestado?: string
 }
 
@@ -32,6 +35,10 @@ export interface GetUserParams {
 
 export interface GetUserByEmailParams {
   email: string
+}
+
+export interface GetUserByAuthIdParams {
+  authId: string
 }
 
 export interface DeleteUserParams {
