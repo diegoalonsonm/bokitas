@@ -79,7 +79,7 @@ export class ConflictError extends AppError {
 type AsyncRequestHandler = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next?: NextFunction
 ) => Promise<void>
 
 /**

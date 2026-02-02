@@ -1,14 +1,15 @@
 import { Router } from 'express'
 import { AuthController } from '../Controllers/authController.js'
 import { authMiddleware } from '../Middleware/authMiddleware.js'
+import { asyncHandler } from '../Middleware/errorMiddleware.js'
 
 const authRouter = Router()
 
-authRouter.post('/register', AuthController.register)
-authRouter.post('/login', AuthController.login)
-authRouter.post('/logout', AuthController.logout)
-authRouter.post('/forgot-password', AuthController.forgotPassword)
-authRouter.post('/reset-password', AuthController.resetPassword)
-authRouter.get('/me', authMiddleware, AuthController.me)
+authRouter.post('/register', asyncHandler(AuthController.register))
+authRouter.post('/login', asyncHandler(AuthController.login))
+authRouter.post('/logout', asyncHandler(AuthController.logout))
+authRouter.post('/forgot-password', asyncHandler(AuthController.forgotPassword))
+authRouter.post('/reset-password', asyncHandler(AuthController.resetPassword))
+authRouter.get('/me', authMiddleware, asyncHandler(AuthController.me))
 
 export default authRouter

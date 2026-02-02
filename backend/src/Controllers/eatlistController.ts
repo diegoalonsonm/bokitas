@@ -7,7 +7,13 @@ import {
   validateRestaurantIdParam,
   validateGetEatlistQuery
 } from '../Models/validations/eatlistValidation.js'
-import { ERROR_CODES, ERROR_MESSAGES } from '../Utils/constants.js'
+import { ERROR_MESSAGES } from '../Utils/constants.js'
+import {
+  UnauthorizedError,
+  ValidationError,
+  NotFoundError,
+  ConflictError
+} from '../Middleware/errorMiddleware.js'
 import type {
   GetEatlistRequest,
   AddToEatlistRequest,
@@ -20,297 +26,143 @@ export class EatlistController {
    * GET /eatlist
    * Get current user's eatlist with optional visited filter
    */
-  static async getAll(req: GetEatlistRequest, res: Response, _next: unknown): Promise<void> {
-    try {
-      const userId = req.user?.id
+  static async getAll(req: GetEatlistRequest, res: Response): Promise<void> {
+    const userId = req.user?.id
 
-      if (!userId) {
-        res.status(401).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.UNAUTHORIZED,
-            message: 'Authentication required'
-          }
-        })
-        return
-      }
-
-      // Validate query params
-      const queryValidation = validateGetEatlistQuery(req.query)
-
-      if (!queryValidation.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.VALIDATION_ERROR,
-            message: queryValidation.error.errors[0].message
-          }
-        })
-        return
-      }
-
-      const ownerId = await UserModel.getUserIdByAuthId({ authId: userId })
-      if (!ownerId) {
-        res.status(404).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.NOT_FOUND,
-            message: ERROR_MESSAGES.USER_NOT_FOUND
-          }
-        })
-        return
-      }
-
-      const eatlist = await EatlistModel.getAll({
-        userId,
-        visited: queryValidation.data.visited
-      })
-
-      res.status(200).json({
-        success: true,
-        data: eatlist
-      })
-    } catch (err) {
-      console.error('Get eatlist error:', err)
-      res.status(500).json({
-        success: false,
-        error: {
-          code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: (err as Error).message
-        }
-      })
+    if (!userId) {
+      throw new UnauthorizedError('Authentication required')
     }
+
+    // Validate query params
+    const queryValidation = validateGetEatlistQuery(req.query)
+
+    if (!queryValidation.success) {
+      throw new ValidationError(queryValidation.error.errors[0].message)
+    }
+
+    const ownerId = await UserModel.getUserIdByAuthId({ authId: userId })
+    if (!ownerId) {
+      throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND)
+    }
+
+    const eatlist = await EatlistModel.getAll({
+      userId,
+      visited: queryValidation.data.visited
+    })
+
+    res.status(200).json({
+      success: true,
+      data: eatlist
+    })
   }
 
   /**
    * POST /eatlist
    * Add restaurant to user's eatlist
    */
-  static async add(req: AddToEatlistRequest, res: Response, _next: unknown): Promise<void> {
-    try {
-      const userId = req.user?.id
+  static async add(req: AddToEatlistRequest, res: Response): Promise<void> {
+    const userId = req.user?.id
 
-      if (!userId) {
-        res.status(401).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.UNAUTHORIZED,
-            message: 'Authentication required'
-          }
-        })
-        return
-      }
-
-      const validation = validateAddToEatlist(req.body)
-
-      if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.VALIDATION_ERROR,
-            message: validation.error.errors[0].message
-          }
-        })
-        return
-      }
-
-      const ownerId = await UserModel.getUserIdByAuthId({ authId: userId })
-      if (!ownerId) {
-        res.status(404).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.NOT_FOUND,
-            message: ERROR_MESSAGES.USER_NOT_FOUND
-          }
-        })
-        return
-      }
-
-      const result = await EatlistModel.add({
-        userId,
-        restaurantId: validation.data.restaurantId,
-        flag: validation.data.flag
-      })
-
-      // Check if result is an error
-      if ('error' in result) {
-        res.status(409).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.CONFLICT,
-            message: result.error
-          }
-        })
-        return
-      }
-
-      res.status(201).json({
-        success: true,
-        data: result.entry
-      })
-    } catch (err) {
-      console.error('Add to eatlist error:', err)
-
-      if ((err as Error).message === 'Restaurant not found') {
-        res.status(404).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.NOT_FOUND,
-            message: ERROR_MESSAGES.RESTAURANTE_NOT_FOUND
-          }
-        })
-        return
-      }
-
-      res.status(500).json({
-        success: false,
-        error: {
-          code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: (err as Error).message
-        }
-      })
+    if (!userId) {
+      throw new UnauthorizedError('Authentication required')
     }
+
+    const validation = validateAddToEatlist(req.body)
+
+    if (!validation.success) {
+      throw new ValidationError(validation.error.errors[0].message)
+    }
+
+    const ownerId = await UserModel.getUserIdByAuthId({ authId: userId })
+    if (!ownerId) {
+      throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND)
+    }
+
+    const result = await EatlistModel.add({
+      userId,
+      restaurantId: validation.data.restaurantId,
+      flag: validation.data.flag
+    })
+
+    // Check if result is an error
+    if ('error' in result) {
+      throw new ConflictError(result.error)
+    }
+
+    res.status(201).json({
+      success: true,
+      data: result.entry
+    })
   }
 
   /**
    * PUT /eatlist/:restaurantId
    * Update the visited flag of an eatlist entry
    */
-  static async update(req: UpdateEatlistRequest, res: Response, _next: unknown): Promise<void> {
-    try {
-      const userId = req.user?.id
+  static async update(req: UpdateEatlistRequest, res: Response): Promise<void> {
+    const userId = req.user?.id
 
-      if (!userId) {
-        res.status(401).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.UNAUTHORIZED,
-            message: 'Authentication required'
-          }
-        })
-        return
-      }
-
-      const idValidation = validateRestaurantIdParam({ restaurantId: req.params.restaurantId })
-
-      if (!idValidation.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.VALIDATION_ERROR,
-            message: idValidation.error.errors[0].message
-          }
-        })
-        return
-      }
-
-      const bodyValidation = validateUpdateEatlist(req.body)
-
-      if (!bodyValidation.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.VALIDATION_ERROR,
-            message: bodyValidation.error.errors[0].message
-          }
-        })
-        return
-      }
-
-      const updated = await EatlistModel.update({
-        userId,
-        restaurantId: idValidation.data.restaurantId,
-        flag: bodyValidation.data.flag
-      })
-
-      if (!updated) {
-        res.status(404).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.NOT_FOUND,
-            message: 'Eatlist entry not found'
-          }
-        })
-        return
-      }
-
-      res.status(200).json({
-        success: true,
-        data: updated
-      })
-    } catch (err) {
-      console.error('Update eatlist error:', err)
-      res.status(500).json({
-        success: false,
-        error: {
-          code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: (err as Error).message
-        }
-      })
+    if (!userId) {
+      throw new UnauthorizedError('Authentication required')
     }
+
+    const idValidation = validateRestaurantIdParam({ restaurantId: req.params.restaurantId })
+
+    if (!idValidation.success) {
+      throw new ValidationError(idValidation.error.errors[0].message)
+    }
+
+    const bodyValidation = validateUpdateEatlist(req.body)
+
+    if (!bodyValidation.success) {
+      throw new ValidationError(bodyValidation.error.errors[0].message)
+    }
+
+    const updated = await EatlistModel.update({
+      userId,
+      restaurantId: idValidation.data.restaurantId,
+      flag: bodyValidation.data.flag
+    })
+
+    if (!updated) {
+      throw new NotFoundError('Eatlist entry not found')
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updated
+    })
   }
 
   /**
    * DELETE /eatlist/:restaurantId
    * Remove restaurant from user's eatlist (soft delete)
    */
-  static async remove(req: RemoveFromEatlistRequest, res: Response, _next: unknown): Promise<void> {
-    try {
-      const userId = req.user?.id
+  static async remove(req: RemoveFromEatlistRequest, res: Response): Promise<void> {
+    const userId = req.user?.id
 
-      if (!userId) {
-        res.status(401).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.UNAUTHORIZED,
-            message: 'Authentication required'
-          }
-        })
-        return
-      }
-
-      const validation = validateRestaurantIdParam({ restaurantId: req.params.restaurantId })
-
-      if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.VALIDATION_ERROR,
-            message: validation.error.errors[0].message
-          }
-        })
-        return
-      }
-
-      const result = await EatlistModel.remove({
-        userId,
-        restaurantId: validation.data.restaurantId
-      })
-
-      if (!result.success) {
-        res.status(404).json({
-          success: false,
-          error: {
-            code: ERROR_CODES.NOT_FOUND,
-            message: result.message
-          }
-        })
-        return
-      }
-
-      res.status(200).json({
-        success: true,
-        message: result.message
-      })
-    } catch (err) {
-      console.error('Remove from eatlist error:', err)
-      res.status(500).json({
-        success: false,
-        error: {
-          code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-          message: (err as Error).message
-        }
-      })
+    if (!userId) {
+      throw new UnauthorizedError('Authentication required')
     }
+
+    const validation = validateRestaurantIdParam({ restaurantId: req.params.restaurantId })
+
+    if (!validation.success) {
+      throw new ValidationError(validation.error.errors[0].message)
+    }
+
+    const result = await EatlistModel.remove({
+      userId,
+      restaurantId: validation.data.restaurantId
+    })
+
+    if (!result.success) {
+      throw new NotFoundError(result.message)
+    }
+
+    res.status(200).json({
+      success: true,
+      message: result.message
+    })
   }
 }
