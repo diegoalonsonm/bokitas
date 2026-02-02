@@ -95,6 +95,7 @@ mobile/
 │   ├── components/                  # Component documentation
 │   ├── screens/                     # Screen documentation
 │   ├── utils/                       # Utility documentation
+│   ├── planning/                    # Planning documentation
 │   └── postmortem/                  # Issue tracking
 │
 ├── app.json                         # Expo configuration
