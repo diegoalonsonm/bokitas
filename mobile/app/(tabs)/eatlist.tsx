@@ -45,7 +45,7 @@ export default function EatlistScreen() {
   });
 
   const handleToggleVisited = async (entry: EatlistEntry) => {
-    await updateFlag(entry.id, !entry.hasBeenFlag);
+    await updateFlag(entry.restaurantId, !entry.hasBeenFlag);
   };
 
   const handleRemove = (entry: EatlistEntry) => {
@@ -57,7 +57,7 @@ export default function EatlistScreen() {
         {
           text: 'Eliminar',
           style: 'destructive',
-          onPress: () => removeFromEatlist(entry.id),
+          onPress: () => removeFromEatlist(entry.restaurantId),
         },
       ]
     );

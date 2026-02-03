@@ -14,8 +14,8 @@ interface EatlistState {
   // Actions
   fetchEatlist: () => Promise<void>;
   addToEatlist: (restaurantId: string, visited?: boolean) => Promise<void>;
-  removeFromEatlist: (entryId: string) => Promise<void>;
-  updateFlag: (entryId: string, visited: boolean) => Promise<void>;
+  removeFromEatlist: (restaurantId: string) => Promise<void>;
+  updateFlag: (restaurantId: string, visited: boolean) => Promise<void>;
   isInEatlist: (restaurantId: string) => boolean;
   clearEatlist: () => void;
 }
@@ -61,15 +61,15 @@ export const useEatlistStore = create<EatlistState>((set, get) => ({
     }
   },
 
-  removeFromEatlist: async (entryId: string) => {
+  removeFromEatlist: async (restaurantId: string) => {
     // Optimistic update
     const previousEntries = get().entries;
     set((state) => ({
-      entries: state.entries.filter((e) => e.id !== entryId),
+      entries: state.entries.filter((e) => e.restaurantId !== restaurantId),
     }));
 
     try {
-      const response = await eatlistApi.remove(entryId);
+      const response = await eatlistApi.remove(restaurantId);
       if (!response.success) {
         // Rollback
         set({ entries: previousEntries });
@@ -81,17 +81,17 @@ export const useEatlistStore = create<EatlistState>((set, get) => ({
     }
   },
 
-  updateFlag: async (entryId: string, visited: boolean) => {
+  updateFlag: async (restaurantId: string, visited: boolean) => {
     // Optimistic update
     const previousEntries = get().entries;
     set((state) => ({
       entries: state.entries.map((e) =>
-        e.id === entryId ? { ...e, hasBeenFlag: visited } : e
+        e.restaurantId === restaurantId ? { ...e, hasBeenFlag: visited } : e
       ),
     }));
 
     try {
-      const response = await eatlistApi.updateFlag(entryId, visited);
+      const response = await eatlistApi.updateFlag(restaurantId, visited);
       if (!response.success) {
         // Rollback
         set({ entries: previousEntries });

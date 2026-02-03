@@ -35,23 +35,34 @@ export default function RestaurantDetailScreen() {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const isInEatlist = entries.some((e) => e.restaurantId === id);
+  // Use restaurant.id (local DB ID) for eatlist checks, not the URL param which might be a Foursquare ID
+  const isInEatlist = restaurant ? entries.some((e) => e.restaurantId === restaurant.id) : false;
 
   const fetchData = useCallback(async () => {
     if (!id) return;
 
     try {
       setError(null);
-      const [restaurantRes, reviewsRes] = await Promise.all([
-        restaurantsApi.getById(id),
-        restaurantsApi.getReviews(id, { limit: 10 }),
-      ]);
+      
+      // First, try to fetch by local database ID
+      let restaurantRes = await restaurantsApi.getById(id);
+      
+      // If not found, the ID might be a Foursquare ID (from search results)
+      // Try to get or create the restaurant using Foursquare ID
+      if (!restaurantRes.success || !restaurantRes.data) {
+        restaurantRes = await restaurantsApi.getByFoursquareId(id);
+      }
 
       if (restaurantRes.data) {
         setRestaurant(restaurantRes.data);
-      }
-      if (reviewsRes.data) {
-        setReviews(reviewsRes.data);
+        
+        // Fetch reviews using the actual local database ID
+        const reviewsRes = await restaurantsApi.getReviews(restaurantRes.data.id, { limit: 10 });
+        if (reviewsRes.data) {
+          setReviews(reviewsRes.data);
+        }
+      } else {
+        setError('No se pudieron cargar los detalles del restaurante');
       }
     } catch (err) {
       setError('No se pudieron cargar los detalles del restaurante');
@@ -81,15 +92,12 @@ export default function RestaurantDetailScreen() {
   };
 
   const handleEatlistToggle = async () => {
-    if (!id) return;
+    if (!restaurant) return;
 
     if (isInEatlist) {
-      const entry = entries.find((e) => e.restaurantId === id);
-      if (entry) {
-        await removeFromEatlist(entry.id);
-      }
+      await removeFromEatlist(restaurant.id);
     } else {
-      await addToEatlist(id);
+      await addToEatlist(restaurant.id);
     }
   };
 
@@ -109,7 +117,8 @@ export default function RestaurantDetailScreen() {
   };
 
   const handleWriteReview = () => {
-    router.push(`/modals/create-review?restaurantId=${id}`);
+    if (!restaurant) return;
+    router.push(`/modals/create-review?restaurantId=${restaurant.id}`);
   };
 
   if (isLoading) {

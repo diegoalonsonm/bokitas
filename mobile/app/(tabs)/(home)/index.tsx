@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  FlatList,
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -136,20 +135,20 @@ export default function HomeScreen() {
                 </Pressable>
               </View>
               {topRestaurants.length > 0 ? (
-                <FlatList
-                  data={topRestaurants.slice(0, 5)}
+                <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.horizontalList}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
+                >
+                  {topRestaurants.slice(0, 5).map((item) => (
                     <RestaurantCard
+                      key={item.id}
                       restaurant={item}
                       variant="featured"
                       style={styles.featuredCard}
                     />
-                  )}
-                />
+                  ))}
+                </ScrollView>
               ) : (
                 <EmptyState
                   icon="restaurant-outline"

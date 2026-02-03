@@ -92,9 +92,9 @@ export default function SearchScreen() {
               </Pressable>
             </View>
             <View style={styles.historyList}>
-              {searchHistory.slice(0, 5).map((item, index) => (
+              {searchHistory.slice(0, 5).map((item) => (
                 <Pressable
-                  key={index}
+                  key={`history-${item}`}
                   style={styles.historyItem}
                   onPress={() => handleHistoryItemPress(item)}
                 >
@@ -194,7 +194,7 @@ export default function SearchScreen() {
       {/* Results */}
       <FlatList
         data={restaurants}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id ?? `restaurant-${index}`}
         renderItem={renderRestaurant}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmpty}

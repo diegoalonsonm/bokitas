@@ -48,7 +48,12 @@ export function useRestaurantSearch(debounceMs: number = 300) {
           if (reset) {
             setRestaurants(response.data);
           } else {
-            setRestaurants((prev) => [...prev, ...response.data!]);
+            // Deduplicate by ID to avoid key warnings
+            setRestaurants((prev) => {
+              const existingIds = new Set(prev.map((r) => r.id));
+              const newItems = response.data!.filter((r) => !existingIds.has(r.id));
+              return [...prev, ...newItems];
+            });
           }
           setHasMore(response.data.length === limit);
           
