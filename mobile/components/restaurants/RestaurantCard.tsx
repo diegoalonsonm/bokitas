@@ -46,7 +46,7 @@ export function RestaurantCard({
             {restaurant.name}
           </Text>
           <Text style={styles.compactCategory} numberOfLines={1}>
-            {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurant'}
+          {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurante'}
           </Text>
           <View style={styles.compactMeta}>
             <Rating value={restaurant.averageRating || 0} size="sm" />
@@ -87,7 +87,7 @@ export function RestaurantCard({
           <View style={styles.featuredMeta}>
             <Rating value={restaurant.averageRating || 0} size="sm" showValue />
             <Text style={styles.featuredReviews}>
-              {restaurant.reviewCount || 0} reviews
+              {restaurant.reviewCount || 0} reseñas
             </Text>
           </View>
         </View>
@@ -114,7 +114,7 @@ export function RestaurantCard({
           {restaurant.name}
         </Text>
         <Text style={styles.category} numberOfLines={1}>
-          {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurant'}
+          {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurante'}
         </Text>
         <View style={styles.meta}>
           <Rating value={restaurant.averageRating || 0} size="sm" />

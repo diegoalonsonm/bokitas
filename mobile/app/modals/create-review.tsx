@@ -31,11 +31,11 @@ export default function CreateReviewModal() {
   const handleClose = () => {
     if (rating > 0 || comment.trim() || photos.length > 0) {
       Alert.alert(
-        'Discard Review?',
-        'You have unsaved changes. Are you sure you want to discard them?',
+        '¿Descartar reseña?',
+        'Tenés cambios sin guardar. ¿Estás seguro de que querés descartarlos?',
         [
-          { text: 'Keep Editing', style: 'cancel' },
-          { text: 'Discard', style: 'destructive', onPress: () => router.back() },
+          { text: 'Seguir editando', style: 'cancel' },
+          { text: 'Descartar', style: 'destructive', onPress: () => router.back() },
         ]
       );
     } else {
@@ -45,7 +45,7 @@ export default function CreateReviewModal() {
 
   const handleAddPhoto = async () => {
     if (photos.length >= 5) {
-      Alert.alert('Limit Reached', 'You can only add up to 5 photos per review.');
+      Alert.alert('Límite alcanzado', 'Solo podés agregar hasta 5 fotos por reseña.');
       return;
     }
 
@@ -64,12 +64,12 @@ export default function CreateReviewModal() {
 
   const handleSubmit = async () => {
     if (rating === 0) {
-      Alert.alert('Rating Required', 'Please select a rating to submit your review.');
+      Alert.alert('Calificación requerida', 'Por favor seleccioná una calificación para enviar tu reseña.');
       return;
     }
 
     if (!restaurantId) {
-      Alert.alert('Error', 'Restaurant not specified.');
+      Alert.alert('Error', 'Restaurante no especificado.');
       return;
     }
 
@@ -90,11 +90,11 @@ export default function CreateReviewModal() {
         }
       }
 
-      Alert.alert('Success', 'Your review has been submitted!', [
+      Alert.alert('Éxito', '¡Tu reseña ha sido enviada!', [
         { text: 'OK', onPress: () => router.back() },
       ]);
     } catch (error) {
-      Alert.alert('Error', 'Failed to submit review. Please try again.');
+      Alert.alert('Error', 'No se pudo enviar la reseña. Por favor intentá de nuevo.');
     } finally {
       setIsSubmitting(false);
     }
@@ -113,7 +113,7 @@ export default function CreateReviewModal() {
           <Pressable style={styles.closeButton} onPress={handleClose}>
             <Ionicons name="close" size={24} color={colors.text} />
           </Pressable>
-          <Text style={styles.title}>Write a Review</Text>
+          <Text style={styles.title}>Escribir reseña</Text>
           <View style={styles.closeButton} />
         </View>
 
@@ -125,8 +125,8 @@ export default function CreateReviewModal() {
         >
           {/* Rating Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>How was your experience?</Text>
-            <Text style={styles.sectionSubtitle}>Tap to rate</Text>
+            <Text style={styles.sectionTitle}>¿Cómo fue tu experiencia?</Text>
+            <Text style={styles.sectionSubtitle}>Tocá para calificar</Text>
             <View style={styles.ratingContainer}>
               <Rating
                 value={rating}
@@ -135,23 +135,23 @@ export default function CreateReviewModal() {
                 onChange={setRating}
               />
               <Text style={styles.ratingText}>
-                {rating === 0 && 'Tap a star'}
-                {rating === 1 && 'Poor'}
-                {rating === 2 && 'Fair'}
-                {rating === 3 && 'Good'}
-                {rating === 4 && 'Very Good'}
-                {rating === 5 && 'Excellent!'}
+                {rating === 0 && 'Tocá una estrella'}
+                {rating === 1 && 'Malo'}
+                {rating === 2 && 'Regular'}
+                {rating === 3 && 'Bueno'}
+                {rating === 4 && 'Muy bueno'}
+                {rating === 5 && '¡Excelente!'}
               </Text>
             </View>
           </View>
 
           {/* Comment Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Share your thoughts</Text>
-            <Text style={styles.sectionSubtitle}>Optional but helpful</Text>
+            <Text style={styles.sectionTitle}>Compartí tus opiniones</Text>
+            <Text style={styles.sectionSubtitle}>Opcional pero útil</Text>
             <TextInput
               style={styles.commentInput}
-              placeholder="What did you like or dislike? What dishes would you recommend?"
+              placeholder="¿Qué te gustó o no te gustó? ¿Qué platillos recomendarías?"
               placeholderTextColor={colors.textMuted}
               value={comment}
               onChangeText={setComment}
@@ -165,8 +165,8 @@ export default function CreateReviewModal() {
 
           {/* Photos Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Add photos</Text>
-            <Text style={styles.sectionSubtitle}>Up to 5 photos</Text>
+            <Text style={styles.sectionTitle}>Agregar fotos</Text>
+            <Text style={styles.sectionSubtitle}>Hasta 5 fotos</Text>
             <View style={styles.photosContainer}>
               {photos.map((photo, index) => (
                 <View key={index} style={styles.photoWrapper}>
@@ -182,7 +182,7 @@ export default function CreateReviewModal() {
               {photos.length < 5 && (
                 <Pressable style={styles.addPhotoButton} onPress={handleAddPhoto}>
                   <Ionicons name="camera-outline" size={24} color={colors.textMuted} />
-                  <Text style={styles.addPhotoText}>Add Photo</Text>
+                  <Text style={styles.addPhotoText}>Agregar</Text>
                 </Pressable>
               )}
             </View>
@@ -192,7 +192,7 @@ export default function CreateReviewModal() {
         {/* Submit Button */}
         <View style={styles.footer}>
           <Button
-            title={isSubmitting ? 'Submitting...' : 'Submit Review'}
+            title={isSubmitting ? 'Enviando...' : 'Enviar reseña'}
             fullWidth
             onPress={handleSubmit}
             isDisabled={!canSubmit}

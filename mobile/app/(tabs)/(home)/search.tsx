@@ -86,9 +86,9 @@ export default function SearchScreen() {
         {searchHistory.length > 0 && (
           <View style={styles.historySection}>
             <View style={styles.historyHeader}>
-              <Text style={styles.historyTitle}>Recent Searches</Text>
+              <Text style={styles.historyTitle}>Búsquedas recientes</Text>
               <Pressable onPress={clearHistory}>
-                <Text style={styles.clearText}>Clear</Text>
+                <Text style={styles.clearText}>Limpiar</Text>
               </Pressable>
             </View>
             <View style={styles.historyList}>
@@ -108,7 +108,7 @@ export default function SearchScreen() {
 
         {/* Popular Searches */}
         <View style={styles.popularSection}>
-          <Text style={styles.popularTitle}>Popular Searches</Text>
+          <Text style={styles.popularTitle}>Búsquedas populares</Text>
           <View style={styles.popularTags}>
             {['Sushi', 'Pizza', 'Coffee', 'Tacos', 'Burgers', 'Thai'].map((tag) => (
               <Pressable
@@ -132,9 +132,9 @@ export default function SearchScreen() {
     return (
       <EmptyState
         icon="search-outline"
-        title="No results found"
-        description={`We couldn't find any restaurants matching "${query}"`}
-        actionLabel="Clear Search"
+        title="Sin resultados"
+        description={`No encontramos restaurantes que coincidan con "${query}"`}
+        actionLabel="Limpiar búsqueda"
         onAction={handleClearInput}
       />
     );
@@ -157,7 +157,7 @@ export default function SearchScreen() {
           <Ionicons name="search-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search restaurants, cuisines..."
+            placeholder="Buscar restaurantes, cocinas..."
             placeholderTextColor={colors.textMuted}
             value={inputValue}
             onChangeText={setInputValue}
@@ -186,7 +186,7 @@ export default function SearchScreen() {
             <Badge key={type} text={type} variant="primary" size="sm" />
           ))}
           {filters.minRating && (
-            <Badge text={`${filters.minRating}+ stars`} variant="primary" size="sm" />
+            <Badge text={`${filters.minRating}+ estrellas`} variant="primary" size="sm" />
           )}
         </View>
       )}
@@ -208,7 +208,7 @@ export default function SearchScreen() {
 
       {isLoading && restaurants.length === 0 && (
         <View style={styles.loadingOverlay}>
-          <Loading message="Searching..." />
+          <Loading message="Buscando..." />
         </View>
       )}
     </SafeAreaView>

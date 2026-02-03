@@ -83,9 +83,9 @@ export default function ProfileScreen() {
       <SafeAreaView style={styles.container} edges={['top']}>
         <EmptyState
           icon="person-outline"
-          title="Not signed in"
-          description="Sign in to see your profile"
-          actionLabel="Sign In"
+          title="No has iniciado sesión"
+          description="Iniciá sesión para ver tu perfil"
+          actionLabel="Iniciar sesión"
           onAction={() => router.push('/(auth)/login')}
         />
       </SafeAreaView>
@@ -127,7 +127,7 @@ export default function ProfileScreen() {
           
           <Pressable style={styles.editButton} onPress={handleEditProfile}>
             <Ionicons name="pencil-outline" size={16} color={colors.primary} />
-            <Text style={styles.editButtonText}>Edit Profile</Text>
+            <Text style={styles.editButtonText}>Editar perfil</Text>
           </Pressable>
         </View>
 
@@ -135,12 +135,12 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.reviewCount}</Text>
-            <Text style={styles.statLabel}>Reviews</Text>
+            <Text style={styles.statLabel}>Reseñas</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.eatlistCount}</Text>
-            <Text style={styles.statLabel}>Saved</Text>
+            <Text style={styles.statLabel}>Guardados</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
@@ -152,10 +152,10 @@ export default function ProfileScreen() {
         {/* Top 4 Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>My Top 4</Text>
+            <Text style={styles.sectionTitle}>Mi Top 4</Text>
             {top4.length > 0 && (
               <Pressable>
-                <Text style={styles.editText}>Edit</Text>
+                <Text style={styles.editText}>Editar</Text>
               </Pressable>
             )}
           </View>
@@ -180,7 +180,7 @@ export default function ProfileScreen() {
             <Card variant="outlined" padding="lg">
               <View style={styles.emptyTop4}>
                 <Ionicons name="trophy-outline" size={32} color={colors.textMuted} />
-                <Text style={styles.emptyTop4Text}>Add your favorite restaurants</Text>
+                <Text style={styles.emptyTop4Text}>Agregá tus restaurantes favoritos</Text>
               </View>
             </Card>
           )}
@@ -189,10 +189,10 @@ export default function ProfileScreen() {
         {/* Recent Reviews */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Reviews</Text>
+            <Text style={styles.sectionTitle}>Reseñas recientes</Text>
             {reviews.length > 0 && (
               <Pressable>
-                <Text style={styles.seeAllText}>See all</Text>
+                <Text style={styles.seeAllText}>Ver todas</Text>
               </Pressable>
             )}
           </View>
@@ -208,9 +208,9 @@ export default function ProfileScreen() {
             <Card variant="outlined" padding="lg">
               <View style={styles.emptyReviews}>
                 <Ionicons name="chatbubbles-outline" size={32} color={colors.textMuted} />
-                <Text style={styles.emptyReviewsText}>No reviews yet</Text>
+                <Text style={styles.emptyReviewsText}>Aún no hay reseñas</Text>
                 <Text style={styles.emptyReviewsSubtext}>
-                  Start reviewing restaurants you've visited!
+                  ¡Empezá a reseñar los restaurantes que visitás!
                 </Text>
               </View>
             </Card>
@@ -221,7 +221,7 @@ export default function ProfileScreen() {
         <View style={styles.logoutSection}>
           <Pressable style={styles.logoutButton} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={20} color={colors.error} />
-            <Text style={styles.logoutText}>Sign Out</Text>
+            <Text style={styles.logoutText}>Cerrar sesión</Text>
           </Pressable>
         </View>
       </ScrollView>

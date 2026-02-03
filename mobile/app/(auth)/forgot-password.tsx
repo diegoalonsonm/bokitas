@@ -58,12 +58,12 @@ export default function ForgotPasswordScreen() {
           <View style={styles.iconContainer}>
             <Ionicons name="mail-outline" size={64} color={colors.primary} />
           </View>
-          <Text style={styles.successTitle}>Check your email</Text>
+          <Text style={styles.successTitle}>Revisa tu correo</Text>
           <Text style={styles.successText}>
-            If an account exists for {email}, you will receive a password reset link shortly.
+            Si existe una cuenta para {email}, recibirás un enlace para restablecer tu contraseña.
           </Text>
           <Pressable style={styles.backButton} onPress={handleBackToLogin}>
-            <Text style={styles.backButtonText}>Back to Login</Text>
+            <Text style={styles.backButtonText}>Volver a iniciar sesión</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -87,19 +87,19 @@ export default function ForgotPasswordScreen() {
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Forgot Password?</Text>
+            <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
             <Text style={styles.subtitle}>
-              No worries! Enter your email and we'll send you a reset link.
+              No te preocupes. Ingresa tu correo y te enviaremos un enlace para restablecerla.
             </Text>
           </View>
 
           {/* Form */}
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Correo electrónico</Text>
               <TextInput
                 style={[styles.input, error && styles.inputError]}
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo electrónico"
                 placeholderTextColor={colors.textMuted}
                 value={email}
                 onChangeText={setEmail}
@@ -120,16 +120,16 @@ export default function ForgotPasswordScreen() {
               {isLoading ? (
                 <ActivityIndicator color={colors.text} />
               ) : (
-                <Text style={styles.submitButtonText}>Send Reset Link</Text>
+                <Text style={styles.submitButtonText}>Enviar enlace</Text>
               )}
             </Pressable>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Remember your password?</Text>
+            <Text style={styles.footerText}>¿Recordaste tu contraseña?</Text>
             <Pressable onPress={handleBackToLogin}>
-              <Text style={styles.footerLink}>Back to Login</Text>
+              <Text style={styles.footerLink}>Volver a iniciar sesión</Text>
             </Pressable>
           </View>
         </ScrollView>

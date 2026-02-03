@@ -46,7 +46,7 @@ export default function HomeScreen() {
         setRecentReviews([]);
       }
     } catch (err) {
-      setError('Failed to load data. Pull to refresh.');
+      setError('Error al cargar datos. Desliza para actualizar.');
       console.error('Error fetching home data:', err);
     } finally {
       setIsLoading(false);
@@ -72,7 +72,7 @@ export default function HomeScreen() {
   };
 
   if (isLoading) {
-    return <Loading fullScreen message="Loading delicious places..." />;
+    return <Loading fullScreen message="Cargando lugares deliciosos..." />;
   }
 
   return (
@@ -83,7 +83,7 @@ export default function HomeScreen() {
           <Text style={styles.greeting}>
             {getGreeting()}, {user?.name?.split(' ')[0] || 'there'}!
           </Text>
-          <Text style={styles.subGreeting}>Find your next favorite spot</Text>
+          <Text style={styles.subGreeting}>Encuentra tu próximo lugar favorito</Text>
         </View>
         <Pressable onPress={() => router.push('/(tabs)/profile')}>
           <Avatar
@@ -98,7 +98,7 @@ export default function HomeScreen() {
       {/* Search Bar */}
       <Pressable style={styles.searchBar} onPress={handleSearchPress}>
         <Ionicons name="search-outline" size={20} color={colors.textMuted} />
-        <Text style={styles.searchPlaceholder}>Search restaurants...</Text>
+        <Text style={styles.searchPlaceholder}>Buscar restaurantes...</Text>
         <Pressable style={styles.mapButton} onPress={handleMapPress}>
           <Ionicons name="map-outline" size={20} color={colors.primary} />
         </Pressable>
@@ -120,9 +120,9 @@ export default function HomeScreen() {
         {error ? (
           <EmptyState
             icon="alert-circle-outline"
-            title="Oops!"
+            title="¡Ups!"
             description={error}
-            actionLabel="Try Again"
+            actionLabel="Reintentar"
             onAction={handleRefresh}
           />
         ) : (
@@ -130,9 +130,9 @@ export default function HomeScreen() {
             {/* Featured Section */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Top Rated</Text>
+                <Text style={styles.sectionTitle}>Mejor calificados</Text>
                 <Pressable onPress={handleSearchPress}>
-                  <Text style={styles.seeAll}>See all</Text>
+                  <Text style={styles.seeAll}>Ver todos</Text>
                 </Pressable>
               </View>
               {topRestaurants.length > 0 ? (
@@ -153,8 +153,8 @@ export default function HomeScreen() {
               ) : (
                 <EmptyState
                   icon="restaurant-outline"
-                  title="No restaurants yet"
-                  description="Be the first to discover a great place!"
+                  title="Aún no hay restaurantes"
+                  description="¡Sé el primero en descubrir un gran lugar!"
                 />
               )}
             </View>
@@ -162,9 +162,9 @@ export default function HomeScreen() {
             {/* Nearby Section */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Explore Nearby</Text>
+                <Text style={styles.sectionTitle}>Explorar cercanos</Text>
                 <Pressable onPress={handleSearchPress}>
-                  <Text style={styles.seeAll}>See all</Text>
+                  <Text style={styles.seeAll}>Ver todos</Text>
                 </Pressable>
               </View>
               {topRestaurants.length > 0 ? (
@@ -181,8 +181,8 @@ export default function HomeScreen() {
               ) : (
                 <EmptyState
                   icon="location-outline"
-                  title="No nearby restaurants"
-                  description="Enable location to find places near you"
+                  title="No hay restaurantes cercanos"
+                  description="Activa la ubicación para encontrar lugares cerca de ti"
                 />
               )}
             </View>
@@ -190,7 +190,7 @@ export default function HomeScreen() {
             {/* Recent Activity */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Recent Activity</Text>
+                <Text style={styles.sectionTitle}>Actividad reciente</Text>
               </View>
               {recentReviews.length > 0 ? (
                 <View style={styles.reviewList}>
@@ -205,8 +205,8 @@ export default function HomeScreen() {
               ) : (
                 <EmptyState
                   icon="chatbubbles-outline"
-                  title="No recent reviews"
-                  description="Check back later for the latest reviews"
+                  title="No hay reseñas recientes"
+                  description="Vuelve más tarde para ver las últimas reseñas"
                 />
               )}
             </View>
@@ -219,9 +219,9 @@ export default function HomeScreen() {
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
+  if (hour < 12) return 'Buenos días';
+  if (hour < 18) return 'Buenas tardes';
+  return 'Buenas noches';
 }
 
 const styles = StyleSheet.create({

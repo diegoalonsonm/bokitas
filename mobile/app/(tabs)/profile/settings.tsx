@@ -37,10 +37,10 @@ export default function SettingsScreen() {
   };
 
   const handleLogout = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert('Cerrar sesión', '¿Estás seguro de que querés cerrar sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
       {
-        text: 'Sign Out',
+        text: 'Cerrar sesión',
         style: 'destructive',
         onPress: async () => {
           await logout();
@@ -52,21 +52,21 @@ export default function SettingsScreen() {
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Delete Account',
-      'This action cannot be undone. All your data will be permanently deleted.',
+      'Eliminar cuenta',
+      'Esta acción no se puede deshacer. Todos tus datos serán eliminados permanentemente.',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'Cancelar', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'Eliminar',
           style: 'destructive',
           onPress: () => {
             Alert.alert(
-              'Confirm Deletion',
-              'Type DELETE to confirm account deletion',
+              'Confirmar eliminación',
+              'Escribí ELIMINAR para confirmar la eliminación de tu cuenta',
               [
-                { text: 'Cancel', style: 'cancel' },
+                { text: 'Cancelar', style: 'cancel' },
                 {
-                  text: 'Confirm',
+                  text: 'Confirmar',
                   style: 'destructive',
                   onPress: async () => {
                     try {
@@ -74,7 +74,7 @@ export default function SettingsScreen() {
                       await logout();
                       router.replace('/(auth)/welcome');
                     } catch (error) {
-                      Alert.alert('Error', 'Failed to delete account');
+                      Alert.alert('Error', 'No se pudo eliminar la cuenta');
                     }
                   },
                 },
@@ -101,23 +101,23 @@ export default function SettingsScreen() {
   const accountSettings: SettingItem[] = [
     {
       icon: 'person-outline',
-      label: 'Edit Profile',
-      description: 'Change your name, photo, and more',
+      label: 'Editar perfil',
+      description: 'Cambiá tu nombre, foto y más',
       onPress: () => router.push('/(tabs)/profile/edit'),
     },
     {
       icon: 'lock-closed-outline',
-      label: 'Change Password',
-      description: 'Update your password',
-      onPress: () => Alert.alert('Coming Soon', 'Password change feature coming soon!'),
+      label: 'Cambiar contraseña',
+      description: 'Actualizá tu contraseña',
+      onPress: () => Alert.alert('Próximamente', '¡La función de cambio de contraseña estará disponible pronto!'),
     },
   ];
 
   const preferenceSettings: SettingItem[] = [
     {
       icon: 'notifications-outline',
-      label: 'Push Notifications',
-      description: 'Receive updates about your reviews',
+      label: 'Notificaciones push',
+      description: 'Recibí actualizaciones sobre tus reseñas',
       toggle: true,
       value: notifications,
       onToggle: setNotifications,
@@ -127,17 +127,17 @@ export default function SettingsScreen() {
   const supportSettings: SettingItem[] = [
     {
       icon: 'help-circle-outline',
-      label: 'Help & Support',
+      label: 'Ayuda y soporte',
       onPress: handleContact,
     },
     {
       icon: 'document-text-outline',
-      label: 'Privacy Policy',
+      label: 'Política de privacidad',
       onPress: handlePrivacy,
     },
     {
       icon: 'shield-checkmark-outline',
-      label: 'Terms of Service',
+      label: 'Términos de servicio',
       onPress: handleTerms,
     },
   ];
@@ -145,14 +145,14 @@ export default function SettingsScreen() {
   const dangerSettings: SettingItem[] = [
     {
       icon: 'log-out-outline',
-      label: 'Sign Out',
+      label: 'Cerrar sesión',
       onPress: handleLogout,
       color: colors.error,
     },
     {
       icon: 'trash-outline',
-      label: 'Delete Account',
-      description: 'Permanently delete your account',
+      label: 'Eliminar cuenta',
+      description: 'Eliminá permanentemente tu cuenta',
       onPress: handleDeleteAccount,
       color: colors.error,
     },
@@ -211,7 +211,7 @@ export default function SettingsScreen() {
         <Pressable style={styles.headerButton} onPress={handleBack}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title}>Configuración</Text>
         <View style={styles.headerButton} />
       </View>
 
@@ -220,15 +220,15 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        {renderSection('Account', accountSettings)}
-        {renderSection('Preferences', preferenceSettings)}
-        {renderSection('Support', supportSettings)}
+        {renderSection('Cuenta', accountSettings)}
+        {renderSection('Preferencias', preferenceSettings)}
+        {renderSection('Soporte', supportSettings)}
         {renderSection('', dangerSettings)}
 
         {/* Version */}
         <View style={styles.versionContainer}>
           <Text style={styles.versionText}>Bokitas v1.0.0</Text>
-          <Text style={styles.versionSubtext}>Made with ❤️ in Costa Rica</Text>
+          <Text style={styles.versionSubtext}>Hecho con ❤️ en Costa Rica</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

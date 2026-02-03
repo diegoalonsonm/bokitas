@@ -14,24 +14,24 @@ import { useSearchStore } from '@/lib/stores';
 import { Rating, Button, Badge } from '@/components/ui';
 
 const FOOD_TYPE_OPTIONS = [
-  'Mexican',
-  'Italian',
-  'Japanese',
-  'Chinese',
-  'Thai',
-  'Indian',
-  'American',
-  'French',
-  'Mediterranean',
-  'Korean',
-  'Vietnamese',
-  'Costa Rican',
-  'Seafood',
-  'Vegetarian',
-  'Vegan',
-  'Fast Food',
-  'Cafe',
-  'Bakery',
+  'Mexicana',
+  'Italiana',
+  'Japonesa',
+  'China',
+  'Tailandesa',
+  'India',
+  'Americana',
+  'Francesa',
+  'Mediterránea',
+  'Coreana',
+  'Vietnamita',
+  'Costarricense',
+  'Mariscos',
+  'Vegetariana',
+  'Vegana',
+  'Comida rápida',
+  'Cafetería',
+  'Panadería',
 ];
 
 export default function FilterModal() {
@@ -77,10 +77,10 @@ export default function FilterModal() {
         <Pressable style={styles.closeButton} onPress={handleClose}>
           <Ionicons name="close" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Filters</Text>
+        <Text style={styles.title}>Filtros</Text>
         <Pressable onPress={handleClearAll} disabled={!hasFilters}>
           <Text style={[styles.clearText, !hasFilters && styles.clearTextDisabled]}>
-            Clear
+            Limpiar
           </Text>
         </Pressable>
       </View>
@@ -92,13 +92,13 @@ export default function FilterModal() {
       >
         {/* Sort By */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sort By</Text>
+          <Text style={styles.sectionTitle}>Ordenar por</Text>
           <View style={styles.sortOptions}>
             {[
-              { value: 'relevance', label: 'Relevance' },
-              { value: 'rating', label: 'Highest Rated' },
-              { value: 'recent', label: 'Most Recent' },
-              { value: 'reviews', label: 'Most Reviews' },
+              { value: 'relevance', label: 'Relevancia' },
+              { value: 'rating', label: 'Mejor calificados' },
+              { value: 'recent', label: 'Más recientes' },
+              { value: 'reviews', label: 'Más reseñas' },
             ].map((option) => (
               <Pressable
                 key={option.value}
@@ -126,7 +126,7 @@ export default function FilterModal() {
 
         {/* Minimum Rating */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Minimum Rating</Text>
+          <Text style={styles.sectionTitle}>Calificación mínima</Text>
           <View style={styles.ratingOptions}>
             {[0, 3, 3.5, 4, 4.5].map((value) => (
               <Pressable
@@ -144,7 +144,7 @@ export default function FilterModal() {
                       minRating === value && styles.ratingOptionTextActive,
                     ]}
                   >
-                    Any
+                    Cualquiera
                   </Text>
                 ) : (
                   <View style={styles.ratingRow}>
@@ -170,7 +170,7 @@ export default function FilterModal() {
 
         {/* Food Types */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Food Type</Text>
+          <Text style={styles.sectionTitle}>Tipo de comida</Text>
           <View style={styles.foodTypesContainer}>
             {FOOD_TYPE_OPTIONS.map((type) => {
               const isSelected = selectedFoodTypes.includes(type);
@@ -201,7 +201,7 @@ export default function FilterModal() {
       {/* Apply Button */}
       <View style={styles.footer}>
         <Button
-          title={`Apply Filters${hasFilters ? ` (${selectedFoodTypes.length + (minRating > 0 ? 1 : 0) + (sortBy !== 'relevance' ? 1 : 0)})` : ''}`}
+          title={`Aplicar filtros${hasFilters ? ` (${selectedFoodTypes.length + (minRating > 0 ? 1 : 0) + (sortBy !== 'relevance' ? 1 : 0)})` : ''}`}
           fullWidth
           onPress={handleApply}
         />

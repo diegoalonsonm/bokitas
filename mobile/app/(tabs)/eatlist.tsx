@@ -50,12 +50,12 @@ export default function EatlistScreen() {
 
   const handleRemove = (entry: EatlistEntry) => {
     Alert.alert(
-      'Remove from Eatlist',
-      `Remove ${entry.restaurant?.name || 'this restaurant'} from your eatlist?`,
+      'Eliminar de Mi Lista',
+      `¿Eliminar ${entry.restaurant?.name || 'este restaurante'} de tu lista?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'Cancelar', style: 'cancel' },
         {
-          text: 'Remove',
+          text: 'Eliminar',
           style: 'destructive',
           onPress: () => removeFromEatlist(entry.id),
         },
@@ -109,7 +109,7 @@ export default function EatlistScreen() {
         onPress={() => setFilter('all')}
       >
         <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-          All ({entries.length})
+          Todos ({entries.length})
         </Text>
       </Pressable>
       <Pressable
@@ -117,7 +117,7 @@ export default function EatlistScreen() {
         onPress={() => setFilter('wishlist')}
       >
         <Text style={[styles.filterText, filter === 'wishlist' && styles.filterTextActive]}>
-          Wishlist ({entries.filter((e) => !e.hasBeenFlag).length})
+          Por visitar ({entries.filter((e) => !e.hasBeenFlag).length})
         </Text>
       </Pressable>
       <Pressable
@@ -125,7 +125,7 @@ export default function EatlistScreen() {
         onPress={() => setFilter('visited')}
       >
         <Text style={[styles.filterText, filter === 'visited' && styles.filterTextActive]}>
-          Visited ({entries.filter((e) => e.hasBeenFlag).length})
+          Visitados ({entries.filter((e) => e.hasBeenFlag).length})
         </Text>
       </Pressable>
     </View>
@@ -134,15 +134,15 @@ export default function EatlistScreen() {
   const renderEmpty = () => {
     if (isLoading) return null;
 
-    let title = 'Your eatlist is empty';
-    let description = 'Save restaurants you want to try or have visited';
+    let title = 'Tu lista está vacía';
+    let description = 'Guardá restaurantes que querés probar o que ya visitaste';
 
     if (filter === 'visited') {
-      title = 'No visited restaurants';
-      description = "Mark restaurants as visited after you've been there";
+      title = 'No hay restaurantes visitados';
+      description = 'Marcá los restaurantes como visitados después de ir';
     } else if (filter === 'wishlist') {
-      title = 'No restaurants in wishlist';
-      description = 'Save restaurants you want to try';
+      title = 'No hay restaurantes por visitar';
+      description = 'Guardá restaurantes que querés probar';
     }
 
     return (
@@ -150,7 +150,7 @@ export default function EatlistScreen() {
         icon="bookmark-outline"
         title={title}
         description={description}
-        actionLabel="Explore Restaurants"
+        actionLabel="Explorar restaurantes"
         onAction={handleExplore}
       />
     );
@@ -160,13 +160,13 @@ export default function EatlistScreen() {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.title}>My Eatlist</Text>
+          <Text style={styles.title}>Mi Lista</Text>
         </View>
         <EmptyState
           icon="person-outline"
-          title="Sign in to save restaurants"
-          description="Create an account to start building your eatlist"
-          actionLabel="Sign In"
+          title="Iniciá sesión para guardar"
+          description="Creá una cuenta para empezar a armar tu lista"
+          actionLabel="Iniciar sesión"
           onAction={() => router.push('/(auth)/login')}
         />
       </SafeAreaView>
@@ -176,14 +176,14 @@ export default function EatlistScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>My Eatlist</Text>
+        <Text style={styles.title}>Mi Lista</Text>
         <View style={styles.headerStats}>
-          <Badge text={`${entries.length} saved`} variant="primary" />
+          <Badge text={`${entries.length} guardados`} variant="primary" />
         </View>
       </View>
 
       {isLoading && entries.length === 0 ? (
-        <Loading fullScreen message="Loading your eatlist..." />
+        <Loading fullScreen message="Cargando tu lista..." />
       ) : (
         <FlatList
           data={filteredEntries}

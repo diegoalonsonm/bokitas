@@ -48,7 +48,7 @@ export function ReviewCard({
           size="md"
         />
         <View style={styles.headerText}>
-          <Text style={styles.userName}>{review.user?.name || 'Anonymous'}</Text>
+          <Text style={styles.userName}>{review.user?.name || 'Anónimo'}</Text>
           <Text style={styles.date}>{formatRelativeTime(review.createdAt)}</Text>
         </View>
         <Rating value={review.rating} size="sm" />
@@ -60,7 +60,7 @@ export function ReviewCard({
           style={styles.restaurantRow}
           onPress={() => router.push(`/(tabs)/(home)/restaurant/${review.restaurantId}` as Href)}
         >
-          <Text style={styles.restaurantLabel}>at </Text>
+          <Text style={styles.restaurantLabel}>en </Text>
           <Text style={styles.restaurantName}>{review.restaurant.name}</Text>
         </Pressable>
       )}

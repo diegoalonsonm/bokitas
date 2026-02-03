@@ -33,7 +33,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: 'Home',
+          title: 'Inicio',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'home' : 'home-outline'} color={color} focused={focused} />
           ),
@@ -42,7 +42,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="eatlist"
         options={{
-          title: 'Eatlist',
+          title: 'Mi Lista',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'bookmark' : 'bookmark-outline'} color={color} focused={focused} />
           ),
@@ -51,7 +51,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: 'Perfil',
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'person' : 'person-outline'} color={color} focused={focused} />
           ),

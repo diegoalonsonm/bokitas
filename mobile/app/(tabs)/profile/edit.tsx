@@ -46,7 +46,7 @@ export default function EditProfileScreen() {
           setPhotoUrl(response.data.photoUrl);
         }
       } catch (error) {
-        Alert.alert('Error', 'Failed to upload photo. Please try again.');
+        Alert.alert('Error', 'No se pudo subir la foto. Por favor intentá de nuevo.');
       } finally {
         setIsLoading(false);
       }
@@ -76,11 +76,11 @@ export default function EditProfileScreen() {
       });
       
       await refreshUser();
-      Alert.alert('Success', 'Profile updated successfully', [
+      Alert.alert('Éxito', 'Perfil actualizado correctamente', [
         { text: 'OK', onPress: handleBack },
       ]);
     } catch (error) {
-      Alert.alert('Error', 'Failed to update profile. Please try again.');
+      Alert.alert('Error', 'No se pudo actualizar el perfil. Por favor intentá de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +105,7 @@ export default function EditProfileScreen() {
           <Pressable style={styles.headerButton} onPress={handleBack}>
             <Ionicons name="close" size={24} color={colors.text} />
           </Pressable>
-          <Text style={styles.title}>Edit Profile</Text>
+          <Text style={styles.title}>Editar perfil</Text>
           <View style={styles.headerButton} />
         </View>
 
@@ -129,15 +129,15 @@ export default function EditProfileScreen() {
               </View>
             </Pressable>
             <Pressable onPress={handlePickPhoto} disabled={isLoading || isPickingImage}>
-              <Text style={styles.changePhotoText}>Change Photo</Text>
+              <Text style={styles.changePhotoText}>Cambiar foto</Text>
             </Pressable>
           </View>
 
           {/* Form */}
           <View style={styles.form}>
             <Input
-              label="Name"
-              placeholder="Your name"
+              label="Nombre"
+              placeholder="Tu nombre"
               value={name}
               onChangeText={setName}
               error={errors.name}
@@ -146,20 +146,20 @@ export default function EditProfileScreen() {
             />
 
             <Input
-              label="Username"
-              placeholder="username (optional)"
+              label="Usuario"
+              placeholder="usuario (opcional)"
               value={username}
               onChangeText={(text) => setUsername(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
               error={errors.username}
               autoCapitalize="none"
-              hint="Only letters, numbers, and underscores"
+              hint="Solo letras, números y guiones bajos"
               editable={!isLoading}
             />
 
             <View style={styles.emailField}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Correo electrónico</Text>
               <Text style={styles.emailValue}>{user.email}</Text>
-              <Text style={styles.emailHint}>Email cannot be changed</Text>
+              <Text style={styles.emailHint}>El correo no se puede cambiar</Text>
             </View>
           </View>
         </ScrollView>
@@ -167,7 +167,7 @@ export default function EditProfileScreen() {
         {/* Save Button */}
         <View style={styles.footer}>
           <Button
-            title="Save Changes"
+            title="Guardar cambios"
             fullWidth
             onPress={handleSave}
             isLoading={isLoading}

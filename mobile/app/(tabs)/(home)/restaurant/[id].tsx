@@ -54,7 +54,7 @@ export default function RestaurantDetailScreen() {
         setReviews(reviewsRes.data);
       }
     } catch (err) {
-      setError('Failed to load restaurant details');
+      setError('No se pudieron cargar los detalles del restaurante');
       console.error('Error fetching restaurant:', err);
     } finally {
       setIsLoading(false);
@@ -73,7 +73,7 @@ export default function RestaurantDetailScreen() {
     if (!restaurant) return;
     try {
       await Share.share({
-        message: `Check out ${restaurant.name} on Bokitas!`,
+        message: `¡Mirá ${restaurant.name} en Bokitas!`,
       });
     } catch (error) {
       console.error('Error sharing:', error);
@@ -95,7 +95,7 @@ export default function RestaurantDetailScreen() {
 
   const handleOpenMaps = () => {
     if (!restaurant?.latitude || !restaurant?.longitude) {
-      Alert.alert('Location not available', 'No coordinates available for this restaurant.');
+      Alert.alert('Ubicación no disponible', 'No hay coordenadas disponibles para este restaurante.');
       return;
     }
 
@@ -105,7 +105,7 @@ export default function RestaurantDetailScreen() {
 
   const handleCall = () => {
     // Phone number would come from restaurant data
-    Alert.alert('Coming Soon', 'Phone integration coming soon!');
+      Alert.alert('Próximamente', '¡La integración telefónica estará disponible pronto!');
   };
 
   const handleWriteReview = () => {
@@ -113,7 +113,7 @@ export default function RestaurantDetailScreen() {
   };
 
   if (isLoading) {
-    return <Loading fullScreen message="Loading restaurant..." />;
+    return <Loading fullScreen message="Cargando restaurante..." />;
   }
 
   if (error || !restaurant) {
@@ -126,9 +126,9 @@ export default function RestaurantDetailScreen() {
         </View>
         <EmptyState
           icon="alert-circle-outline"
-          title="Restaurant not found"
-          description={error || 'This restaurant may have been removed'}
-          actionLabel="Go Back"
+          title="Restaurante no encontrado"
+          description={error || 'Este restaurante puede haber sido eliminado'}
+          actionLabel="Volver"
           onAction={handleBack}
         />
       </SafeAreaView>
@@ -210,7 +210,7 @@ export default function RestaurantDetailScreen() {
             <View style={styles.ratingRow}>
               <Rating value={restaurant.averageRating || 0} size="md" showValue />
               <Text style={styles.reviewCount}>
-                ({restaurant.reviewCount || 0} reviews)
+                ({restaurant.reviewCount || 0} reseñas)
               </Text>
             </View>
           </View>
@@ -230,19 +230,19 @@ export default function RestaurantDetailScreen() {
               <View style={styles.actionIconContainer}>
                 <Ionicons name="navigate-outline" size={22} color={colors.primary} />
               </View>
-              <Text style={styles.actionText}>Directions</Text>
+              <Text style={styles.actionText}>Cómo llegar</Text>
             </Pressable>
             <Pressable style={styles.actionButton} onPress={handleCall}>
               <View style={styles.actionIconContainer}>
                 <Ionicons name="call-outline" size={22} color={colors.primary} />
               </View>
-              <Text style={styles.actionText}>Call</Text>
+              <Text style={styles.actionText}>Llamar</Text>
             </Pressable>
             <Pressable style={styles.actionButton} onPress={handleWriteReview}>
               <View style={styles.actionIconContainer}>
                 <Ionicons name="create-outline" size={22} color={colors.primary} />
               </View>
-              <Text style={styles.actionText}>Review</Text>
+              <Text style={styles.actionText}>Reseñar</Text>
             </Pressable>
           </View>
 
@@ -259,10 +259,10 @@ export default function RestaurantDetailScreen() {
           {/* Reviews Section */}
           <View style={styles.reviewsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Reviews</Text>
+              <Text style={styles.sectionTitle}>Reseñas</Text>
               {reviews.length > 0 && (
                 <Pressable>
-                  <Text style={styles.seeAllText}>See all</Text>
+                  <Text style={styles.seeAllText}>Ver todas</Text>
                 </Pressable>
               )}
             </View>
@@ -275,9 +275,9 @@ export default function RestaurantDetailScreen() {
               </View>
             ) : (
               <View style={styles.noReviews}>
-                <Text style={styles.noReviewsText}>No reviews yet</Text>
+                <Text style={styles.noReviewsText}>Aún no hay reseñas</Text>
                 <Button
-                  title="Be the first to review"
+                  title="Sé el primero en reseñar"
                   variant="outline"
                   size="sm"
                   onPress={handleWriteReview}
@@ -291,7 +291,7 @@ export default function RestaurantDetailScreen() {
       {/* Bottom CTA */}
       <SafeAreaView style={styles.bottomCta} edges={['bottom']}>
         <Button
-          title="Write a Review"
+          title="Escribir una reseña"
           fullWidth
           leftIcon={<Ionicons name="star-outline" size={20} color={colors.text} />}
           onPress={handleWriteReview}

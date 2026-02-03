@@ -46,8 +46,8 @@ export default function LoginScreen() {
       router.replace('/(tabs)' as Href);
     } catch (error) {
       Alert.alert(
-        'Login Failed',
-        error instanceof Error ? error.message : 'An unexpected error occurred'
+        'Error al iniciar sesión',
+        error instanceof Error ? error.message : 'Ocurrió un error inesperado'
       );
     } finally {
       setIsLoading(false);
@@ -66,17 +66,17 @@ export default function LoginScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Welcome back</Text>
-            <Text style={styles.subtitle}>Sign in to continue</Text>
+            <Text style={styles.title}>Bienvenido de nuevo</Text>
+            <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
           </View>
 
           {/* Form */}
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Correo electrónico</Text>
               <TextInput
                 style={[styles.input, errors.email && styles.inputError]}
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo electrónico"
                 placeholderTextColor={colors.textMuted}
                 value={email}
                 onChangeText={setEmail}
@@ -89,10 +89,10 @@ export default function LoginScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={styles.label}>Contraseña</Text>
               <TextInput
                 style={[styles.input, errors.password && styles.inputError]}
-                placeholder="Enter your password"
+                placeholder="Ingresa tu contraseña"
                 placeholderTextColor={colors.textMuted}
                 value={password}
                 onChangeText={setPassword}
@@ -105,7 +105,7 @@ export default function LoginScreen() {
 
             <Link href="/(auth)/forgot-password" asChild>
               <Pressable style={styles.forgotPassword}>
-                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
               </Pressable>
             </Link>
 
@@ -117,17 +117,17 @@ export default function LoginScreen() {
               {isLoading ? (
                 <ActivityIndicator color={colors.text} />
               ) : (
-                <Text style={styles.loginButtonText}>Login</Text>
+                <Text style={styles.loginButtonText}>Iniciar sesión</Text>
               )}
             </Pressable>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account?</Text>
+            <Text style={styles.footerText}>¿No tienes una cuenta?</Text>
             <Link href="/(auth)/register" asChild>
               <Pressable>
-                <Text style={styles.footerLink}>Create Account</Text>
+                <Text style={styles.footerLink}>Crear cuenta</Text>
               </Pressable>
             </Link>
           </View>

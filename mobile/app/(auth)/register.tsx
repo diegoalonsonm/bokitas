@@ -52,8 +52,8 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     // Validate all fields
-    const nombreValidation = validateName(formData.nombre, 'First name');
-    const apellidoValidation = validateName(formData.primerapellido, 'Last name');
+    const nombreValidation = validateName(formData.nombre, 'Nombre');
+    const apellidoValidation = validateName(formData.primerapellido, 'Primer apellido');
     const emailValidation = validateEmail(formData.email);
     const passwordValidation = validatePassword(formData.password);
     const confirmValidation = validateConfirmPassword(formData.password, formData.confirmPassword);
@@ -83,17 +83,17 @@ export default function RegisterScreen() {
 
       if (response.success) {
         Alert.alert(
-          'Account Created',
-          'Your account has been created successfully. Please login to continue.',
+          'Cuenta creada',
+          'Tu cuenta ha sido creada exitosamente. Por favor inicia sesión para continuar.',
           [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
         );
       } else {
-        Alert.alert('Registration Failed', response.error?.message || 'An error occurred');
+        Alert.alert('Error en registro', response.error?.message || 'Ocurrió un error');
       }
     } catch (error) {
       Alert.alert(
-        'Registration Failed',
-        error instanceof Error ? error.message : 'An unexpected error occurred'
+        'Error en registro',
+        error instanceof Error ? error.message : 'Ocurrió un error inesperado'
       );
     } finally {
       setIsLoading(false);
@@ -112,17 +112,17 @@ export default function RegisterScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join Bokitas today</Text>
+            <Text style={styles.title}>Crear cuenta</Text>
+            <Text style={styles.subtitle}>Únete a Bokitas hoy</Text>
           </View>
 
           {/* Form */}
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>First Name</Text>
+              <Text style={styles.label}>Nombre</Text>
               <TextInput
                 style={[styles.input, errors.nombre && styles.inputError]}
-                placeholder="Enter your first name"
+                placeholder="Ingresa tu nombre"
                 placeholderTextColor={colors.textMuted}
                 value={formData.nombre}
                 onChangeText={(v) => updateField('nombre', v)}
@@ -133,10 +133,10 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Last Name</Text>
+              <Text style={styles.label}>Primer apellido</Text>
               <TextInput
                 style={[styles.input, errors.primerapellido && styles.inputError]}
-                placeholder="Enter your last name"
+                placeholder="Ingresa tu primer apellido"
                 placeholderTextColor={colors.textMuted}
                 value={formData.primerapellido}
                 onChangeText={(v) => updateField('primerapellido', v)}
@@ -149,10 +149,10 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Second Last Name (Optional)</Text>
+              <Text style={styles.label}>Segundo apellido (Opcional)</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your second last name"
+                placeholder="Ingresa tu segundo apellido"
                 placeholderTextColor={colors.textMuted}
                 value={formData.segundoapellido}
                 onChangeText={(v) => updateField('segundoapellido', v)}
@@ -162,10 +162,10 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Correo electrónico</Text>
               <TextInput
                 style={[styles.input, errors.email && styles.inputError]}
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo electrónico"
                 placeholderTextColor={colors.textMuted}
                 value={formData.email}
                 onChangeText={(v) => updateField('email', v)}
@@ -178,10 +178,10 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={styles.label}>Contraseña</Text>
               <TextInput
                 style={[styles.input, errors.password && styles.inputError]}
-                placeholder="Create a password (min 6 characters)"
+                placeholder="Crea una contraseña (mín. 6 caracteres)"
                 placeholderTextColor={colors.textMuted}
                 value={formData.password}
                 onChangeText={(v) => updateField('password', v)}
@@ -193,10 +193,10 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Confirm Password</Text>
+              <Text style={styles.label}>Confirmar contraseña</Text>
               <TextInput
                 style={[styles.input, errors.confirmPassword && styles.inputError]}
-                placeholder="Confirm your password"
+                placeholder="Confirma tu contraseña"
                 placeholderTextColor={colors.textMuted}
                 value={formData.confirmPassword}
                 onChangeText={(v) => updateField('confirmPassword', v)}
@@ -217,17 +217,17 @@ export default function RegisterScreen() {
               {isLoading ? (
                 <ActivityIndicator color={colors.text} />
               ) : (
-                <Text style={styles.registerButtonText}>Create Account</Text>
+                <Text style={styles.registerButtonText}>Crear cuenta</Text>
               )}
             </Pressable>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account?</Text>
+            <Text style={styles.footerText}>¿Ya tienes una cuenta?</Text>
             <Link href="/(auth)/login" asChild>
               <Pressable>
-                <Text style={styles.footerLink}>Login</Text>
+                <Text style={styles.footerLink}>Iniciar sesión</Text>
               </Pressable>
             </Link>
           </View>

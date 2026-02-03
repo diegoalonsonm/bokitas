@@ -65,8 +65,8 @@ export default function MapScreen() {
       const granted = await requestPermission();
       if (!granted) {
         Alert.alert(
-          'Location Permission',
-          'Please enable location services to see restaurants near you.'
+          'Permiso de ubicación',
+          'Por favor habilita los servicios de ubicación para ver restaurantes cerca de vos.'
         );
         return;
       }
@@ -146,8 +146,8 @@ export default function MapScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </Pressable>
         <View style={styles.headerTitle}>
-          <Text style={styles.title}>Explore Map</Text>
-          <Text style={styles.subtitle}>{restaurants.length} restaurants</Text>
+          <Text style={styles.title}>Explorar mapa</Text>
+          <Text style={styles.subtitle}>{restaurants.length} restaurantes</Text>
         </View>
         <Pressable style={styles.headerButton} onPress={handleMyLocation}>
           <Ionicons name="locate" size={22} color={colors.primary} />
@@ -168,7 +168,7 @@ export default function MapScreen() {
 
       {isLoading && (
         <View style={styles.loadingOverlay}>
-          <Loading message="Loading restaurants..." />
+          <Loading message="Cargando restaurantes..." />
         </View>
       )}
     </View>

@@ -12,7 +12,7 @@ export default function WelcomeScreen() {
           <Text style={styles.logo}>🍽️</Text>
           <Text style={styles.appName}>Bokitas</Text>
           <Text style={styles.tagline}>
-            Discover the best restaurants in Costa Rica
+            Descubre los mejores restaurantes de Costa Rica
           </Text>
         </View>
 
@@ -20,13 +20,13 @@ export default function WelcomeScreen() {
         <View style={styles.actions}>
           <Link href="/(auth)/login" asChild>
             <Pressable style={styles.primaryButton}>
-              <Text style={styles.primaryButtonText}>Login</Text>
+              <Text style={styles.primaryButtonText}>Iniciar sesión</Text>
             </Pressable>
           </Link>
 
           <Link href="/(auth)/register" asChild>
             <Pressable style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>Create Account</Text>
+              <Text style={styles.secondaryButtonText}>Crear cuenta</Text>
             </Pressable>
           </Link>
         </View>

@@ -12,12 +12,12 @@ export interface ValidationResult {
  */
 export function validateEmail(email: string): ValidationResult {
   if (!email.trim()) {
-    return { isValid: false, error: 'Email is required' };
+    return { isValid: false, error: 'El correo es requerido' };
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return { isValid: false, error: 'Invalid email format' };
+    return { isValid: false, error: 'Formato de correo inválido' };
   }
 
   return { isValid: true };
@@ -28,11 +28,11 @@ export function validateEmail(email: string): ValidationResult {
  */
 export function validatePassword(password: string): ValidationResult {
   if (!password) {
-    return { isValid: false, error: 'Password is required' };
+    return { isValid: false, error: 'La contraseña es requerida' };
   }
 
   if (password.length < 6) {
-    return { isValid: false, error: 'Password must be at least 6 characters' };
+    return { isValid: false, error: 'La contraseña debe tener al menos 6 caracteres' };
   }
 
   return { isValid: true };
@@ -46,11 +46,11 @@ export function validateConfirmPassword(
   confirmPassword: string
 ): ValidationResult {
   if (!confirmPassword) {
-    return { isValid: false, error: 'Please confirm your password' };
+    return { isValid: false, error: 'Por favor confirmá tu contraseña' };
   }
 
   if (password !== confirmPassword) {
-    return { isValid: false, error: 'Passwords do not match' };
+    return { isValid: false, error: 'Las contraseñas no coinciden' };
   }
 
   return { isValid: true };
@@ -59,13 +59,13 @@ export function validateConfirmPassword(
 /**
  * Validate name (min 2 chars)
  */
-export function validateName(name: string, fieldName: string = 'Name'): ValidationResult {
+export function validateName(name: string, fieldName: string = 'Nombre'): ValidationResult {
   if (!name.trim()) {
-    return { isValid: false, error: `${fieldName} is required` };
+    return { isValid: false, error: `${fieldName} es requerido` };
   }
 
   if (name.trim().length < 2) {
-    return { isValid: false, error: `${fieldName} must be at least 2 characters` };
+    return { isValid: false, error: `${fieldName} debe tener al menos 2 caracteres` };
   }
 
   return { isValid: true };
@@ -76,11 +76,11 @@ export function validateName(name: string, fieldName: string = 'Name'): Validati
  */
 export function validateRating(rating: number): ValidationResult {
   if (!rating || rating < 1 || rating > 5) {
-    return { isValid: false, error: 'Rating must be between 1 and 5' };
+    return { isValid: false, error: 'La calificación debe estar entre 1 y 5' };
   }
 
   if (!Number.isInteger(rating)) {
-    return { isValid: false, error: 'Rating must be a whole number' };
+    return { isValid: false, error: 'La calificación debe ser un número entero' };
   }
 
   return { isValid: true };
@@ -91,7 +91,7 @@ export function validateRating(rating: number): ValidationResult {
  */
 export function validateComment(comment: string): ValidationResult {
   if (comment && comment.length > 2000) {
-    return { isValid: false, error: 'Comment must be less than 2000 characters' };
+    return { isValid: false, error: 'El comentario debe tener menos de 2000 caracteres' };
   }
 
   return { isValid: true };
@@ -104,7 +104,7 @@ export function validateUUID(id: string): ValidationResult {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   
   if (!uuidRegex.test(id)) {
-    return { isValid: false, error: 'Invalid ID format' };
+    return { isValid: false, error: 'Formato de ID inválido' };
   }
 
   return { isValid: true };
