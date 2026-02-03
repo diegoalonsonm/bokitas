@@ -125,16 +125,18 @@ export const usersApi = {
     if (response.success && response.data) {
       return {
         ...response,
-        data: response.data.map((entry) => ({
-          id: entry.id,
-          userId: entry.idusuario,
-          restaurantId: entry.idrestaurante,
-          hasBeenFlag: entry.hasbeenflag,
-          active: entry.active,
-          createdAt: entry.createdat,
-          updatedAt: entry.updatedat,
-          restaurant: mapRestaurant(entry.restaurante),
-        })),
+        data: response.data
+          .filter((entry) => entry.restaurante != null)
+          .map((entry) => ({
+            id: entry.id,
+            userId: entry.idusuario,
+            restaurantId: entry.idrestaurante,
+            hasBeenFlag: entry.hasbeenflag,
+            active: entry.active,
+            createdAt: entry.createdat,
+            updatedAt: entry.updatedat,
+            restaurant: mapRestaurant(entry.restaurante),
+          })),
       };
     }
     

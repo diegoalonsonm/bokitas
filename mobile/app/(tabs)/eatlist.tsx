@@ -187,7 +187,7 @@ export default function EatlistScreen() {
       ) : (
         <FlatList
           data={filteredEntries}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => item.id ?? `eatlist-${index}`}
           renderItem={renderEntry}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
