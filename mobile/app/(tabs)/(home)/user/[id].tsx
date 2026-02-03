@@ -157,7 +157,7 @@ export default function UserProfileScreen() {
                 <Pressable
                   key={restaurant.id}
                   style={styles.top4Item}
-                  onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}` as Href)}
+                  onPress={() => router.push(`/(tabs)/(home)/restaurant/${restaurant.id}` as Href)}
                 >
                   <View style={styles.top4Rank}>
                     <Text style={styles.top4RankText}>{index + 1}</Text>

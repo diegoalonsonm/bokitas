@@ -50,13 +50,13 @@ export default function ReviewDetailScreen() {
 
   const handleUserPress = () => {
     if (review?.userId) {
-      router.push(`/(tabs)/(home,search)/user/${review.userId}` as Href);
+      router.push(`/(tabs)/(home)/user/${review.userId}` as Href);
     }
   };
 
   const handleRestaurantPress = () => {
     if (review?.restaurantId) {
-      router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}` as Href);
+      router.push(`/(tabs)/(home)/restaurant/${review.restaurantId}` as Href);
     }
   };
 

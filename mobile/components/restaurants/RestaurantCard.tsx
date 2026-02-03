@@ -23,7 +23,7 @@ export function RestaurantCard({
     if (onPress) {
       onPress();
     } else {
-      router.push(`/(tabs)/(home,search)/restaurant/${restaurant.id}` as Href);
+      router.push(`/(tabs)/(home)/restaurant/${restaurant.id}` as Href);
     }
   };
 

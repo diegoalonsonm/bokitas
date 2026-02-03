@@ -1,4 +1,4 @@
-import { Tabs, Href } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '@/lib/constants';
@@ -31,10 +31,9 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="(home,search)"
+        name="(home)"
         options={{
           title: 'Home',
-          href: '/(tabs)/(home,search)/home' as Href,
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'home' : 'home-outline'} color={color} focused={focused} />
           ),

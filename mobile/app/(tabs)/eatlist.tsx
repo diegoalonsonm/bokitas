@@ -64,7 +64,7 @@ export default function EatlistScreen() {
   };
 
   const handleExplore = () => {
-    router.push('/(tabs)/(home,search)/search' as Href);
+    router.push('/(tabs)/(home)/search' as Href);
   };
 
   const renderEntry = ({ item }: { item: EatlistEntry }) => {

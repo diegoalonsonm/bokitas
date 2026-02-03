@@ -64,11 +64,11 @@ export default function HomeScreen() {
   };
 
   const handleSearchPress = () => {
-    router.push('/(tabs)/(home,search)/search' as Href);
+    router.push('/(tabs)/(home)/search' as Href);
   };
 
   const handleMapPress = () => {
-    router.push('/(tabs)/(home,search)/map' as Href);
+    router.push('/(tabs)/(home)/map' as Href);
   };
 
   if (isLoading) {

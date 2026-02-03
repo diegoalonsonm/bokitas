@@ -15,7 +15,7 @@ export default function Index() {
 
   // Redirect based on auth state
   if (isAuthenticated) {
-    return <Redirect href={'/(tabs)/(home,search)/home' as Href} />;
+    return <Redirect href={'/(tabs)' as Href} />;
   }
 
   return <Redirect href="/(auth)/welcome" />;

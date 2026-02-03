@@ -88,7 +88,7 @@ export default function MapScreen() {
 
   const handleCardPress = () => {
     if (selectedRestaurant) {
-      router.push(`/(tabs)/(home,search)/restaurant/${selectedRestaurant.id}` as Href);
+      router.push(`/(tabs)/(home)/restaurant/${selectedRestaurant.id}` as Href);
     }
   };
 

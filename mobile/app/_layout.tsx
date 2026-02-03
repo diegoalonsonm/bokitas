@@ -38,14 +38,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
-          name="modals/create-review"
-          options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
-          }}
-        />
-        <Stack.Screen
-          name="modals/filter"
+          name="modals"
           options={{
             presentation: 'modal',
             animation: 'slide_from_bottom',

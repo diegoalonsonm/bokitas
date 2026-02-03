@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { colors } from '@/lib/constants';
 
-export default function HomeSearchLayout() {
+export default function HomeLayout() {
   return (
     <Stack
       screenOptions={{
@@ -11,7 +11,6 @@ export default function HomeSearchLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="home" />
       <Stack.Screen name="search" />
       <Stack.Screen name="map" />
       <Stack.Screen 

@@ -23,12 +23,12 @@ export function ReviewCard({
     if (onPress) {
       onPress();
     } else {
-      router.push(`/(tabs)/(home,search)/review/${review.id}` as Href);
+      router.push(`/(tabs)/(home)/review/${review.id}` as Href);
     }
   };
 
   const handleUserPress = () => {
-    router.push(`/(tabs)/(home,search)/user/${review.userId}` as Href);
+    router.push(`/(tabs)/(home)/user/${review.userId}` as Href);
   };
 
   return (
@@ -58,7 +58,7 @@ export function ReviewCard({
       {showRestaurant && review.restaurant && (
         <Pressable 
           style={styles.restaurantRow}
-          onPress={() => router.push(`/(tabs)/(home,search)/restaurant/${review.restaurantId}` as Href)}
+          onPress={() => router.push(`/(tabs)/(home)/restaurant/${review.restaurantId}` as Href)}
         >
           <Text style={styles.restaurantLabel}>at </Text>
           <Text style={styles.restaurantName}>{review.restaurant.name}</Text>

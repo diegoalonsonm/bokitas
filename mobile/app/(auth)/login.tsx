@@ -43,7 +43,7 @@ export default function LoginScreen() {
 
     try {
       await login(email, password);
-      router.replace('/(tabs)/(home,search)/home' as Href);
+      router.replace('/(tabs)' as Href);
     } catch (error) {
       Alert.alert(
         'Login Failed',
