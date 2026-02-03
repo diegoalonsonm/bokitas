@@ -223,7 +223,7 @@ export class UserModel {
     try {
       const { data, error } = await supabase
         .from('eatlist')
-        .select('idusuario, idrestaurante, visitado, createdat')
+        .select('idusuario, idrestaurante, flag, createdat')
         .eq('idusuario', userId)
 
       if (error) {

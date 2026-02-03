@@ -94,6 +94,11 @@ export class FoursquareService {
    * API: https://api.foursquare.com/v3/places/{fsq_id}
    */
   static async getPlaceDetails(fsqId: string): Promise<TransformedRestaurant> {
+    // Validate fsqId to prevent API calls with invalid IDs
+    if (!fsqId || fsqId === 'undefined' || fsqId === 'null') {
+      throw new Error(`Invalid Foursquare ID: ${fsqId}`)
+    }
+
     try {
       const response = await foursquareClient.get<FoursquarePlace>(`/places/${fsqId}`)
 
