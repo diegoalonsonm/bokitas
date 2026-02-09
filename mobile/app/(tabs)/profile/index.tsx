@@ -142,11 +142,6 @@ export default function ProfileScreen() {
             <Text style={styles.statValue}>{stats.eatlistCount}</Text>
             <Text style={styles.statLabel}>Guardados</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{top4.length}</Text>
-            <Text style={styles.statLabel}>Top 4</Text>
-          </View>
         </View>
 
         {/* Top 4 Section */}
