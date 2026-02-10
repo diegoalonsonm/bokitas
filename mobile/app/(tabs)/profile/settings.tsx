@@ -98,6 +98,10 @@ export default function SettingsScreen() {
     Linking.openURL('https://bokitas.app/terms');
   };
 
+  const handleSupportCreator = () => {
+    Linking.openURL('https://buymeacoffee.com/diegoalonsonm');
+  };
+
   const accountSettings: SettingItem[] = [
     {
       icon: 'person-outline',
@@ -129,6 +133,11 @@ export default function SettingsScreen() {
       icon: 'help-circle-outline',
       label: 'Ayuda y soporte',
       onPress: handleContact,
+    },
+    {
+      icon: 'heart-outline',
+      label: 'Soporta al Creador',
+      onPress: handleSupportCreator,
     },
     {
       icon: 'document-text-outline',
