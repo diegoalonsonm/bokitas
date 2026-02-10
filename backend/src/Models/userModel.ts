@@ -199,7 +199,11 @@ export class UserModel {
 
       const { data, error } = await supabase
         .from('review')
-        .select('id, idusuario, puntuacion, comentario, createdat')
+        .select(`
+          id, idusuario, puntuacion, comentario, urlfotoreview, createdat, updatedat,
+          usuario:idusuario(id, nombre, primerapellido, urlfotoperfil),
+          restaurante:idrestaurante(id, nombre, urlfotoperfil)
+        `)
         .eq('idusuario', userId)
         .eq('active', true)
         .order('createdat', { ascending: false })
