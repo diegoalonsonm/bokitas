@@ -105,14 +105,6 @@ export default function EatlistScreen() {
   const renderHeader = () => (
     <View style={styles.filterContainer}>
       <Pressable
-        style={[styles.filterButton, filter === 'all' && styles.filterButtonActive]}
-        onPress={() => setFilter('all')}
-      >
-        <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-          Todos ({entries.length})
-        </Text>
-      </Pressable>
-      <Pressable
         style={[styles.filterButton, filter === 'wishlist' && styles.filterButtonActive]}
         onPress={() => setFilter('wishlist')}
       >
@@ -126,6 +118,14 @@ export default function EatlistScreen() {
       >
         <Text style={[styles.filterText, filter === 'visited' && styles.filterTextActive]}>
           Visitados ({entries.filter((e) => e.hasBeenFlag).length})
+        </Text>
+      </Pressable>
+      <Pressable
+        style={[styles.filterButton, filter === 'all' && styles.filterButtonActive]}
+        onPress={() => setFilter('all')}
+      >
+        <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
+          Todos ({entries.length})
         </Text>
       </Pressable>
     </View>
@@ -176,7 +176,7 @@ export default function EatlistScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Mi Lista</Text>
+        <Text style={styles.title}>Eatlist</Text>
         <View style={styles.headerStats}>
           <Badge text={`${entries.length} guardados`} variant="primary" />
         </View>
