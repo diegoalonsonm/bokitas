@@ -239,6 +239,50 @@ export class ReviewModel {
   }
 
   /**
+   * Get recent reviews with user and restaurant info
+   */
+  static async getRecent(limit: number = 10): Promise<ReviewWithUser[]> {
+    try {
+      const { data, error } = await supabase
+        .from('review')
+        .select(`
+          id, comentario, puntuacion, urlfotoreview, idrestaurante, idusuario, idestado, active, createdat, updatedat,
+          usuario:idusuario(id, nombre, primerapellido, urlfotoperfil),
+          restaurante:idrestaurante(id, nombre, urlfotoperfil)
+        `)
+        .eq('active', true)
+        .order('createdat', { ascending: false })
+        .limit(limit)
+
+      if (error) {
+        throw error
+      }
+
+      if (!data) {
+        return []
+      }
+
+      return data.map((raw: unknown) => {
+        const item = raw as ReviewWithUser & { 
+          usuario?: ReviewWithUser['usuario'] | ReviewWithUser['usuario'][]
+          restaurante?: { id: string; nombre: string; urlfotoperfil: string | null } | { id: string; nombre: string; urlfotoperfil: string | null }[]
+        }
+        const usuario = Array.isArray(item.usuario) ? item.usuario[0] : item.usuario
+        const restaurante = Array.isArray(item.restaurante) ? item.restaurante[0] : item.restaurante
+
+        return {
+          ...item,
+          usuario: usuario as ReviewWithUser['usuario'],
+          restaurante: restaurante as { id: string; nombre: string; urlfotoperfil: string | null } | undefined
+        }
+      }) as ReviewWithUser[]
+    } catch (err) {
+      console.error('Error getting recent reviews:', err)
+      throw err
+    }
+  }
+
+  /**
    * Check if user is the owner of a review
    */
   static async isOwner(reviewId: string, userId: string): Promise<boolean> {

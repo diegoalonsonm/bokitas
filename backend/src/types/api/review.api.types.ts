@@ -17,8 +17,13 @@ export interface ReviewParams {
   id: string
 }
 
+export interface GetRecentReviewsQuery {
+  limit?: string
+}
+
 export type CreateReviewRequest = Request<Record<string, string>, unknown, CreateReviewBody>
 export type UpdateReviewRequest = Request<ReviewParams, unknown, UpdateReviewBody>
 export type GetReviewRequest = Request<ReviewParams>
 export type DeleteReviewRequest = Request<ReviewParams>
 export type UploadReviewPhotoRequest = Request<ReviewParams>
+export type GetRecentReviewsRequest = Request<Record<string, string>, unknown, unknown, GetRecentReviewsQuery>

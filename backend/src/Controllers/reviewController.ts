@@ -15,10 +15,26 @@ import type {
   GetReviewRequest,
   UpdateReviewRequest,
   DeleteReviewRequest,
-  UploadReviewPhotoRequest
+  UploadReviewPhotoRequest,
+  GetRecentReviewsRequest
 } from '../types/api/review.api.types.js'
 
 export class ReviewController {
+  /**
+   * GET /reviews/recent
+   * Get recent reviews
+   */
+  static async getRecent(req: GetRecentReviewsRequest, res: Response): Promise<void> {
+    const limit = Math.min(parseInt(req.query.limit || '10', 10), 50)
+
+    const reviews = await ReviewModel.getRecent(limit)
+
+    res.status(200).json({
+      success: true,
+      data: reviews
+    })
+  }
+
   /**
    * POST /reviews
    * Create a new review

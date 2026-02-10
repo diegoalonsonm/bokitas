@@ -1,7 +1,7 @@
 import { apiRequest, uploadFile } from '../client';
 import { Review } from '@/types';
 import { ApiResponse } from '@/types/api';
-import { mapReview, RawReview } from '@/lib/utils/mappers';
+import { mapReview, mapReviews, RawReview } from '@/lib/utils/mappers';
 
 /**
  * Data for creating a new review
@@ -25,6 +25,22 @@ export interface UpdateReviewData {
  * Reviews API endpoints
  */
 export const reviewsApi = {
+  /**
+   * Get recent reviews (global)
+   */
+  async getRecent(limit: number = 10): Promise<ApiResponse<Review[]>> {
+    const response = await apiRequest<RawReview[]>('GET', `/reviews/recent?limit=${limit}`);
+    
+    if (response.success && response.data) {
+      return {
+        ...response,
+        data: mapReviews(response.data),
+      };
+    }
+    
+    return { ...response, data: [] };
+  },
+
   /**
    * Get review by ID
    */

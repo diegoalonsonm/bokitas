@@ -31,18 +31,15 @@ export default function HomeScreen() {
       setError(null);
       const [restaurantsRes, reviewsRes] = await Promise.all([
         restaurantsApi.getTop(10),
-        restaurantsApi.getAll({ limit: 10, sortBy: 'recent' }),
+        reviewsApi.getRecent(10),
       ]);
 
       if (restaurantsRes.data) {
         setTopRestaurants(restaurantsRes.data);
       }
 
-      // For now, we'll get reviews from the recent restaurants
-      // In a real app, you might have a dedicated recent reviews endpoint
       if (reviewsRes.data) {
-        // Flatten reviews from restaurants or use a dedicated endpoint
-        setRecentReviews([]);
+        setRecentReviews(reviewsRes.data);
       }
     } catch (err) {
       setError('Error al cargar datos. Desliza para actualizar.');

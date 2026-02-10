@@ -4,7 +4,8 @@ import type {
   CreateReviewRequest,
   UpdateReviewRequest,
   DeleteReviewRequest,
-  UploadReviewPhotoRequest
+  UploadReviewPhotoRequest,
+  GetRecentReviewsRequest
 } from '../types/api/review.api.types.js'
 import { ReviewController } from '../Controllers/reviewController.js'
 import { authMiddleware } from '../Middleware/authMiddleware.js'
@@ -14,6 +15,7 @@ import { asyncHandler } from '../Middleware/errorMiddleware.js'
 const reviewRouter = Router()
 
 // Public routes
+reviewRouter.get('/recent', asyncHandler((req, res) => ReviewController.getRecent(req as unknown as GetRecentReviewsRequest, res)))
 reviewRouter.get('/:id', asyncHandler((req, res) => ReviewController.getById(req as unknown as GetReviewRequest, res)))
 
 // Protected routes
