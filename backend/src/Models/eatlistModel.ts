@@ -3,6 +3,7 @@ import { RestaurantModel } from './restaurantModel.js'
 import { UserModel } from './userModel.js'
 import type {
   Eatlist,
+  EatlistApiResponse,
   EatlistWithRestaurant,
   GetEatlistParams,
   AddToEatlistParams,
@@ -73,13 +74,16 @@ export class EatlistModel {
       }
 
       // Transform the data to match EatlistWithRestaurant interface
+      // Note: We return 'hasbeenflag' to match mobile client expectations
+      // 'id' uses idrestaurante as it's unique within a user's eatlist
       const result: EatlistWithRestaurant[] = (data || []).map((item: unknown) => {
         const raw = item as Record<string, unknown>
         const restaurante = Array.isArray(raw.restaurante) ? raw.restaurante[0] : raw.restaurante
         return {
+          id: raw.idrestaurante as string,
           idusuario: raw.idusuario as string,
           idrestaurante: raw.idrestaurante as string,
-          flag: raw.flag as boolean,
+          hasbeenflag: raw.flag as boolean,
           active: raw.active as boolean,
           createdat: raw.createdat as string,
           updatedat: raw.updatedat as string,
@@ -132,7 +136,7 @@ export class EatlistModel {
    * - Reactivates soft-deleted entries
    * - Returns conflict error if already exists and active
    */
-  static async add({ userId, restaurantId, flag = false }: AddToEatlistParams): Promise<{ entry: Eatlist; reactivated: boolean } | { error: string }> {
+  static async add({ userId, restaurantId, flag = false }: AddToEatlistParams): Promise<{ entry: EatlistApiResponse; reactivated: boolean } | { error: string }> {
     try {
       const dbUserId = await UserModel.getUserIdByAuthId({ authId: userId })
       if (!dbUserId) {
@@ -178,7 +182,20 @@ export class EatlistModel {
           throw error
         }
 
-        return { entry: data as Eatlist, reactivated: true }
+        // Transform to API response format with 'hasbeenflag'
+        const raw = data as Record<string, unknown>
+        return {
+          entry: {
+            id: raw.idrestaurante as string,
+            idusuario: raw.idusuario as string,
+            idrestaurante: raw.idrestaurante as string,
+            hasbeenflag: raw.flag as boolean,
+            active: raw.active as boolean,
+            createdat: raw.createdat as string,
+            updatedat: raw.updatedat as string
+          },
+          reactivated: true
+        }
       }
 
       // Create new entry
@@ -199,7 +216,20 @@ export class EatlistModel {
         throw error
       }
 
-      return { entry: data as Eatlist, reactivated: false }
+      // Transform to API response format with 'hasbeenflag'
+      const raw = data as Record<string, unknown>
+      return {
+        entry: {
+          id: raw.idrestaurante as string,
+          idusuario: raw.idusuario as string,
+          idrestaurante: raw.idrestaurante as string,
+          hasbeenflag: raw.flag as boolean,
+          active: raw.active as boolean,
+          createdat: raw.createdat as string,
+          updatedat: raw.updatedat as string
+        },
+        reactivated: false
+      }
     } catch (err) {
       console.error('Error adding to eatlist:', err)
       throw err
@@ -209,7 +239,7 @@ export class EatlistModel {
   /**
    * Update the flag (visited status) of an eatlist entry
    */
-  static async update({ userId, restaurantId, flag }: UpdateEatlistParams): Promise<Eatlist | null> {
+  static async update({ userId, restaurantId, flag }: UpdateEatlistParams): Promise<EatlistApiResponse | null> {
     try {
       const dbUserId = await UserModel.getUserIdByAuthId({ authId: userId })
       if (!dbUserId) {
@@ -234,7 +264,21 @@ export class EatlistModel {
         throw error
       }
 
-      return data as Eatlist | null
+      if (!data) {
+        return null
+      }
+
+      // Transform to API response format with 'hasbeenflag'
+      const raw = data as Record<string, unknown>
+      return {
+        id: raw.idrestaurante as string,
+        idusuario: raw.idusuario as string,
+        idrestaurante: raw.idrestaurante as string,
+        hasbeenflag: raw.flag as boolean,
+        active: raw.active as boolean,
+        createdat: raw.createdat as string,
+        updatedat: raw.updatedat as string
+      }
     } catch (err) {
       console.error('Error updating eatlist entry:', err)
       throw err

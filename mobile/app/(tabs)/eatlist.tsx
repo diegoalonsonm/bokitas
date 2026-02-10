@@ -23,7 +23,7 @@ type FilterType = 'all' | 'visited' | 'wishlist';
 export default function EatlistScreen() {
   const { user } = useAuth();
   const { entries, isLoading, fetchEatlist, updateFlag, removeFromEatlist } = useEatlistStore();
-  const [filter, setFilter] = useState<FilterType>('all');
+  const [filter, setFilter] = useState<FilterType>('wishlist');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {

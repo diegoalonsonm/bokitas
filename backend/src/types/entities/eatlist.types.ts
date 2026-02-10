@@ -9,7 +9,19 @@ export interface Eatlist {
   updatedat: string
 }
 
-export interface EatlistWithRestaurant extends Eatlist {
+// API response type - uses 'hasbeenflag' to match mobile client expectations
+// Also includes 'id' field that mobile expects (uses idrestaurante as unique identifier per user)
+export interface EatlistApiResponse {
+  id: string              // synthetic id (using idrestaurante for uniqueness within user's eatlist)
+  idusuario: string
+  idrestaurante: string
+  hasbeenflag: boolean    // mapped from 'flag' column
+  active: boolean
+  createdat: string
+  updatedat: string
+}
+
+export interface EatlistWithRestaurant extends EatlistApiResponse {
   restaurante: {
     id: string
     nombre: string

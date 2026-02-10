@@ -46,7 +46,9 @@ export default function ProfileScreen() {
         setTop4(top4Res.data);
       }
       if (eatlistRes.data) {
-        setStats((prev) => ({ ...prev, eatlistCount: eatlistRes.data!.length }));
+        // Count only "Por visitar" entries (not yet visited) to sync with EatList tab
+        const porVisitarCount = eatlistRes.data.filter((e) => !e.hasBeenFlag).length;
+        setStats((prev) => ({ ...prev, eatlistCount: porVisitarCount }));
       }
     } catch (err) {
       console.error('Error fetching user data:', err);
