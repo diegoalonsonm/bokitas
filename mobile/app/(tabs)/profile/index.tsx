@@ -13,42 +13,39 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks';
 import { usersApi } from '@/lib/api';
+import { useEatlistStore } from '@/lib/stores';
 import { Avatar, Rating, Badge, Loading, EmptyState, Card } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
 import type { Review, Restaurant } from '@/types';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
+  const { entries: eatlistEntries, fetchEatlist } = useEatlistStore();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [top4, setTop4] = useState<Restaurant[]>([]);
-  const [stats, setStats] = useState({ reviewCount: 0, eatlistCount: 0 });
+  const [reviewCount, setReviewCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Compute "Por visitar" count from store for real-time sync with EatList tab
+  const porVisitarCount = eatlistEntries.filter((e) => !e.hasBeenFlag).length;
 
   const fetchUserData = useCallback(async () => {
     if (!user?.id) return;
 
     try {
-      const [reviewsRes, top4Res, eatlistRes] = await Promise.all([
+      const [reviewsRes, top4Res] = await Promise.all([
         usersApi.getReviews(user.id, { limit: 5 }),
         usersApi.getTop4(user.id),
-        usersApi.getEatlist(user.id),
+        fetchEatlist(), // Use store's fetch for eatlist
       ]);
 
       if (reviewsRes.data) {
         setReviews(reviewsRes.data);
-        setStats((prev) => ({ 
-          ...prev, 
-          reviewCount: reviewsRes.meta?.total || reviewsRes.data!.length 
-        }));
+        setReviewCount(reviewsRes.meta?.total || reviewsRes.data.length);
       }
       if (top4Res.data) {
         setTop4(top4Res.data);
-      }
-      if (eatlistRes.data) {
-        // Count only "Por visitar" entries (not yet visited) to sync with EatList tab
-        const porVisitarCount = eatlistRes.data.filter((e) => !e.hasBeenFlag).length;
-        setStats((prev) => ({ ...prev, eatlistCount: porVisitarCount }));
       }
     } catch (err) {
       console.error('Error fetching user data:', err);
@@ -56,7 +53,7 @@ export default function ProfileScreen() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [user?.id]);
+  }, [user?.id, fetchEatlist]);
 
   useEffect(() => {
     fetchUserData();
@@ -136,12 +133,12 @@ export default function ProfileScreen() {
         {/* Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>{stats.reviewCount}</Text>
+            <Text style={styles.statValue}>{reviewCount}</Text>
             <Text style={styles.statLabel}>Reseñas</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>{stats.eatlistCount}</Text>
+            <Text style={styles.statValue}>{porVisitarCount}</Text>
             <Text style={styles.statLabel}>Guardados</Text>
           </View>
         </View>
