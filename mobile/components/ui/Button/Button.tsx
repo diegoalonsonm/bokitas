@@ -9,6 +9,7 @@ import {
   PressableProps,
 } from 'react-native';
 import { colors, spacing, typography } from '@/lib/constants';
+import { hapticMedium } from '@/lib/utils/haptics';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -41,6 +42,10 @@ export function Button({
 }: ButtonProps) {
   const disabled = isDisabled || isLoading;
 
+  const handlePressIn = () => {
+    if (!disabled) hapticMedium();
+  };
+
   return (
     <Pressable
       style={({ pressed }) => [
@@ -53,6 +58,7 @@ export function Button({
         style,
       ]}
       disabled={disabled}
+      onPressIn={handlePressIn}
       {...props}
     >
       {isLoading ? (
@@ -87,6 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.sm,
     borderRadius: 12,
+    borderCurve: 'continuous',
   },
   fullWidth: {
     width: '100%',

@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,61 +10,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { usersApi } from '@/lib/api/endpoints/users';
-import { useEatlistStore } from '@/lib/stores/useEatlistStore';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { useProfileData } from '@/lib/hooks/useProfileData';
 import { Avatar, Rating, Badge, Loading, EmptyState, Card } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
-import type { Review, Restaurant } from '@/types';
+import { hapticSuccess } from '@/lib/utils/haptics';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
-  const { entries: eatlistEntries, fetchEatlist } = useEatlistStore();
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [top4, setTop4] = useState<Restaurant[]>([]);
-  const [reviewCount, setReviewCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // Compute "Por visitar" count from store for real-time sync with EatList tab
-  const porVisitarCount = eatlistEntries.filter((e) => !e.hasBeenFlag).length;
-
-  const fetchUserData = useCallback(async () => {
-    if (!user?.id) return;
-
-    try {
-      const [reviewsRes, top4Res] = await Promise.all([
-        usersApi.getReviews(user.id, { limit: 5 }),
-        usersApi.getTop4(user.id),
-        fetchEatlist(), // Use store's fetch for eatlist
-      ]);
-
-      if (reviewsRes.data) {
-        setReviews(reviewsRes.data);
-        setReviewCount(reviewsRes.meta?.total || reviewsRes.data.length);
-      }
-      if (top4Res.data) {
-        setTop4(top4Res.data);
-      }
-    } catch (err) {
-      console.error('Error fetching user data:', err);
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [user?.id, fetchEatlist]);
-
-  useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    fetchUserData();
-  };
+  const {
+    reviews,
+    top4,
+    reviewCount,
+    savedCount,
+    isLoading,
+    isRefreshing,
+    refresh,
+  } = useProfileData(user?.id);
 
   const handleEditProfile = () => {
     router.push('/(tabs)/profile/edit');
+  };
+
+  const handleRefresh = async () => {
+    await refresh();
+    hapticSuccess();
   };
 
   const handleSettings = () => {
@@ -98,7 +67,7 @@ export default function ProfileScreen() {
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
-            onRefresh={handleRefresh}
+            onRefresh={refresh}
             tintColor={colors.primary}
             colors={[colors.primary]}
           />
@@ -138,7 +107,7 @@ export default function ProfileScreen() {
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>{porVisitarCount}</Text>
+            <Text style={styles.statValue}>{savedCount}</Text>
             <Text style={styles.statLabel}>Guardados</Text>
           </View>
         </View>
@@ -280,6 +249,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
+    borderCurve: 'continuous',
   },
   statItem: {
     flex: 1,
@@ -334,6 +304,7 @@ const styles = StyleSheet.create({
     width: '48%',
     backgroundColor: colors.surface,
     borderRadius: borderRadius.md,
+    borderCurve: 'continuous',
     padding: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
@@ -395,6 +366,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     backgroundColor: colors.surface,
     borderRadius: borderRadius.md,
+    borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: colors.error + '30',
   },

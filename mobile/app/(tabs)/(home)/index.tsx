@@ -7,58 +7,39 @@ import {
   RefreshControl,
   Pressable,
 } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { restaurantsApi } from '@/lib/api/endpoints/restaurants';
-import { reviewsApi } from '@/lib/api/endpoints/reviews';
+import { useHomeData } from '@/lib/hooks/useHomeData';
+import { hapticSuccess } from '@/lib/utils/haptics';
 import { RestaurantCard } from '@/components/restaurants';
 import { ReviewCard } from '@/components/reviews';
 import { Loading, EmptyState, Avatar } from '@/components/ui';
-import type { Restaurant, Review } from '@/types';
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    topRestaurants,
+    recentReviews,
+    isLoading: isHomeDataLoading,
+    error,
+    refresh: refreshHomeData,
+  } = useHomeData();
+
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [topRestaurants, setTopRestaurants] = useState<Restaurant[]>([]);
-  const [recentReviews, setRecentReviews] = useState<Review[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    try {
-      setError(null);
-      const [restaurantsRes, reviewsRes] = await Promise.all([
-        restaurantsApi.getTop(10),
-        reviewsApi.getRecent(10),
-      ]);
-
-      if (restaurantsRes.data) {
-        setTopRestaurants(restaurantsRes.data);
-      }
-
-      if (reviewsRes.data) {
-        setRecentReviews(reviewsRes.data);
-      }
-    } catch (err) {
-      setError('Error al cargar datos. Desliza para actualizar.');
-      console.error('Error fetching home data:', err);
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, []);
+    await refreshHomeData();
+  }, [refreshHomeData]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    fetchData();
-  };
+    if (!isHomeDataLoading) {
+      setIsRefreshing(false);
+    }
+  }, [isHomeDataLoading]);
 
   const handleSearchPress = () => {
     router.push('/(tabs)/(home)/search' as Href);
@@ -68,7 +49,13 @@ export default function HomeScreen() {
     router.push('/(tabs)/(home)/map' as Href);
   };
 
-  if (isLoading) {
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchData();
+    hapticSuccess();
+  }, [fetchData]);
+
+  if (isHomeDataLoading && !isRefreshing) {
     return <Loading fullScreen message="Cargando lugares deliciosos..." />;
   }
 
@@ -120,7 +107,7 @@ export default function HomeScreen() {
             title="¡Ups!"
             description={error}
             actionLabel="Reintentar"
-            onAction={handleRefresh}
+            onAction={refreshHomeData}
           />
         ) : (
           <>
@@ -255,6 +242,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
     borderRadius: 12,
+    borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: colors.surfaceBorder,
     gap: spacing.sm,

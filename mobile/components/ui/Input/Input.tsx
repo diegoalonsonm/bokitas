@@ -48,7 +48,7 @@ export function Input({
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
-      
+
       <View
         style={[
           styles.inputContainer,
@@ -64,7 +64,7 @@ export function Input({
             style={styles.leftIcon}
           />
         )}
-        
+
         <TextInput
           style={[
             styles.input,
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.surfaceBorder,
     borderRadius: 12,
+    borderCurve: 'continuous',
     overflow: 'hidden',
   },
   inputContainerFocused: {

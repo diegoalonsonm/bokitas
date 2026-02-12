@@ -21,6 +21,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { Rating, Badge, Loading, Button, EmptyState } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
 import type { Restaurant, Review } from '@/types';
+import { hapticLight, hapticMedium } from '@/lib/utils/haptics';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -93,6 +94,7 @@ export default function RestaurantDetailScreen() {
 
   const handleEatlistToggle = async () => {
     if (!restaurant) return;
+    hapticMedium();
 
     if (isInEatlist) {
       await removeFromEatlist(restaurant.id);
@@ -410,6 +412,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
+    borderCurve: 'continuous',
     padding: spacing.md,
     marginBottom: spacing.lg,
   },

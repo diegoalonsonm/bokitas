@@ -41,6 +41,7 @@ export function Card({
 const styles = StyleSheet.create({
   base: {
     borderRadius: borderRadius.lg,
+    borderCurve: 'continuous',
     overflow: 'hidden',
   },
   pressed: {

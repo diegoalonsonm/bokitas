@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,47 +8,40 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { useEatlistStore } from '@/lib/stores/useEatlistStore';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { useEatlistData } from '@/lib/hooks/useEatlistData';
 import { RestaurantCard } from '@/components/restaurants';
 import { Loading, EmptyState, Badge, Button } from '@/components/ui';
 import type { EatlistEntry } from '@/types';
-
-type FilterType = 'all' | 'visited' | 'wishlist';
+import { hapticSuccess, hapticLight, hapticWarning, hapticSelection } from '@/lib/utils/haptics';
 
 export default function EatlistScreen() {
   const { user } = useAuth();
-  const { entries, isLoading, fetchEatlist, updateFlag, removeFromEatlist } = useEatlistStore();
-  const [filter, setFilter] = useState<FilterType>('wishlist');
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      fetchEatlist();
-    }
-  }, [user, fetchEatlist]);
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchEatlist();
-    setIsRefreshing(false);
-  };
-
-  const filteredEntries = entries.filter((entry) => {
-    if (filter === 'visited') return entry.hasBeenFlag;
-    if (filter === 'wishlist') return !entry.hasBeenFlag;
-    return true;
-  });
+  const {
+    entries,
+    filteredEntries,
+    filter,
+    filterCounts,
+    isLoading,
+    isRefreshing,
+    setFilter,
+    refresh,
+    toggleVisited,
+    remove,
+  } = useEatlistData(!!user);
 
   const handleToggleVisited = async (entry: EatlistEntry) => {
-    await updateFlag(entry.restaurantId, !entry.hasBeenFlag);
+    hapticLight();
+    toggleVisited(entry); // Assuming toggleVisited from useEatlistData handles the update
   };
 
   const handleRemove = (entry: EatlistEntry) => {
+    hapticWarning();
     Alert.alert(
       'Eliminar de Mi Lista',
       `¿Eliminar ${entry.restaurant?.name || 'este restaurante'} de tu lista?`,
@@ -57,21 +50,26 @@ export default function EatlistScreen() {
         {
           text: 'Eliminar',
           style: 'destructive',
-          onPress: () => removeFromEatlist(entry.restaurantId),
+          onPress: () => remove(entry.restaurantId),
         },
       ]
     );
   };
 
+  const handleRefresh = useCallback(async () => {
+    await refresh();
+    hapticSuccess();
+  }, [refresh]);
+
   const handleExplore = () => {
     router.push('/(tabs)/(home)/search' as Href);
   };
 
-  const renderEntry = ({ item }: { item: EatlistEntry }) => {
+  const renderEntry = ({ item, index }: { item: EatlistEntry; index: number }) => {
     if (!item.restaurant) return null;
 
     return (
-      <View style={styles.entryContainer}>
+      <Animated.View entering={FadeInDown.delay(index * 50).duration(400).springify()} style={styles.entryContainer}>
         <RestaurantCard
           restaurant={item.restaurant}
           variant="compact"
@@ -98,7 +96,7 @@ export default function EatlistScreen() {
             <Ionicons name="trash-outline" size={20} color={colors.error} />
           </Pressable>
         </View>
-      </View>
+      </Animated.View>
     );
   };
 
@@ -106,26 +104,26 @@ export default function EatlistScreen() {
     <View style={styles.filterContainer}>
       <Pressable
         style={[styles.filterButton, filter === 'wishlist' && styles.filterButtonActive]}
-        onPress={() => setFilter('wishlist')}
+        onPress={() => { hapticSelection(); setFilter('wishlist'); }}
       >
         <Text style={[styles.filterText, filter === 'wishlist' && styles.filterTextActive]}>
-          Por visitar ({entries.filter((e) => !e.hasBeenFlag).length})
+          Por visitar ({filterCounts.wishlist})
         </Text>
       </Pressable>
       <Pressable
         style={[styles.filterButton, filter === 'visited' && styles.filterButtonActive]}
-        onPress={() => setFilter('visited')}
+        onPress={() => { hapticSelection(); setFilter('visited'); }}
       >
         <Text style={[styles.filterText, filter === 'visited' && styles.filterTextActive]}>
-          Visitados ({entries.filter((e) => e.hasBeenFlag).length})
+          Visitados ({filterCounts.visited})
         </Text>
       </Pressable>
       <Pressable
         style={[styles.filterButton, filter === 'all' && styles.filterButtonActive]}
-        onPress={() => setFilter('all')}
+        onPress={() => { hapticSelection(); setFilter('all'); }}
       >
         <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-          Todos ({entries.length})
+          Todos ({filterCounts.all})
         </Text>
       </Pressable>
     </View>
@@ -237,6 +235,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     backgroundColor: colors.surface,
     borderRadius: 12,
+    borderCurve: 'continuous',
     padding: spacing.xs,
   },
   filterButton: {
@@ -244,6 +243,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     alignItems: 'center',
     borderRadius: 8,
+    borderCurve: 'continuous',
   },
   filterButtonActive: {
     backgroundColor: colors.primary,

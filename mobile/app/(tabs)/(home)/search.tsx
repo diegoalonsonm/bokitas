@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: 10,
+    borderCurve: 'continuous',
     paddingHorizontal: spacing.sm,
     gap: spacing.xs,
   },
@@ -254,6 +255,7 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     backgroundColor: colors.surface,
     borderRadius: 10,
+    borderCurve: 'continuous',
   },
   activeFilters: {
     flexDirection: 'row',
