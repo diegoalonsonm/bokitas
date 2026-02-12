@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
 import { router, Href } from 'expo-router';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
 import { Avatar, Rating } from '@/components/ui';
@@ -56,7 +57,7 @@ export function ReviewCard({
 
       {/* Restaurant name if needed */}
       {showRestaurant && review.restaurant && (
-        <Pressable 
+        <Pressable
           style={styles.restaurantRow}
           onPress={() => router.push(`/(tabs)/(home)/restaurant/${review.restaurantId}` as Href)}
         >
@@ -78,11 +79,13 @@ export function ReviewCard({
           {review.photos.slice(0, 3).map((photo, index) => (
             <Image
               key={index}
-              source={{ uri: photo }}
+              source={photo}
               style={[
                 styles.photo,
                 index === 2 && review.photos!.length > 3 && styles.lastPhoto,
               ]}
+              contentFit="cover"
+              transition={200}
             />
           ))}
           {review.photos.length > 3 && (

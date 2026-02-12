@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, StyleSheet, ViewStyle, Text } from 'react-native';
+import { View, StyleSheet, ViewStyle, Text } from 'react-native';
+import { Image } from 'expo-image';
 import { colors, typography } from '@/lib/constants';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -57,8 +58,10 @@ export function Avatar({
     return (
       <View style={[styles.container, containerStyle, showBorder && styles.border, style]}>
         <Image
-          source={{ uri: source }}
+          source={source}
           style={[styles.image, { borderRadius: dimension / 2 }]}
+          contentFit="cover"
+          transition={200}
         />
       </View>
     );

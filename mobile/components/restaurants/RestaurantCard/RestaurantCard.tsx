@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Href } from 'expo-router';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
@@ -38,15 +39,17 @@ export function RestaurantCard({
         onPress={handlePress}
       >
         <Image
-          source={{ uri: restaurant.photos?.[0] || 'https://via.placeholder.com/80' }}
+          source={restaurant.photos?.[0]}
           style={styles.compactImage}
+          contentFit="cover"
+          transition={200}
         />
         <View style={styles.compactContent}>
           <Text style={styles.compactName} numberOfLines={1}>
             {restaurant.name}
           </Text>
           <Text style={styles.compactCategory} numberOfLines={1}>
-          {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurante'}
+            {restaurant.foodTypes?.map((ft) => ft.name).join(', ') || 'Restaurante'}
           </Text>
           <View style={styles.compactMeta}>
             <Rating value={restaurant.averageRating || 0} size="sm" />
@@ -71,8 +74,10 @@ export function RestaurantCard({
         onPress={handlePress}
       >
         <Image
-          source={{ uri: restaurant.photos?.[0] || 'https://via.placeholder.com/300' }}
+          source={restaurant.photos?.[0]}
           style={styles.featuredImage}
+          contentFit="cover"
+          transition={300}
         />
         <View style={styles.featuredOverlay} />
         <View style={styles.featuredContent}>
@@ -106,8 +111,10 @@ export function RestaurantCard({
       onPress={handlePress}
     >
       <Image
-        source={{ uri: restaurant.photos?.[0] || 'https://via.placeholder.com/200' }}
+        source={restaurant.photos?.[0]}
         style={styles.image}
+        contentFit="cover"
+        transition={200}
       />
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={1}>
