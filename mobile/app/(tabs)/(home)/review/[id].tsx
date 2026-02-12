@@ -11,14 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { reviewsApi } from '@/lib/api';
+import { reviewsApi } from '@/lib/api/endpoints/reviews';
 import { Avatar, Rating, Loading, EmptyState } from '@/components/ui';
 import { formatRelativeTime } from '@/lib/utils';
 import type { Review } from '@/types';
 
 export default function ReviewDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  
+
   const [review, setReview] = useState<Review | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

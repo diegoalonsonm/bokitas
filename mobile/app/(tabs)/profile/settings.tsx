@@ -13,8 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks';
-import { usersApi } from '@/lib/api';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { usersApi } from '@/lib/api/endpoints/users';
 import { Button } from '@/components/ui';
 
 type SettingItem = {

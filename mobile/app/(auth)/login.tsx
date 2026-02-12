@@ -14,7 +14,7 @@ import {
 import { Link, router, Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { validateEmail, validatePassword } from '@/lib/utils';
 
 export default function LoginScreen() {

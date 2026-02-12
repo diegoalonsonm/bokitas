@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
 import { User } from '@/types';
-import { authApi } from '@/lib/api';
+import { authApi } from '@/lib/api/endpoints/auth';
 import { TOKEN_KEYS, clearTokens } from '@/lib/api/client';
 
 interface AuthState {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  
+
   // Actions
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
@@ -24,12 +24,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
 
   setUser: (user) => set({ user, isAuthenticated: !!user }),
-  
+
   setLoading: (isLoading) => set({ isLoading }),
 
   login: async (email: string, password: string) => {
     const response = await authApi.login(email, password);
-    
+
     if (!response.success || !response.data) {
       throw new Error(response.error?.message || 'Login failed');
     }
@@ -48,11 +48,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAuth: async () => {
     set({ isLoading: true });
-    
+
     try {
       const token = await SecureStore.getItemAsync(TOKEN_KEYS.ACCESS_TOKEN);
       const expiresAt = await SecureStore.getItemAsync(TOKEN_KEYS.EXPIRES_AT);
-      
+
       if (!token || !expiresAt) {
         set({ user: null, isAuthenticated: false, isLoading: false });
         return false;

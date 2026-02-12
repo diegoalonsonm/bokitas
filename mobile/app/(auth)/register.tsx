@@ -14,7 +14,7 @@ import {
 import { Link, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '@/lib/constants';
-import { authApi } from '@/lib/api';
+import { authApi } from '@/lib/api/endpoints/auth';
 import { validateEmail, validatePassword, validateName, validateConfirmPassword } from '@/lib/utils';
 
 interface FormData {

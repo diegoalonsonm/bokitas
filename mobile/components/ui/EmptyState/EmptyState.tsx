@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { Button } from './Button';
+import { Button } from '../Button';
 
 export interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;

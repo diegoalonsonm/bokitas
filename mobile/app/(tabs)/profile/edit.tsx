@@ -13,8 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { useAuth, useImagePicker } from '@/lib/hooks';
-import { usersApi } from '@/lib/api';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useImagePicker } from '@/lib/hooks/useImagePicker';
+import { usersApi } from '@/lib/api/endpoints/users';
 import { Avatar, Button, Input, Loading } from '@/components/ui';
 import { validateName } from '@/lib/utils';
 
@@ -69,12 +70,12 @@ export default function EditProfileScreen() {
       const nameParts = name.trim().split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-      
+
       await usersApi.update(user!.id, {
         nombre: firstName,
         primerapellido: lastName || firstName, // Use first name as last if only one name given
       });
-      
+
       await refreshUser();
       Alert.alert('Éxito', 'Perfil actualizado correctamente', [
         { text: 'OK', onPress: handleBack },

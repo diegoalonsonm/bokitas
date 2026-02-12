@@ -12,30 +12,30 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { useRestaurantSearch } from '@/lib/hooks';
-import { useSearchStore } from '@/lib/stores';
+import { useRestaurantSearch } from '@/lib/hooks/useRestaurantSearch';
+import { useSearchStore } from '@/lib/stores/useSearchStore';
 import { RestaurantCard } from '@/components/restaurants';
 import { Loading, EmptyState, Badge } from '@/components/ui';
 import type { Restaurant } from '@/types';
 
 export default function SearchScreen() {
   const [inputValue, setInputValue] = useState('');
-  const { 
-    query, 
-    filters, 
-    searchHistory, 
-    setQuery, 
-    addToHistory, 
-    clearHistory 
+  const {
+    query,
+    filters,
+    searchHistory,
+    setQuery,
+    addToHistory,
+    clearHistory
   } = useSearchStore();
-  
-  const { 
-    restaurants, 
-    isLoading, 
-    error, 
-    search, 
-    loadMore, 
-    hasMore 
+
+  const {
+    restaurants,
+    isLoading,
+    error,
+    search,
+    loadMore,
+    hasMore
   } = useRestaurantSearch();
 
   const handleSearch = useCallback((searchQuery: string) => {
@@ -152,7 +152,7 @@ export default function SearchScreen() {
         <Pressable style={styles.backButton} onPress={handleBack}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </Pressable>
-        
+
         <View style={styles.searchInputContainer}>
           <Ionicons name="search-outline" size={20} color={colors.textMuted} />
           <TextInput

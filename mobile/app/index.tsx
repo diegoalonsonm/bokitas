@@ -1,5 +1,5 @@
 import { Redirect, Href } from 'expo-router';
-import { useAuthStore } from '@/lib/stores';
+import { useAuthStore } from '@/lib/stores/useAuthStore';
 
 /**
  * Entry point - redirects based on auth state

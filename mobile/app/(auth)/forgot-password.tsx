@@ -15,7 +15,7 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
-import { authApi } from '@/lib/api';
+import { authApi } from '@/lib/api/endpoints/auth';
 import { validateEmail } from '@/lib/utils';
 
 export default function ForgotPasswordScreen() {

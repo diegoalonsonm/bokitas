@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useAuthStore } from '@/lib/stores';
+import { useAuthStore } from '@/lib/stores/useAuthStore';
 import { colors } from '@/lib/constants';
 
 export default function RootLayout() {

@@ -11,14 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { usersApi } from '@/lib/api';
+import { usersApi } from '@/lib/api/endpoints/users';
 import { Avatar, Rating, Loading, EmptyState, Card } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
 import type { User, Review, Restaurant } from '@/types';
 
 export default function UserProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  
+
   const [user, setUser] = useState<User | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [top4, setTop4] = useState<Restaurant[]>([]);

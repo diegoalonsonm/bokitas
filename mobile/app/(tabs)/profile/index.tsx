@@ -11,9 +11,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks';
-import { usersApi } from '@/lib/api';
-import { useEatlistStore } from '@/lib/stores';
+import { usersApi } from '@/lib/api/endpoints/users';
+import { useEatlistStore } from '@/lib/stores/useEatlistStore';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { Avatar, Rating, Badge, Loading, EmptyState, Card } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
 import type { Review, Restaurant } from '@/types';
@@ -123,7 +123,7 @@ export default function ProfileScreen() {
           {user.username && (
             <Text style={styles.username}>@{user.username}</Text>
           )}
-          
+
           <Pressable style={styles.editButton} onPress={handleEditProfile}>
             <Ionicons name="pencil-outline" size={16} color={colors.primary} />
             <Text style={styles.editButtonText}>Editar perfil</Text>

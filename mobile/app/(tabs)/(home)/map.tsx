@@ -12,8 +12,8 @@ import { router, Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { colors, spacing, typography } from '@/lib/constants';
-import { useLocation } from '@/lib/hooks';
-import { restaurantsApi } from '@/lib/api';
+import { useLocation } from '@/lib/hooks/useLocation';
+import { restaurantsApi } from '@/lib/api/endpoints/restaurants';
 import { RestaurantCard } from '@/components/restaurants';
 import { Loading } from '@/components/ui';
 import type { Restaurant } from '@/types';
@@ -30,7 +30,7 @@ const COSTA_RICA_REGION = {
 export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   const { location, isLoading: isLoadingLocation, requestPermission } = useLocation();
-  
+
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,11 +94,11 @@ export default function MapScreen() {
 
   const initialRegion = location
     ? {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      }
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    }
     : COSTA_RICA_REGION;
 
   return (
@@ -115,7 +115,7 @@ export default function MapScreen() {
       >
         {restaurants.map((restaurant) => {
           if (!restaurant.latitude || !restaurant.longitude) return null;
-          
+
           return (
             <Marker
               key={restaurant.id}

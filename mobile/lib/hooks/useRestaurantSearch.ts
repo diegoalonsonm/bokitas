@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { restaurantsApi } from '@/lib/api';
+import { restaurantsApi } from '@/lib/api/endpoints/restaurants';
 import { Restaurant, RestaurantFilterParams } from '@/types';
-import { useSearchStore } from '@/lib/stores';
+import { useSearchStore } from '@/lib/stores/useSearchStore';
 
 /**
  * Hook for searching restaurants with debounce
@@ -12,7 +12,7 @@ export function useRestaurantSearch(debounceMs: number = 300) {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(0);
-  
+
   const { query, setQuery, filters, addToHistory } = useSearchStore();
   const limit = 20;
 
@@ -25,7 +25,7 @@ export function useRestaurantSearch(debounceMs: number = 300) {
 
       setIsLoading(true);
       setError(null);
-      
+
       const currentPage = reset ? 0 : page;
       if (reset) {
         setPage(0);
@@ -43,7 +43,7 @@ export function useRestaurantSearch(debounceMs: number = 300) {
         };
 
         const response = await restaurantsApi.search(params);
-        
+
         if (response.success && response.data) {
           if (reset) {
             setRestaurants(response.data);
@@ -56,7 +56,7 @@ export function useRestaurantSearch(debounceMs: number = 300) {
             });
           }
           setHasMore(response.data.length === limit);
-          
+
           // Add to search history if query search
           if (searchQuery?.trim() && reset) {
             await addToHistory(searchQuery);

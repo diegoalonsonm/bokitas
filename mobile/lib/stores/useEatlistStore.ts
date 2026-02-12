@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import { EatlistEntry } from '@/types';
-import { eatlistApi } from '@/lib/api';
+import { eatlistApi } from '@/lib/api/endpoints/eatlist';
 
 interface EatlistState {
   entries: EatlistEntry[];
   isLoading: boolean;
   error: string | null;
-  
+
   // Computed
   wantToVisit: EatlistEntry[];
   visited: EatlistEntry[];
-  
+
   // Actions
   fetchEatlist: () => Promise<void>;
   addToEatlist: (restaurantId: string, visited?: boolean) => Promise<void>;
@@ -35,7 +35,7 @@ export const useEatlistStore = create<EatlistState>((set, get) => ({
 
   fetchEatlist: async () => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const response = await eatlistApi.getAll();
       if (response.success && response.data) {

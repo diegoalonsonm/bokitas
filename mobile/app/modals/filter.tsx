@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { useSearchStore } from '@/lib/stores';
+import { useSearchStore } from '@/lib/stores/useSearchStore';
 import { Rating, Button, Badge } from '@/components/ui';
 
 const FOOD_TYPE_OPTIONS = [
@@ -36,7 +36,7 @@ const FOOD_TYPE_OPTIONS = [
 
 export default function FilterModal() {
   const { filters, setFilters, clearFilters } = useSearchStore();
-  
+
   const [selectedFoodTypes, setSelectedFoodTypes] = useState<string[]>(filters.foodTypes);
   const [minRating, setMinRating] = useState(filters.minRating || 0);
   const [sortBy, setSortBy] = useState(filters.sortBy || 'relevance');

@@ -15,9 +15,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography, borderRadius } from '@/lib/constants';
-import { restaurantsApi } from '@/lib/api';
-import { useEatlistStore } from '@/lib/stores';
-import { useAuth } from '@/lib/hooks';
+import { restaurantsApi } from '@/lib/api/endpoints/restaurants';
+import { useEatlistStore } from '@/lib/stores/useEatlistStore';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { Rating, Badge, Loading, Button, EmptyState } from '@/components/ui';
 import { ReviewCard } from '@/components/reviews';
 import type { Restaurant, Review } from '@/types';
@@ -43,10 +43,10 @@ export default function RestaurantDetailScreen() {
 
     try {
       setError(null);
-      
+
       // First, try to fetch by local database ID
       let restaurantRes = await restaurantsApi.getById(id);
-      
+
       // If not found, the ID might be a Foursquare ID (from search results)
       // Try to get or create the restaurant using Foursquare ID
       if (!restaurantRes.success || !restaurantRes.data) {
@@ -55,7 +55,7 @@ export default function RestaurantDetailScreen() {
 
       if (restaurantRes.data) {
         setRestaurant(restaurantRes.data);
-        
+
         // Fetch reviews using the actual local database ID
         const reviewsRes = await restaurantsApi.getReviews(restaurantRes.data.id, { limit: 10 });
         if (reviewsRes.data) {
@@ -113,7 +113,7 @@ export default function RestaurantDetailScreen() {
 
   const handleCall = () => {
     // Phone number would come from restaurant data
-      Alert.alert('Próximamente', '¡La integración telefónica estará disponible pronto!');
+    Alert.alert('Próximamente', '¡La integración telefónica estará disponible pronto!');
   };
 
   const handleWriteReview = () => {
