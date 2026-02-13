@@ -48,6 +48,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           'Allow Bokitas to access your camera to take photos for reviews.',
       },
     ],
+    'expo-font',
   ],
   experiments: {
     typedRoutes: true,

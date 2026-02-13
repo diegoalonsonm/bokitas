@@ -15,11 +15,12 @@ const keyPreview = supabaseServiceRoleKey
   ? `${supabaseServiceRoleKey.substring(0, 20)}...${supabaseServiceRoleKey.substring(supabaseServiceRoleKey.length - 10)}`
   : 'NOT SET'
 console.log(`[Supabase] Initializing client with URL: ${supabaseUrl}`)
-console.log(`[Supabase] Using key: ${keyPreview}`)
+console.log(`[Supabase] Using service role key: ${keyPreview}`)
 
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
+    persistSession: false,
+    detectSessionInUrl: false
   }
 })

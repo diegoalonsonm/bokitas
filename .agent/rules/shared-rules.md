@@ -178,6 +178,7 @@ Create a postmortem when:
 
 1. Check the postmortem folder for similar past issues.
 2. After fixing, create a postmortem if the criteria above are met.
+3. Kill the server everytime is started in order to test any implemented fix.
 
 ### When Creating New Features
 
