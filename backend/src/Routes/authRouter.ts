@@ -7,6 +7,7 @@ const authRouter = Router()
 
 authRouter.post('/register', asyncHandler(AuthController.register))
 authRouter.post('/login', asyncHandler(AuthController.login))
+authRouter.post('/google', asyncHandler(AuthController.googleSignIn))
 authRouter.post('/logout', asyncHandler(AuthController.logout))
 authRouter.post('/forgot-password', asyncHandler(AuthController.forgotPassword))
 authRouter.post('/reset-password', asyncHandler(AuthController.resetPassword))

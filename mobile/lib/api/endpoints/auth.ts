@@ -50,7 +50,39 @@ export const authApi = {
         session.refresh_token,
         session.expires_at
       );
-      
+
+      return {
+        ...response,
+        data: {
+          user: mapUser(rawUser),
+        },
+      };
+    }
+
+    return {
+      ...response,
+      data: undefined,
+    };
+  },
+
+  /**
+   * Login with Google ID token
+   */
+  async loginWithGoogle(idToken: string, accessToken?: string): Promise<ApiResponse<LoginResult>> {
+    const response = await apiRequest<RawLoginResponse>('POST', '/auth/google', {
+      idToken,
+      accessToken,
+    });
+
+    // Save tokens and map user if login successful
+    if (response.success && response.data?.session) {
+      const { session, user: rawUser } = response.data;
+      await saveTokens(
+        session.access_token,
+        session.refresh_token,
+        session.expires_at
+      );
+
       return {
         ...response,
         data: {
@@ -83,14 +115,14 @@ export const authApi = {
    */
   async me(): Promise<ApiResponse<User>> {
     const response = await apiRequest<RawUser>('GET', '/auth/me', undefined, true);
-    
+
     if (response.success && response.data) {
       return {
         ...response,
         data: mapUser(response.data),
       };
     }
-    
+
     return {
       ...response,
       data: undefined,

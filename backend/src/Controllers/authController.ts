@@ -3,6 +3,7 @@ import { type Request } from 'express'
 import { supabase } from '../Models/supabase/client.js'
 import { validateRegister, validateLogin, validateForgotPassword, validateResetPassword } from '../Models/validations/authValidation.js'
 import { ERROR_MESSAGES } from '../Utils/constants.js'
+import { createClient } from '@supabase/supabase-js'
 import {
   ValidationError,
   UnauthorizedError,
@@ -93,6 +94,65 @@ export class AuthController {
           access_token: session?.access_token || '',
           refresh_token: session?.refresh_token || '',
           expires_at: session?.expires_at || 0
+        }
+      }
+    })
+  }
+
+  /**
+   * POST /auth/google
+   * Sign in with Google ID token (from native Google Sign-In)
+   */
+  static async googleSignIn(req: Request, res: Response): Promise<void> {
+    const { idToken, accessToken } = req.body
+
+    if (!idToken) {
+      throw new ValidationError('Google ID token is required')
+    }
+
+    // Use a separate Supabase client with the anon key for auth operations
+    // since signInWithIdToken needs the anon/public client, not the service role
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
+    const supabaseUrl = process.env.SUPABASE_URL
+
+    if (!supabaseAnonKey || !supabaseUrl) {
+      throw new Error('Missing SUPABASE_ANON_KEY or SUPABASE_URL environment variables')
+    }
+
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey)
+
+    const { data, error: signInError } = await supabaseAuth.auth.signInWithIdToken({
+      provider: 'google',
+      token: idToken,
+      access_token: accessToken,
+    })
+
+    if (signInError) {
+      console.error('Google sign-in error:', signInError)
+      throw new UnauthorizedError(signInError.message || 'Google sign-in failed')
+    }
+
+    if (!data.session) {
+      throw new Error('No session returned from Google sign-in')
+    }
+
+    // Fetch user profile from usuario table
+    const { data: userProfile } = await supabase
+      .from('usuario')
+      .select('id, correo, nombre, primerapellido, createdat, urlfotoperfil, idestado, active')
+      .eq('authid', data.user.id)
+      .eq('active', true)
+      .single()
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: data.user,
+        profile: userProfile,
+        session: {
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+          expires_at: data.session.expires_at || 0
         }
       }
     })

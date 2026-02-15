@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import { Link, router, Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '@/lib/constants';
@@ -23,7 +24,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
 
   const handleLogin = async () => {
     // Validate inputs
@@ -49,6 +50,27 @@ export default function LoginScreen() {
         'Error al iniciar sesión',
         error instanceof Error ? error.message : 'Ocurrió un error inesperado'
       );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setErrors({});
+    setIsLoading(true);
+
+    try {
+      await loginWithGoogle();
+      router.replace('/(tabs)' as Href);
+    } catch (error) {
+      // Don't show alert if user cancelled the sign in flow
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      if (!errorMessage.includes('sign in was cancelled') && !errorMessage.includes('Canceled')) {
+        Alert.alert(
+          'Error al iniciar sesión con Google',
+          errorMessage
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -119,6 +141,25 @@ export default function LoginScreen() {
               ) : (
                 <Text style={styles.loginButtonText}>Iniciar sesión</Text>
               )}
+            </Pressable>
+
+            <View style={styles.separatorContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.separatorText}>o continúa con</Text>
+              <View style={styles.separatorLine} />
+            </View>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.googleButton,
+                pressed && styles.googleButtonPressed,
+                isLoading && styles.loginButtonDisabled
+              ]}
+              onPress={handleGoogleLogin}
+              disabled={isLoading}
+            >
+              <AntDesign name="google" size={20} color="#EA4335" />
+              <Text style={styles.googleButtonText}>Continuar con Google</Text>
             </Pressable>
           </View>
 
@@ -192,19 +233,35 @@ const styles = StyleSheet.create({
     color: colors.error,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-end', // Aligns to the right
+    marginBottom: spacing.sm,
   },
   forgotPasswordText: {
     fontSize: typography.sizes.sm,
     color: colors.primary,
     fontWeight: typography.weights.medium,
   },
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: spacing.sm,
+    gap: spacing.md,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.surfaceBorder,
+  },
+  separatorText: {
+    color: colors.textSecondary,
+    fontSize: typography.sizes.sm,
+  },
   loginButton: {
     backgroundColor: colors.primary,
     paddingVertical: spacing.md,
     borderRadius: 12,
     alignItems: 'center',
-    marginTop: spacing.md,
+    marginTop: spacing.sm,
   },
   loginButtonDisabled: {
     opacity: 0.7,
@@ -212,6 +269,26 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: colors.text,
     fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.semibold,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+    borderRadius: 12,
+    paddingVertical: spacing.md,
+  },
+  googleButtonPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
+  },
+  googleButtonText: {
+    color: colors.text,
+    fontSize: typography.sizes.md,
     fontWeight: typography.weights.semibold,
   },
   footer: {
@@ -229,6 +306,6 @@ const styles = StyleSheet.create({
   footerLink: {
     fontSize: typography.sizes.md,
     color: colors.primary,
-    fontWeight: typography.weights.semibold,
+    fontWeight: typography.weights.bold,
   },
 });
