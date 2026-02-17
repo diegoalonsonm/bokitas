@@ -1,26 +1,27 @@
-import { Utensils, Star, Camera, Users } from "lucide-react";
+import { EggFried, StarFill, CameraFill, PeopleFill } from "react-bootstrap-icons";
+import { Feature } from "./Features.types";
 
-const features = [
+const features: Feature[] = [
     {
-        icon: Utensils,
+        icon: EggFried,
         title: "Descubrimiento Local",
         description:
             "Encuentra joyas ocultas y los lugares más populares de tu ciudad. Filtra por antojo, precio o cercanía.",
     },
     {
-        icon: Star,
+        icon: StarFill,
         title: "Reseñas Honestas",
         description:
             "Opiniones reales de usuarios reales. Sin filtros ni patrocinios, solo la verdad sobre cada platillo.",
     },
     {
-        icon: Camera,
+        icon: CameraFill,
         title: "Comparte tu Experiencia",
         description:
             "Sube fotos, califica el servicio y cuenta tu historia. Ayuda a otros a decidir dónde comer hoy.",
     },
     {
-        icon: Users,
+        icon: PeopleFill,
         title: "Comunidad Activa",
         description:
             "Sigue a tus foodies favoritos, comenta en sus reseñas y crea tu propia lista de lugares por visitar.",

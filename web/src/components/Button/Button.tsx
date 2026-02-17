@@ -1,14 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: "primary" | "secondary" | "outline" | "ghost" | "link";
-    size?: "sm" | "md" | "lg" | "icon";
-    isLoading?: boolean;
-    href?: string;
-    fullWidth?: boolean;
-}
+import { ArrowRepeat } from "react-bootstrap-icons";
+import { ButtonProps } from "./Button.types";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -58,7 +51,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         const content = (
             <>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading && <ArrowRepeat className="mr-2 h-4 w-4 animate-spin" />}
                 {children}
             </>
         );

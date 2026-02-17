@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Instagram, Linkedin } from "react-bootstrap-icons";
 
 export function Footer() {
     const currentYear = new Date().getFullYear();

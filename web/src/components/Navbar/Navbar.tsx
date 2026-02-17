@@ -3,9 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
-import { Button } from "./Button";
-import Logo from "../images/logo.png";
+import { List, X } from "react-bootstrap-icons";
+import { Button } from "@/components/Button/Button";
+import Logo from "@/images/logo.png";
+import { NavLink } from "./Navbar.types";
+
+const navLinks: NavLink[] = [
+    { name: "Inicio", href: "#hero" },
+    { name: "Características", href: "#features" },
+    { name: "Nosotros", href: "#about" },
+];
 
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -19,12 +26,6 @@ export function Navbar() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    const navLinks = [
-        { name: "Inicio", href: "#hero" },
-        { name: "Características", href: "#features" },
-        { name: "Nosotros", href: "#about" },
-    ];
 
     return (
         <nav
@@ -73,7 +74,7 @@ export function Navbar() {
                         className="md:hidden p-2 text-text-main hover:text-primary transition-colors"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
-                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isMobileMenuOpen ? <X size={24} /> : <List size={24} />}
                     </button>
                 </div>
             </div>

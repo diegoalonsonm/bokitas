@@ -1,6 +1,5 @@
-import { Button } from "./Button";
-import { ArrowRight, Star } from "lucide-react";
-
+import { Button } from "@/components/Button/Button";
+import { ArrowRight, StarFill } from "react-bootstrap-icons";
 
 export function Hero() {
     return (
@@ -53,7 +52,7 @@ export function Hero() {
                         <div className="flex flex-col items-center">
                             <div className="flex items-center gap-1 text-gold">
                                 <span className="text-2xl font-bold text-text-main">4.9</span>
-                                <Star className="h-4 w-4 fill-current" />
+                                <StarFill className="h-4 w-4" />
                             </div>
                             <span className="text-xs">Calificación App</span>
                         </div>
@@ -63,4 +62,3 @@ export function Hero() {
         </section>
     );
 }
-
