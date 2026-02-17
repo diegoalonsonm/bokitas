@@ -15,12 +15,12 @@ import { errorHandler, notFoundHandler } from './Middleware/errorMiddleware.js'
 
 config()
 
-const PORT: number = parseInt(process.env.PORT || '3000', 10)
+const PORT: number = parseInt(process.env.PORT || '4000', 10)
 const app: Express = express()
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:4000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }))

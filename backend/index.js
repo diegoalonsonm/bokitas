@@ -7,10 +7,10 @@ import userRouter from './Routes/userRouter.js'
 config()
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:4000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }))

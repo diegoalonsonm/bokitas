@@ -31,6 +31,7 @@ export interface FoursquareSearchOptions {
 }
 
 export interface TransformedRestaurant extends Omit<CreateRestaurantParams, 'foodTypeIds'> {
+  id: string // Foursquare ID used as identifier for search results
   foursquareid: string
   foodTypeIds: string[]
   distance?: number
@@ -94,6 +95,11 @@ export class FoursquareService {
    * API: https://api.foursquare.com/v3/places/{fsq_id}
    */
   static async getPlaceDetails(fsqId: string): Promise<TransformedRestaurant> {
+    // Validate fsqId to prevent API calls with invalid IDs
+    if (!fsqId || fsqId === 'undefined' || fsqId === 'null') {
+      throw new Error(`Invalid Foursquare ID: ${fsqId}`)
+    }
+
     try {
       const response = await foursquareClient.get<FoursquarePlace>(`/places/${fsqId}`)
 
@@ -130,6 +136,9 @@ export class FoursquareService {
     }
 
     return {
+      // Use Foursquare ID as the id for search results
+      // The frontend will use this to fetch/create the restaurant via getByFoursquareId
+      id: place.fsq_place_id,
       foursquareid: place.fsq_place_id,
       nombre: place.name,
       direccion: address,

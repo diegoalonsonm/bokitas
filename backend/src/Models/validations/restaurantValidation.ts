@@ -35,7 +35,11 @@ const foursquareIdSchema = z.object({
   fsqId: z.string({
     required_error: 'Foursquare ID is required',
     invalid_type_error: 'Foursquare ID must be a string'
-  }).min(1, 'Foursquare ID cannot be empty')
+  })
+    .min(1, 'Foursquare ID cannot be empty')
+    .refine(val => val !== 'undefined' && val !== 'null', {
+      message: 'Foursquare ID cannot be undefined or null'
+    })
 })
 
 // Restaurant ID parameter

@@ -1079,7 +1079,7 @@ Create a `.env` file (git ignored) and `.env.example` (committed):
 # .env.example
 
 # Server
-PORT=3000
+PORT=4000
 NODE_ENV=development
 
 # Database
@@ -1092,7 +1092,7 @@ DB_PASSWORD=
 JWT_SECRET=your-secret-key-at-least-32-characters
 
 # CORS
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:4000
 
 # Email (Nodemailer)
 EMAIL_USER=your-email@gmail.com
