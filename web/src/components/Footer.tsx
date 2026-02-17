@@ -35,10 +35,10 @@ export function Footer() {
                         &copy; {currentYear} Bokitas Inc. Todos los derechos reservados.
                     </p>
                     <div className="flex gap-6">
-                        <Link href="#" className="text-text-muted hover:text-text-main text-sm transition-colors">
+                        <Link href="/privacy" className="text-text-muted hover:text-text-main text-sm transition-colors">
                             Privacidad
                         </Link>
-                        <Link href="#" className="text-text-muted hover:text-text-main text-sm transition-colors">
+                        <Link href="/service" className="text-text-muted hover:text-text-main text-sm transition-colors">
                             Términos
                         </Link>
                     </div>
