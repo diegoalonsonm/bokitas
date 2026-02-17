@@ -14,49 +14,6 @@ export function Footer() {
                             La comunidad donde la comida cobra vida. Descubre, califica y comparte tus experiencias culinarias.
                         </p>
                     </div>
-
-                    <div>
-                        <h4 className="font-bold text-text-main mb-4">Plataforma</h4>
-                        <ul className="space-y-2">
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Top Restaurantes
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Reseñas Recientes
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Para Negocios
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="font-bold text-text-main mb-4">Compañía</h4>
-                        <ul className="space-y-2">
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Acerca de
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Carreras
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="text-text-secondary hover:text-primary transition-colors text-sm">
-                                    Blog
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-
                     <div>
                         <h4 className="font-bold text-text-main mb-4">Síguenos</h4>
                         <div className="flex gap-4">
