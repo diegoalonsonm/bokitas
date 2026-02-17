@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: spacing.md,
+    borderRadius: 32,
   },
   appName: {
     fontSize: typography.sizes.xxxl,

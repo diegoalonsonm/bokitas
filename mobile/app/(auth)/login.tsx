@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: spacing.lg,
+    borderRadius: 24,
   },
   title: {
     fontSize: typography.sizes.xxxl,
