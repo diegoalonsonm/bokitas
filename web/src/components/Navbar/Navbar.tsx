@@ -29,7 +29,7 @@ export function Navbar() {
 
     return (
         <nav
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+            className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,padding] duration-300 ${isScrolled
                     ? "bg-background/80 backdrop-blur-md border-b border-surface-elevated py-2"
                     : "bg-transparent py-4"
                 }`}
@@ -73,8 +73,10 @@ export function Navbar() {
                     <button
                         className="md:hidden p-2 text-text-main hover:text-primary transition-colors"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+                        aria-expanded={isMobileMenuOpen}
                     >
-                        {isMobileMenuOpen ? <X size={24} /> : <List size={24} />}
+                        {isMobileMenuOpen ? <X size={24} aria-hidden="true" /> : <List size={24} aria-hidden="true" />}
                     </button>
                 </div>
             </div>

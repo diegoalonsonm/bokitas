@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen">
+    <main id="main" className="min-h-screen">
       <Navbar />
 
       <section className="pt-32 pb-20 px-4">

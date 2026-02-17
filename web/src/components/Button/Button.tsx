@@ -19,7 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref
     ) => {
         const baseStyles =
-            "inline-flex items-center justify-center rounded-full font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:pointer-events-none active:scale-95";
+            "inline-flex items-center justify-center rounded-full font-medium transition-colors transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none active:scale-95";
 
         const variants = {
             primary:
@@ -51,7 +51,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         const content = (
             <>
-                {isLoading && <ArrowRepeat className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading && <ArrowRepeat className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
                 {children}
             </>
         );

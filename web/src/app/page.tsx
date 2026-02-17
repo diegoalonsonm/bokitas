@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main id="main" className="min-h-screen">
       <Navbar />
       <Hero />
       <Features />
