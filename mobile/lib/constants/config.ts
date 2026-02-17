@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
  * App configuration loaded from environment variables
  */
 export const config = {
-  apiBaseUrl: Constants.expoConfig?.extra?.apiBaseUrl || 'http://localhost:3000',
+  apiBaseUrl: Constants.expoConfig?.extra?.apiBaseUrl || 'http://localhost:4000',
   supabaseUrl: Constants.expoConfig?.extra?.supabaseUrl || '',
   supabaseAnonKey: Constants.expoConfig?.extra?.supabaseAnonKey || '',
 

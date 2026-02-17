@@ -29,7 +29,7 @@ Complete API reference for the Bokitas backend.
 ## Getting Started
 
 1. Ensure backend is running: `npm run dev`
-2. Base URL: `http://localhost:3000`
+2. Base URL: `http://localhost:4000`
 3. See individual module docs for endpoint details
 
 ---
