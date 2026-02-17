@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -112,6 +113,11 @@ export default function RegisterScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Crear cuenta</Text>
             <Text style={styles.subtitle}>Únete a Bokitas hoy</Text>
           </View>
@@ -252,6 +258,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.xl,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: spacing.md,
   },
   title: {
     fontSize: typography.sizes.xxxl,

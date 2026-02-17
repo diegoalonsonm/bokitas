@@ -49,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-font',
+    '@react-native-google-signin/google-signin',
   ],
   experiments: {
     typedRoutes: true,

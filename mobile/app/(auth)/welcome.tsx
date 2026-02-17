@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { Link } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, typography } from '@/lib/constants';
@@ -9,7 +9,11 @@ export default function WelcomeScreen() {
       <View style={styles.content}>
         {/* Logo Section */}
         <View style={styles.logoSection}>
-          <Text style={styles.logo}>🍽️</Text>
+          <Image
+            source={require('@/assets/images/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.appName}>Bokitas</Text>
           <Text style={styles.tagline}>
             Descubre los mejores restaurantes de Costa Rica
@@ -52,7 +56,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    fontSize: 80,
+    width: 150,
+    height: 150,
     marginBottom: spacing.md,
   },
   appName: {

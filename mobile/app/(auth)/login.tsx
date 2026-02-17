@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Link, router, Href } from 'expo-router';
@@ -88,6 +89,11 @@ export default function LoginScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Bienvenido de nuevo</Text>
             <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
           </View>
@@ -193,6 +199,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.xxl,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: spacing.lg,
   },
   title: {
     fontSize: typography.sizes.xxxl,
