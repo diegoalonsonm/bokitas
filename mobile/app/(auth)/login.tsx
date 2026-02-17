@@ -100,6 +100,25 @@ export default function LoginScreen() {
 
           {/* Form */}
           <View style={styles.form}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.googleButton,
+                pressed && styles.googleButtonPressed,
+                isLoading && styles.loginButtonDisabled
+              ]}
+              onPress={handleGoogleLogin}
+              disabled={isLoading}
+            >
+              <AntDesign name="google" size={20} color="#EA4335" />
+              <Text style={styles.googleButtonText}>Iniciar sesión con Google</Text>
+            </Pressable>
+
+            <View style={styles.separatorContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.separatorText}>o continúa con</Text>
+              <View style={styles.separatorLine} />
+            </View>
+
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Correo electrónico</Text>
               <TextInput
@@ -147,25 +166,6 @@ export default function LoginScreen() {
               ) : (
                 <Text style={styles.loginButtonText}>Iniciar sesión</Text>
               )}
-            </Pressable>
-
-            <View style={styles.separatorContainer}>
-              <View style={styles.separatorLine} />
-              <Text style={styles.separatorText}>o continúa con</Text>
-              <View style={styles.separatorLine} />
-            </View>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.googleButton,
-                pressed && styles.googleButtonPressed,
-                isLoading && styles.loginButtonDisabled
-              ]}
-              onPress={handleGoogleLogin}
-              disabled={isLoading}
-            >
-              <AntDesign name="google" size={20} color="#EA4335" />
-              <Text style={styles.googleButtonText}>Continuar con Google</Text>
             </Pressable>
           </View>
 
