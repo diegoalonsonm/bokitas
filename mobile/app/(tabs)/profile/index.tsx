@@ -5,6 +5,7 @@ import {
   ScrollView,
   Pressable,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
@@ -41,9 +42,18 @@ export default function ProfileScreen() {
     router.push('/(tabs)/profile/settings');
   };
 
-  const handleLogout = async () => {
-    await logout();
-    router.replace('/(auth)/welcome');
+  const handleLogout = () => {
+    Alert.alert('Cerrar sesión', '¿Estás seguro de que querés cerrar sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Cerrar sesión',
+        style: 'destructive',
+        onPress: async () => {
+          await logout();
+          router.replace('/(auth)/welcome');
+        },
+      },
+    ]);
   };
 
   if (!user) {
