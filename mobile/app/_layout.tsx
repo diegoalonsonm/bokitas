@@ -3,14 +3,22 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useAuthStore } from '@/lib/stores/useAuthStore';
 import { colors } from '@/lib/constants';
+import { config } from '@/lib/constants/config';
 
 export default function RootLayout() {
   const isLoading = useAuthStore((state) => state.isLoading);
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
+    // Configure Google Sign-In once at app startup
+    GoogleSignin.configure({
+      webClientId: config.googleWebClientId,
+      offlineAccess: true,
+    });
+
     checkAuth();
   }, [checkAuth]);
 

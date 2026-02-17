@@ -144,6 +144,38 @@ export class AuthController {
       .eq('active', true)
       .single()
 
+    // For first-time Google sign-in users, the database trigger creates the usuario record
+    // but may not populate nombre/primerapellido correctly since Google metadata uses
+    // different field names (full_name, given_name, family_name) than the trigger expects.
+    // Update the profile with Google's user metadata if name fields are empty.
+    if (userProfile && (!userProfile.nombre || !userProfile.primerapellido)) {
+      const googleMeta = data.user.user_metadata || {}
+      const googleName = googleMeta.given_name || googleMeta.name || googleMeta.full_name || ''
+      const googleLastName = googleMeta.family_name || ''
+      const googleAvatar = googleMeta.avatar_url || googleMeta.picture || ''
+
+      const updates: Record<string, string> = {}
+      if (!userProfile.nombre && googleName) {
+        updates.nombre = googleName
+      }
+      if (!userProfile.primerapellido && googleLastName) {
+        updates.primerapellido = googleLastName
+      }
+      if (!userProfile.urlfotoperfil && googleAvatar) {
+        updates.urlfotoperfil = googleAvatar
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await supabase
+          .from('usuario')
+          .update(updates)
+          .eq('id', userProfile.id)
+
+        // Merge updates into the profile we return
+        Object.assign(userProfile, updates)
+      }
+    }
+
     res.status(200).json({
       success: true,
       data: {
