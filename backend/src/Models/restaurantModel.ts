@@ -17,6 +17,60 @@ import { randomUUID } from 'crypto'
 
 export class RestaurantModel {
   /**
+   * Get review count for a restaurant
+   */
+  private static async getReviewCount(restaurantId: string): Promise<number> {
+    try {
+      const { count, error } = await supabase
+        .from('review')
+        .select('*', { count: 'exact', head: true })
+        .eq('idrestaurante', restaurantId)
+        .eq('active', true)
+
+      if (error) {
+        console.error('Error getting review count:', error)
+        return 0
+      }
+
+      return count || 0
+    } catch (err) {
+      console.error('Error getting review count:', err)
+      return 0
+    }
+  }
+
+  /**
+   * Get review counts for multiple restaurants
+   */
+  private static async getReviewCounts(restaurantIds: string[]): Promise<Map<string, number>> {
+    const counts = new Map<string, number>()
+    
+    try {
+      const { data, error } = await supabase
+        .from('review')
+        .select('idrestaurante')
+        .in('idrestaurante', restaurantIds)
+        .eq('active', true)
+
+      if (error) {
+        console.error('Error getting review counts:', error)
+        return counts
+      }
+
+      // Count reviews per restaurant
+      for (const review of (data || [])) {
+        const id = review.idrestaurante
+        counts.set(id, (counts.get(id) || 0) + 1)
+      }
+
+      return counts
+    } catch (err) {
+      console.error('Error getting review counts:', err)
+      return counts
+    }
+  }
+
+  /**
    * Get all restaurants with filters and pagination
    */
   static async getAll(filters: RestaurantFilterParams): Promise<{ restaurants: Restaurant[]; total: number }> {
@@ -85,8 +139,20 @@ export class RestaurantModel {
         throw error
       }
 
+      const restaurants = (data || []) as Restaurant[]
+      
+      // Get review counts for all restaurants
+      if (restaurants.length > 0) {
+        const restaurantIds = restaurants.map(r => r.id)
+        const reviewCounts = await this.getReviewCounts(restaurantIds)
+        
+        for (const restaurant of restaurants) {
+          (restaurant as Restaurant & { reviewcount: number }).reviewcount = reviewCounts.get(restaurant.id) || 0
+        }
+      }
+
       return { 
-        restaurants: (data || []) as Restaurant[], 
+        restaurants, 
         total: count || 0 
       }
     } catch (err) {
@@ -111,13 +177,17 @@ export class RestaurantModel {
         return null
       }
 
-      // Get food types for this restaurant
-      const foodTypes = await this.getFoodTypes(id)
+      // Get food types and review count in parallel
+      const [foodTypes, reviewCount] = await Promise.all([
+        this.getFoodTypes(id),
+        this.getReviewCount(id)
+      ])
 
       return {
         ...data,
-        foodTypes
-      } as RestaurantWithFoodTypes
+        foodTypes,
+        reviewcount: reviewCount
+      } as RestaurantWithFoodTypes & { reviewcount: number }
     } catch (err) {
       console.error('Error getting restaurant by ID:', err)
       throw err
@@ -140,13 +210,17 @@ export class RestaurantModel {
         return null
       }
 
-      // Get food types for this restaurant
-      const foodTypes = await this.getFoodTypes(data.id)
+      // Get food types and review count in parallel
+      const [foodTypes, reviewCount] = await Promise.all([
+        this.getFoodTypes(data.id),
+        this.getReviewCount(data.id)
+      ])
 
       return {
         ...data,
-        foodTypes
-      } as RestaurantWithFoodTypes
+        foodTypes,
+        reviewcount: reviewCount
+      } as RestaurantWithFoodTypes & { reviewcount: number }
     } catch (err) {
       console.error('Error getting restaurant by Foursquare ID:', err)
       throw err
@@ -272,7 +346,8 @@ export class RestaurantModel {
 
       return {
         ...restaurant,
-        foodTypes
+        foodTypes,
+        reviewcount: 0 // New restaurant has no reviews
       }
     } catch (err) {
       console.error('Error in getOrCreateByFoursquareId:', err)
@@ -391,7 +466,19 @@ export class RestaurantModel {
         throw error
       }
 
-      return (data || []) as Restaurant[]
+      const restaurants = (data || []) as Restaurant[]
+      
+      // Get review counts for all restaurants
+      if (restaurants.length > 0) {
+        const restaurantIds = restaurants.map(r => r.id)
+        const reviewCounts = await this.getReviewCounts(restaurantIds)
+        
+        for (const restaurant of restaurants) {
+          (restaurant as Restaurant & { reviewcount: number }).reviewcount = reviewCounts.get(restaurant.id) || 0
+        }
+      }
+
+      return restaurants
     } catch (err) {
       console.error('Error getting top rated restaurants:', err)
       throw err

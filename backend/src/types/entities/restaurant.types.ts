@@ -18,6 +18,7 @@ export interface Restaurant {
 
 export interface RestaurantWithFoodTypes extends Restaurant {
   foodTypes?: FoodType[]
+  reviewcount?: number
 }
 
 export interface FoodType {
