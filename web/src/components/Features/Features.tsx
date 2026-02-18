@@ -48,7 +48,7 @@ export function Features() {
                             className="p-6 rounded-2xl bg-surface-elevated/50 border border-surface-elevated hover:bg-surface-elevated transition-colors group"
                         >
                             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                                <feature.icon className="h-6 w-6 text-primary" />
+                                <feature.icon className="h-6 w-6 text-primary" aria-hidden="true" />
                             </div>
                             <h3 className="text-xl font-bold mb-2 text-text-main">
                                 {feature.title}

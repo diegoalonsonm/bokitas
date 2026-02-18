@@ -15,6 +15,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import { Link, router, Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { statusCodes } from '@react-native-google-signin/google-signin';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { validateEmail, validatePassword } from '@/lib/utils';
@@ -63,10 +64,14 @@ export default function LoginScreen() {
     try {
       await loginWithGoogle();
       router.replace('/(tabs)' as Href);
-    } catch (error) {
+    } catch (error: any) {
       // Don't show alert if user cancelled the sign in flow
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      if (!errorMessage.includes('sign in was cancelled') && !errorMessage.includes('Canceled')) {
+      const isCancelled =
+        error?.code === statusCodes.SIGN_IN_CANCELLED ||
+        error?.code === statusCodes.IN_PROGRESS;
+
+      if (!isCancelled) {
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
         Alert.alert(
           'Error al iniciar sesión con Google',
           errorMessage

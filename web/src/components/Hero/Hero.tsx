@@ -22,7 +22,7 @@ export function Hero() {
                         </span>
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-text-main to-text-secondary animate-fade-in-up delay-100">
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-text-main to-text-secondary animate-fade-in-up delay-100 text-balance">
                         Descubre y comparte <br />
                         <span className="text-primary">las mejores experiencias.</span>
                     </h1>
@@ -34,7 +34,7 @@ export function Hero() {
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-fade-in-up delay-300">
                         <Button size="lg" className="w-full sm:w-auto group">
                             Empezar a Explorar
-                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                         </Button>
                     </div>
 

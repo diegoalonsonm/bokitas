@@ -3,11 +3,9 @@ import * as SecureStore from 'expo-secure-store';
 import { User } from '@/types';
 import { authApi } from '@/lib/api/endpoints/auth';
 import { TOKEN_KEYS, clearTokens } from '@/lib/api/client';
-import { config } from '@/lib/constants/config';
 import {
   GoogleSignin,
   isSuccessResponse,
-  statusCodes,
 } from '@react-native-google-signin/google-signin';
 
 interface AuthState {
@@ -49,12 +47,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   loginWithGoogle: async () => {
-    // Configure Google Sign-In
-    GoogleSignin.configure({
-      webClientId: config.googleWebClientId,
-      offlineAccess: true,
-    });
-
     await GoogleSignin.hasPlayServices();
     const response = await GoogleSignin.signIn();
 

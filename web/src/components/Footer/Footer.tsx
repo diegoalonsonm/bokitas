@@ -17,11 +17,11 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold text-text-main mb-4">Síguenos</h4>
                         <div className="flex gap-4">
-                            <Link href="#" className="text-text-secondary hover:text-primary transition-colors">
-                                <Instagram size={20} />
+                            <Link href="#" aria-label="Síguenos en Instagram" className="text-text-secondary hover:text-primary transition-colors">
+                                <Instagram size={20} aria-hidden="true" />
                             </Link>
-                            <Link href="https://linkedin.com/in/diegonaranjo03/" className="text-text-secondary hover:text-primary transition-colors">
-                                <Linkedin size={20} />
+                            <Link href="https://linkedin.com/in/diegonaranjo03/" aria-label="Síguenos en LinkedIn" className="text-text-secondary hover:text-primary transition-colors">
+                                <Linkedin size={20} aria-hidden="true" />
                             </Link>
                         </div>
                         <div className="mt-4 text-sm text-text-muted">
@@ -31,7 +31,7 @@ export function Footer() {
                 </div>
 
                 <div className="border-t border-surface-elevated pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-text-muted text-sm">
+                    <p className="text-text-muted text-sm" suppressHydrationWarning>
                         &copy; {currentYear} Bokitas Inc. Todos los derechos reservados.
                     </p>
                     <div className="flex gap-6">

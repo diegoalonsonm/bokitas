@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ServicePage() {
   return (
-    <main className="min-h-screen">
+    <main id="main" className="min-h-screen">
       <Navbar />
       <section className="pt-32 pb-20 px-4 md:px-6">
         <div className="container mx-auto max-w-3xl prose prose-invert prose-headings:text-text-main prose-p:text-text-secondary prose-li:text-text-secondary prose-strong:text-text-main prose-a:text-primary hover:prose-a:text-primary-light">
