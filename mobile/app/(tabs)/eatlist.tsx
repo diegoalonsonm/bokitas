@@ -8,15 +8,13 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Href } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useEatlistData } from '@/lib/hooks/useEatlistData';
-import { RestaurantCard } from '@/components/restaurants';
-import { Loading, EmptyState, Badge, Button } from '@/components/ui';
+import { EatlistCard } from '@/components/restaurants';
+import { Loading, EmptyState, Badge } from '@/components/ui';
 import type { EatlistEntry } from '@/types';
 import { hapticSuccess, hapticLight, hapticWarning, hapticSelection } from '@/lib/utils/haptics';
 
@@ -37,7 +35,7 @@ export default function EatlistScreen() {
 
   const handleToggleVisited = async (entry: EatlistEntry) => {
     hapticLight();
-    toggleVisited(entry); // Assuming toggleVisited from useEatlistData handles the update
+    toggleVisited(entry);
   };
 
   const handleRemove = (entry: EatlistEntry) => {
@@ -65,38 +63,21 @@ export default function EatlistScreen() {
     router.push('/(tabs)/(home)/search' as Href);
   };
 
+  const handlePress = (restaurantId: string) => {
+    router.push(`/(tabs)/(home)/restaurant/${restaurantId}` as Href);
+  };
+
   const renderEntry = ({ item, index }: { item: EatlistEntry; index: number }) => {
     if (!item.restaurant) return null;
 
     return (
-      <Animated.View entering={FadeInDown.delay(index * 50).duration(400).springify()} style={styles.entryContainer}>
-        <RestaurantCard
-          restaurant={item.restaurant}
-          variant="compact"
-          style={styles.restaurantCard}
-        />
-        <View style={styles.entryActions}>
-          <Pressable
-            style={[
-              styles.actionButton,
-              item.hasBeenFlag && styles.actionButtonActive,
-            ]}
-            onPress={() => handleToggleVisited(item)}
-          >
-            <Ionicons
-              name={item.hasBeenFlag ? 'checkmark-circle' : 'checkmark-circle-outline'}
-              size={22}
-              color={item.hasBeenFlag ? colors.success : colors.textMuted}
-            />
-          </Pressable>
-          <Pressable
-            style={styles.actionButton}
-            onPress={() => handleRemove(item)}
-          >
-            <Ionicons name="trash-outline" size={20} color={colors.error} />
-          </Pressable>
-        </View>
-      </Animated.View>
+      <EatlistCard
+        entry={item}
+        index={index}
+        onPress={() => handlePress(item.restaurantId)}
+        onToggleVisited={() => handleToggleVisited(item)}
+        onRemove={() => handleRemove(item)}
+      />
     );
   };
 
@@ -216,6 +197,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
+    marginBottom: spacing.xs,
   },
   title: {
     fontSize: typography.sizes.xxl,
@@ -255,29 +237,5 @@ const styles = StyleSheet.create({
   },
   filterTextActive: {
     color: colors.text,
-  },
-  entryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  restaurantCard: {
-    flex: 1,
-  },
-  entryActions: {
-    flexDirection: 'row',
-    marginLeft: spacing.sm,
-    gap: spacing.xs,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-  },
-  actionButtonActive: {
-    backgroundColor: colors.success + '20',
   },
 });

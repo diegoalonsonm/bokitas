@@ -1,1 +1,2 @@
-export { RestaurantCard, type RestaurantCardProps } from './RestaurantCard';
+export * from './RestaurantCard/RestaurantCard';
+export * from './EatlistCard/EatlistCard';

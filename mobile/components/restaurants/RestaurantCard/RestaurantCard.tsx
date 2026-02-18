@@ -35,6 +35,9 @@ export function RestaurantCard({
     }
   };
 
+  /** Resolve the best available image source */
+  const imageSource = restaurant.photoUrl || restaurant.photos?.[0] || null;
+
   if (variant === 'compact') {
     return (
       <Animated.View entering={FadeInDown.delay(index * 60).duration(400).springify()}>
@@ -47,7 +50,7 @@ export function RestaurantCard({
           onPress={handlePress}
         >
           <Image
-            source={restaurant.photos?.[0]}
+            source={imageSource}
             placeholder={{ blurhash: PLACEHOLDER_BLURHASH }}
             style={styles.compactImage}
             contentFit="cover"
@@ -85,7 +88,7 @@ export function RestaurantCard({
           onPress={handlePress}
         >
           <Image
-            source={restaurant.photos?.[0]}
+            source={imageSource}
             placeholder={{ blurhash: PLACEHOLDER_BLURHASH }}
             style={styles.featuredImage}
             contentFit="cover"
@@ -125,12 +128,12 @@ export function RestaurantCard({
         onPress={handlePress}
       >
         <Image
-          source={restaurant.photos?.[0]}
-          placeholder={{ blurhash: PLACEHOLDER_BLURHASH }}
-          style={styles.image}
-          contentFit="cover"
-          transition={200}
-        />
+            source={imageSource}
+            placeholder={{ blurhash: PLACEHOLDER_BLURHASH }}
+            style={styles.image}
+            contentFit="cover"
+            transition={200}
+          />
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={1}>
             {restaurant.name}
@@ -215,21 +218,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.md,
+    borderRadius: borderRadius.lg,
     borderCurve: 'continuous',
-    padding: spacing.sm,
+    padding: spacing.md,
     gap: spacing.md,
   },
   compactImage: {
-    width: 60,
-    height: 60,
-    borderRadius: borderRadius.sm,
+    width: 72,
+    height: 72,
+    borderRadius: borderRadius.md,
     borderCurve: 'continuous',
     backgroundColor: colors.surfaceElevated,
   },
   compactContent: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
   compactName: {
     fontSize: typography.sizes.md,
