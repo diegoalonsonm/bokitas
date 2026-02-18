@@ -6,14 +6,12 @@ import { colors } from '@/lib/constants';
 type TabIconProps = {
   name: keyof typeof Ionicons.glyphMap;
   color: string;
-  focused: boolean;
 };
 
-function TabIcon({ name, color, focused }: TabIconProps) {
+function TabIcon({ name, color }: TabIconProps) {
   return (
     <View style={styles.iconContainer}>
       <Ionicons name={name} size={24} color={color} />
-      {focused && <View style={styles.activeIndicator} />}
     </View>
   );
 }
@@ -35,7 +33,7 @@ export default function TabsLayout() {
         options={{
           title: 'Inicio',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name={focused ? 'home' : 'home-outline'} color={color} focused={focused} />
+            <TabIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
@@ -44,7 +42,7 @@ export default function TabsLayout() {
         options={{
           title: 'Mi Lista',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name={focused ? 'bookmark' : 'bookmark-outline'} color={color} focused={focused} />
+            <TabIcon name={focused ? 'bookmark' : 'bookmark-outline'} color={color} />
           ),
         }}
       />
@@ -53,7 +51,7 @@ export default function TabsLayout() {
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name={focused ? 'person' : 'person-outline'} color={color} focused={focused} />
+            <TabIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
         }}
       />
@@ -78,13 +76,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-  },
-  activeIndicator: {
-    position: 'absolute',
-    bottom: -8,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.primary,
   },
 });
