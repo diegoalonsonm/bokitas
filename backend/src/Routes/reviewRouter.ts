@@ -22,6 +22,6 @@ reviewRouter.get('/:id', asyncHandler((req, res) => ReviewController.getById(req
 reviewRouter.post('/', authMiddleware, asyncHandler((req, res) => ReviewController.create(req as unknown as CreateReviewRequest, res)))
 reviewRouter.put('/:id', authMiddleware, asyncHandler((req, res) => ReviewController.update(req as unknown as UpdateReviewRequest, res)))
 reviewRouter.delete('/:id', authMiddleware, asyncHandler((req, res) => ReviewController.delete(req as unknown as DeleteReviewRequest, res)))
-reviewRouter.post('/:id/photo', authMiddleware, uploadSingle('photo'), asyncHandler((req, res) => ReviewController.uploadPhoto(req as unknown as UploadReviewPhotoRequest, res)))
+reviewRouter.post('/:id/photo', authMiddleware, ...uploadSingle('photo'), asyncHandler((req, res) => ReviewController.uploadPhoto(req as unknown as UploadReviewPhotoRequest, res)))
 
 export default reviewRouter

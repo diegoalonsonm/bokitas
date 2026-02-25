@@ -142,26 +142,25 @@ export async function uploadFile<T>(
   fieldName: string = 'photo'
 ): Promise<ApiResponse<T>> {
   try {
-    const token = await getAccessToken();
-    
     const formData = new FormData();
     formData.append(fieldName, {
       uri: file.uri,
       name: file.name,
       type: file.type,
-    } as unknown as Blob);
+    } as any);
 
-    const response = await fetch(`${config.apiBaseUrl}${endpoint}`, {
-      method: 'POST',
+    const response = await api.post<ApiResponse<T>>(endpoint, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
-        // Don't set Content-Type - let fetch handle it for multipart
+        'Content-Type': 'multipart/form-data',
       },
-      body: formData,
     });
 
-    return await response.json();
+    return response.data;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data as ApiResponse<T>;
+    }
+    
     return {
       success: false,
       error: {
